@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+
+.list_hotel {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+
+.hotel_item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  margin-right: 50px;
+  border-radius: 10px;
+  border: 1px salmon solid;
+  padding: 20px;
+}
+
+.hotel_img{
+  width: 200px;
+  height: 200px;
+  margin-right: 20px;
+  border-radius: 5px;
+}
+
+.hotel_info {
+  flex: 1;
+  width: 200px;
+}
+
+.hotel_title{
+  color: teal;
+  margin-bottom: 5px;
+}
+
+.hotel_desc{
+  color: #000;
+  font-size: 16px;
+  margin-left: 5px;
+}

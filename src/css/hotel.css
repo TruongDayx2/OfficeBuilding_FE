@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap');
+
+.roomType_list{
+  margin-left: 20px;
+  margin-top: 10px;
+  width: 90%;
+}
+
+.roomType_item{
+  display: flex;
+  border: 1px solid teal;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.roomType_img{
+  flex: 0.5;
+  height: 150px;
+  width: 150px;
+  margin-right: 10px;
+  border-radius: 10px;
+}
+
+.roomType_info{
+  flex: 2;
+}
+
+.roomType_title{
+  color: rgb(20, 113, 82);
+  
+}
+
+.roomType_desc{
+  color: #403f3f;
+  margin-left: 10px;
+}
+
+.roomType_book{
+  flex:1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.btn{
+  width: 100px;
+}
+
+.btn_Detail{
+  border: 1px solid orange;
+}
+
+.btn_Booking{
+  border: 1px solid teal;
+}
+
+.hotel-image-large-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.hotel-image-large-container {
+  position: relative;
+}
+
+.hotel-image-large {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+}
