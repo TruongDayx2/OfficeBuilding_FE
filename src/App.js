@@ -14,6 +14,7 @@ import Floor1 from './components/Floor1';
 import Room from './components/Room';
 import Equip from './components/Equip';
 import Room1 from './components/Room1';
+import Equip1 from './components/Equip1';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -37,8 +38,11 @@ function App() {
                     <Route path="/room1">
                         <Room1 />
                     </Route>
-                    <Route path="/equip">
+                    <Route path="/equips">
                         <Equip />
+                    </Route>
+                    <Route path="/equip1">
+                        <Equip1 />
                     </Route>
                     <Route path="/">
                         <Home1 />

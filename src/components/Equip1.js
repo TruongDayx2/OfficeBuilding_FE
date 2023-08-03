@@ -2,32 +2,25 @@ import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { getAllRoomsByFloorID } from "../redux/actions/rooms";
+import { getAllEquips } from "../redux/actions/equips";
 
-const Room = () => {
-    const roomFromReducer = useSelector(state => state.room.data)
-    const [floorId, setFloorId] = useState(0);
+const Equip1 = () => {
+    const equipsFromReducer = useSelector(state => state.equip.data1)
     const location = useLocation()
     const dispatch = useDispatch();
 
 
     useEffect(() => {
-        
-        const id = location.pathname.split('/')[2];
-        console.log(id)
-        setFloorId(Number(id))
-        dispatch(getAllRoomsByFloorID(Number(id)))
+        dispatch(getAllEquips())
         return () => {
-            console.log(location.pathname);
         }
     }, [location.pathname])
-
-    useEffect(() => {
-        setSortedData(roomFromReducer);
-    }, [roomFromReducer])
+    useEffect(()=>{
+        setSortedData(equipsFromReducer)
+    },[equipsFromReducer])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
-    const [sortedData, setSortedData] = useState(roomFromReducer);
+    const [sortedData, setSortedData] = useState(equipsFromReducer);
 
     useEffect(() => {
         const dataCopy = [...sortedData];
@@ -36,10 +29,10 @@ const Room = () => {
     }, [selectedStatus]);
 
     const sortByStatus = (a, b) => {
-        if ((a.roomStatus) === +selectedStatus) {
+        if ((a.equipmentStatus) === +selectedStatus) {
             return -1;
         }
-        if (b.roomStatus === +selectedStatus) {
+        if (b.equipmentStatus === +selectedStatus) {
             return 1;
         }
         return 0;
@@ -51,10 +44,10 @@ const Room = () => {
 
     const searchRoom = (e) => {
         if (e.trim().length === 0) {
-            setSortedData(roomFromReducer)
+            setSortedData(equipsFromReducer)
             return;
         }
-        const tmpRooms = roomFromReducer.filter(emp => emp.roomName.includes(e.trim()));
+        const tmpRooms = equipsFromReducer.filter(emp => emp.equipmentName.includes(e.trim()));
         setSortedData(tmpRooms);
     }
 
@@ -69,9 +62,9 @@ const Room = () => {
                                 placeholder='Tìm kiếm phòng' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />
                         </form>
-                        <select style={{ width: '120px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
-                            <option value={0}>Đang trống</option>
-                            <option value={1}>Đang sử dụng</option>
+                        <select style={{ width: '150px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
+                            <option value={0}>Ngừng hoạt động</option>
+                            <option value={1}>Đang hoạt động</option>
                             <option value={2}>Đang bảo trì</option>
                         </select>
                     </div>
@@ -81,9 +74,8 @@ const Room = () => {
                         <tbody>
                             <tr>
                                 <th>STT</th>
-                                <th style={{ width: '105px' }}>Phòng</th>
+                                <th style={{ width: '105px' }}>Tên</th>
                                 <th style={{ width: '200px' }}>Tầng</th>
-                                <th style={{ width: '200px' }}>Giá (VND)</th>
                                 <th style={{ width: '200px' }}>Trạng thái</th>
                                 <th style={{ width: '200px' }}>Thao tác</th>
 
@@ -92,15 +84,12 @@ const Room = () => {
                                 sortedData?.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item?.roomName}</td>
+                                        <td>{item?.equipmentName}</td>
                                         <td>
                                             {item.floorId}
                                         </td>
-                                        <td>
-                                            {item.roomPrice * 1000000}
-                                        </td>
-                                        <td style={item.roomStatus === 0 ? { color: 'teal' } : item.roomStatus === 1 ? { color: 'orange' } : { color: 'red' }}>
-                                            {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}
+                                        <td style={item.equipmentStatus === 0 ? { color: 'red' } : item.roomStatus === 1 ? { color: 'teal' } : { color: 'orange' }}>
+                                            {item.roomStatus === 0 ? 'Ngừng hoạt động' : item.roomStatus === 1 ? 'Đang hoạt động' : 'Đang bảo trì'}
                                         </td>
                                         <td>
                                             <button className="post-edit-item-btn" style={{ width: '150px' }}>
@@ -119,4 +108,4 @@ const Room = () => {
     )
 }
 
-export default Room;
+export default Equip1;

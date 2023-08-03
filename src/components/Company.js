@@ -135,7 +135,7 @@ const Company = () => {
     }
 
     const searchCompany = () => {
-        if(nameSearch.trim().length == 0){
+        if(nameSearch.trim().length === 0){
             setCompanies(data);
             return;
         }
@@ -185,7 +185,7 @@ const Company = () => {
                         <div style={{ fontSize: "20px", marginLeft: "-20px" }} className="admin-post__title">
                             Danh sách công ty
                         </div>                      
-                        <form action="javascript:" class="search-bar">
+                        <form action="javascript:" className="search-bar">
                             <input placeholder='Tìm kiếm công ty theo tên' type="search" name="search" pattern=".*\S.*" required onChange={(e) => setNameSearch(e.target.value)} />
                             <button onClick={() => searchCompany()} class="search-btn" type="submit">
                                 <span>Search</span>

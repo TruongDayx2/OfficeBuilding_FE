@@ -20,7 +20,6 @@ const roomReducers = (state = initState, action) => {
         error: false
       }
     case GET_ALL_ROOM:
-      console.log(action.data)
       return{
         ...state,
         data1: action.data,

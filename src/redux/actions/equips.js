@@ -1,14 +1,13 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { DELETE, GET_ALL, POST, UPDATE, GET_ONE } from "../constants/floor";
+import { GET_ALL_EQUIP, GET_ALL_EQUIP_FLOOR, CREATE_EQUIP, UPDATE_EQUIP } from "../constants/equip";
 
-
-export const getAllFloors = () => async dispatch => {
+export const getAllEquips = () => async dispatch => {
     try {
         const res = await axios({
             method: 'GET',
             baseURL: process.env.REACT_APP_URL_USER,
-            url: 'floor/getAll',
+            url: `equipment/getAll`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -16,7 +15,7 @@ export const getAllFloors = () => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: GET_ALL,
+                type: GET_ALL_EQUIP,
                 data: res.data
             })
         }
@@ -34,12 +33,12 @@ export const getAllFloors = () => async dispatch => {
     }
 }
 
-export const getFloorById = (id) => async dispatch => {
+export const getAllEquipsByFloorID = (floorId) => async dispatch => {
     try {
         const res = await axios({
             method: 'GET',
-            baseURL: process.env.REACT_APP_URL_API,
-            url: `floors/${id}`,
+            baseURL: process.env.REACT_APP_URL_USER,
+            url: `equipment/getAllByFloorId/${floorId}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -47,7 +46,7 @@ export const getFloorById = (id) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: GET_ONE,
+                type: GET_ALL_EQUIP_FLOOR,
                 data: res.data
             })
         }
@@ -64,43 +63,14 @@ export const getFloorById = (id) => async dispatch => {
         })
     }
 }
-export const updateFloor = (id, data) => async dispatch => {
+
+export const createEquipment = (data) => async dispatch => {
     try {
-        const res = await axios({
-            method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
-            url: `floors/${id}`,
-            data: data,
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "application/json"
-            }
-        })
-        if (res.status === 200) {
-            dispatch({
-                type: UPDATE,
-                data: res.data
-            })
-        }
-        else {
-            dispatch({
-                type: ERROR,
-                data: null,
-            })
-        }
-    } catch (error) {
-        dispatch({
-            type: ERROR,
-            data: null,
-        })
-    }
-}
-export const createNewFloor = (data) => async dispatch => {
-    try {
+        console.log(data)
         const res = await axios({
             method: 'POST',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `floors`,
+            url: `equipment/create`,
             data: data,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -109,7 +79,7 @@ export const createNewFloor = (data) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: POST,
+                type: CREATE_EQUIP,
                 data: res.data
             })
         }
@@ -126,12 +96,15 @@ export const createNewFloor = (data) => async dispatch => {
         })
     }
 }
-export const deleteFloor = (id) => async dispatch => {
+
+export const updateEquipment = (data,id) => async dispatch => {
     try {
+        console.log(data)
         const res = await axios({
-            method: 'DELETE',
+            method: 'PUT',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `floors/${id}`,
+            url: `equipment/update/${id}`,
+            data: data,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -139,7 +112,7 @@ export const deleteFloor = (id) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: DELETE,
+                type: UPDATE_EQUIP,
                 data: res.data
             })
         }
@@ -156,3 +129,4 @@ export const deleteFloor = (id) => async dispatch => {
         })
     }
 }
+

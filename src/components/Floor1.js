@@ -44,7 +44,7 @@ const Floor1 = () => {
                                         </td>
                                         <td>
                                             <Link to={
-                                                `/rooms/${item?.id}`
+                                                `/equips/${item?.id}`
                                             }>
                                                 <button className="post-edit-item-btn">
                                                     Xem

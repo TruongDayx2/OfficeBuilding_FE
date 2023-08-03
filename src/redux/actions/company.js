@@ -45,7 +45,7 @@ export const getCompanyById = (id) => async dispatch => {
                 "Content-Type": "application/json" 
             }
         })
-        if(res.status == 200){
+        if(res.status === 200){
             dispatch({
                 type: GET_ONE,
                 data: res.data
@@ -78,7 +78,7 @@ export const createNewCompany = (data) => async dispatch => {
                 "Content-Type": "application/json" 
             }
         })
-        if(res.status == 200){
+        if(res.status === 200){
             dispatch({
                 type: POST,
                 data: res.data
@@ -110,7 +110,7 @@ export const updateCompany = (id, data) => async dispatch => {
                 "Content-Type": "application/json" 
             }
         })
-        if(res.status == 200){
+        if(res.status === 200){
             dispatch({
                 type: UPDATE,
                 data: res.data
@@ -141,7 +141,7 @@ export const deleteCompany = (id) => async dispatch => {
                 "Content-Type": "application/json" 
             }
         })
-        if(res.status == 200){
+        if(res.status === 200){
             dispatch({
                 type: DELETE,
                 data: res.data

@@ -107,7 +107,7 @@ const Header = () => {
                                         </Link>
                                     </li>
                                     <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/equip' onClick={() => linkAction('about', true)}>
+                                        <Link className="nav__link link__item" to='/equip1' onClick={() => linkAction('about', true)}>
                                             Trang thiết bị
                                         </Link>
                                     </li>
