@@ -1,22 +1,31 @@
 import { ERROR } from "../constants/base";
-import { GET_ALL_ROOM_FLOOR } from "../constants/room";
+import { GET_ALL_ROOM, GET_ALL_ROOM_FLOOR } from "../constants/room";
 
 const initState = {
   data: [],
+  data1:[],
   room: {},
   error: false,
   success: true,
   restArea: 0,
 }
 
-const roomReducers = (state = initState, payload) => {
-  switch (payload.type) {
+const roomReducers = (state = initState, action) => {
+  switch (action.type) {
     case GET_ALL_ROOM_FLOOR:
       return {
         ...state,
-        data: payload.data,
+        data: action.data,
         success: true,
         error: false
+      }
+    case GET_ALL_ROOM:
+      console.log(action.data)
+      return{
+        ...state,
+        data1: action.data,
+        success:true,
+        error:false
       }
     case ERROR:
         return {

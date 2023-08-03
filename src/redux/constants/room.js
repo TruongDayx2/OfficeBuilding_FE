@@ -1,1 +1,2 @@
 export const GET_ALL_ROOM_FLOOR = 'GET_ALL_ROOM_BY_FLOOR_ID';
+export const GET_ALL_ROOM = 'GET_ALL_ROOM';

@@ -97,43 +97,18 @@ const Header = () => {
                                 </div>
                                 <ul className="dropdown__menu">
                                     <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/company' onClick={() => linkAction('about', true)}>
-                                            Công ty
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/floors' onClick={() => linkAction('about', true)}>
-                                            Mặt bằng
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
                                         <Link className="nav__link link__item" to='/floor1' onClick={() => linkAction('about', true)}>
                                             Tầng
                                         </Link>
                                     </li>
                                     <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/rooms' onClick={() => linkAction('about', true)}>
+                                        <Link className="nav__link link__item" to='/room1' onClick={() => linkAction('about', true)}>
                                             Phòng
                                         </Link>
                                     </li>
                                     <li className="dropdown__item">
                                         <Link className="nav__link link__item" to='/equip' onClick={() => linkAction('about', true)}>
                                             Trang thiết bị
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/monthly-fee-statistics' onClick={() => linkAction('about', true)}>
-                                            Tiền tháng này
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/monthly-statistics' onClick={() => linkAction('about', true)}>
-                                            Thống kê doanh thu
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/monthly-salary' onClick={() => linkAction('about', true)}>
-                                            Thống kê lương tháng nhân viên
                                         </Link>
                                     </li>
                                 </ul>

@@ -9,11 +9,11 @@ import {
 // import "swiper/css/bundle";
 import Login from './components/Login';
 import Company from './components/Company';
-import RentedArea from './components/RentedArea';
 import Home1 from './components/Home1';
 import Floor1 from './components/Floor1';
 import Room from './components/Room';
 import Equip from './components/Equip';
+import Room1 from './components/Room1';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -34,11 +34,11 @@ function App() {
                     <Route path="/rooms">
                         <Room />
                     </Route>
+                    <Route path="/room1">
+                        <Room1 />
+                    </Route>
                     <Route path="/equip">
                         <Equip />
-                    </Route>
-                    <Route path="/rented-areas">
-                        <RentedArea />
                     </Route>
                     <Route path="/">
                         <Home1 />

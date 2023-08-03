@@ -2,33 +2,26 @@ import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { getAllRoomsByFloorID } from "../redux/actions/rooms";
+import { getAllRooms } from "../redux/actions/rooms";
 
-const Room = () => {
-    const roomFromReducer = useSelector(state => state.room.data)
-    const [companyId, setCompanyId] = useState(0);
+const Room1 = () => {
+    const roomsFromReducer = useSelector(state => state.room.data1)
     const location = useLocation()
     const dispatch = useDispatch();
 
 
     useEffect(() => {
-        
-        const id = location.pathname.split('/')[2];
-        console.log(id)
-        setCompanyId(Number(id))
-        dispatch(getAllRoomsByFloorID(Number(id)))
+        dispatch(getAllRooms())
         return () => {
-            console.log(location.pathname);
         }
     }, [location.pathname])
-
-    useEffect(() => {
-       
-        setSortedData(roomFromReducer);
-    }, [roomFromReducer])
+    console.log(roomsFromReducer)
+    useEffect(()=>{
+        setSortedData(roomsFromReducer)
+    },[roomsFromReducer])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
-    const [sortedData, setSortedData] = useState(roomFromReducer);
+    const [sortedData, setSortedData] = useState(roomsFromReducer);
 
     useEffect(() => {
         const dataCopy = [...sortedData];
@@ -52,10 +45,10 @@ const Room = () => {
 
     const searchRoom = (e) => {
         if (e.trim().length === 0) {
-            setSortedData(roomFromReducer)
+            setSortedData(roomsFromReducer)
             return;
         }
-        const tmpRooms = roomFromReducer.filter(emp => emp.roomName.includes(e.trim()));
+        const tmpRooms = roomsFromReducer.filter(emp => emp.roomName.includes(e.trim()));
         setSortedData(tmpRooms);
     }
 
@@ -120,4 +113,4 @@ const Room = () => {
     )
 }
 
-export default Room;
+export default Room1;

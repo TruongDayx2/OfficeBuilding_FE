@@ -118,6 +118,12 @@ table#admin-post__table th:nth-child(5) {
     font-size: 20px;
 }
 
+table#admin-post__table th:nth-child(6) {
+    width: 150px;
+    font-size: 20px;
+}
+
+
 table#admin-post__table td {
     height: 52px;
 }
