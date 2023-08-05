@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { GET_ALL_EQUIP, GET_ALL_EQUIP_FLOOR, CREATE_EQUIP, UPDATE_EQUIP } from "../constants/equip";
+import { GET_ALL_EQUIP, GET_ALL_EQUIP_FLOOR, CREATE_EQUIP, UPDATE_EQUIP, DELETE_EQUIP } from "../constants/equip";
 
 export const getAllEquips = () => async dispatch => {
     try {
@@ -113,6 +113,37 @@ export const updateEquipment = (data,id) => async dispatch => {
         if (res.status === 200) {
             dispatch({
                 type: UPDATE_EQUIP,
+                data: res.data
+            })
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}
+
+export const deleteEquipment = (id) => async dispatch => {
+    try {
+        const res = await axios({
+            method: 'DELETE',
+            baseURL: process.env.REACT_APP_URL_API,
+            url: `equipment/delete/${id}`,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch({
+                type: DELETE_EQUIP,
                 data: res.data
             })
         }

@@ -1,5 +1,5 @@
 import { ERROR } from "../constants/base";
-import { GET_ALL_EQUIP, GET_ALL_EQUIP_FLOOR, CREATE_EQUIP, UPDATE_EQUIP } from "../constants/equip";
+import { GET_ALL_EQUIP, GET_ALL_EQUIP_FLOOR, CREATE_EQUIP, UPDATE_EQUIP, DELETE_EQUIP } from "../constants/equip";
 
 const initState = {
   data: [],
@@ -38,6 +38,12 @@ const equipReducers = (state = initState, action) => {
         success: true,
         error: false
       }
+      case DELETE_EQUIP:
+        return {
+          ...state,
+          success: true,
+          error: false
+        }
     case ERROR:
       return {
         ...state,

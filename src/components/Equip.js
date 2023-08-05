@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { createEquipment, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
+import { createEquipment, deleteEquipment, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
 
 const Room = () => {
@@ -65,17 +65,17 @@ const Room = () => {
     const [isUpdate, setIsUpdate] = useState(false)
     const [item, setItem] = useState({})
     const [idItem, setIdItem] = useState({})
-    
+    const [isDelete, setIsDelete] = useState(false)
 
     useEffect(() => {
-        if (isUpdate) {
+        if (isUpdate || isDelete) {
             console.log(item)
             setFormData(item)
             setIdItem(item.id)
         }
 
 
-    }, [isUpdate])
+    }, [isUpdate,isDelete])
 
 
     const popUpActive = (mode, item) => {
@@ -85,7 +85,10 @@ const Room = () => {
             setIsUpdate(true)
             setItem(item)
             document.querySelector('.dialog__title').textContent = "Sửa trang thiết bị";
-
+        } else if (mode === 'delete') {
+            setIsDelete(true)
+            setItem(item)
+            document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
         }
         else {
             document.querySelector('.dialog__title').textContent = "Thêm trang thiết bị";
@@ -95,6 +98,7 @@ const Room = () => {
         setFormData(initialFormData);
         setIsShow(false);
         setIsUpdate(false);
+        setIsDelete(false)
         setItem({})
         document.querySelector('.form-post').classList.remove('active');
     }
@@ -121,25 +125,38 @@ const Room = () => {
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         console.log(formData);
         setFormData(initialFormData);
-        if (!isUpdate) {
+        if (!isUpdate && !isDelete ) {
             dispatch(createEquipment(formData))
+        } else if(isUpdate){
+            dispatch(updateEquipment(formData, idItem))
         }else{
-            dispatch(updateEquipment(formData,idItem))
+            console.log('first')
+            dispatch(deleteEquipment(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         window.location.reload();
         cancelClick();
     };
 
+
+
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
-                <div className="modal_overlay" style={{ height: '100vh' }}></div>
-                <div className="form-post">
+                <div className="modal_overlay" style={{ height: '1000vh' }}></div>
+                <div className="form-post" style={{height:isDelete ? '200px' : ''}}>
                     <div className="form-post__title dialog__title">
                         Thêm trang thiết bị
                     </div>
-                    <div className="form-post__content" style={{ height: '80%' }}>
+                    <div style={{ display: isDelete ? 'block' : 'none' }}>
+                        <div style={{display:'flex',justifyContent:'center',marginTop:'25px'}}>
+                            <button type="button" onClick={(e)=>handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                            <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
+                                Hủy
+                            </button>
+                        </div>
+                    </div>
+                    <div className="form-post__content" style={{ height: '80%', display: isDelete ? 'none' : 'block' }}>
                         <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '50px', marginRight: '50px' }}>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
@@ -207,8 +224,10 @@ const Room = () => {
                     </div>
                 </div>
             </div>
+
+
             <div className="admin-post__wrapper" >
-                <div style={{ marginTop: '100px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ flex: '1' }}>Danh sách trang thiết bị</div>
                     <div style={{ flex: '1.5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
@@ -255,6 +274,9 @@ const Room = () => {
                                                 <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
                                                 Cập nhật
                                             </button>
+                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
+                                                Xóa
+                                            </button>
                                         </td>
                                     </tr>
                                 ))
@@ -263,6 +285,7 @@ const Room = () => {
                     </table>
                 </div>
             </div>
+
         </div>
     )
 }
