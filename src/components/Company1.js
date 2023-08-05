@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { createEquipment, deleteEquipment, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
+import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
-
-const Room = () => {
-    const equipFromReducer = useSelector(state => state.equip.data)
+import '../css/company.css'
+import '../css/form.css'
+import '../css/dialog.css'
+import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
+const Company1 = () => {
+    const companysFromReducer = useSelector(state => state.company.data1)
     const floorsFromReducer = useSelector(state => state.floors.data)
-    const [floorId, setFloorId] = useState(0);
+
     const location = useLocation()
     const dispatch = useDispatch();
 
-    useEffect(() => {
 
-        const id = location.pathname.split('/')[2];
-        console.log(id)
-        setFloorId(Number(id))
-        dispatch(getAllEquipsByFloorID(Number(id)))
+    useEffect(() => {
+        dispatch(getAllCompanys())
         dispatch(getAllFloors())
+
         return () => {
             console.log(location.pathname);
         }
     }, [location.pathname])
-
-    useEffect(() => {
-        setSortedData(equipFromReducer);
-    }, [equipFromReducer])
+    useEffect(()=>{
+        setSortedData(companysFromReducer)
+    },[companysFromReducer])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
-    const [sortedData, setSortedData] = useState(equipFromReducer);
+    const [sortedData, setSortedData] = useState(companysFromReducer);
 
     useEffect(() => {
         const dataCopy = [...sortedData];
@@ -53,15 +53,13 @@ const Room = () => {
 
     const searchRoom = (e) => {
         if (e.trim().length === 0) {
-            setSortedData(equipFromReducer)
+            setSortedData(companysFromReducer)
             return;
         }
         const searchTerm = e.trim().toLowerCase();
-
-        const tmpRooms = equipFromReducer.filter(emp => emp.equipmentName.toLowerCase().includes(searchTerm));
+        const tmpRooms = companysFromReducer.filter(emp => emp.cusName.toLowerCase().includes(searchTerm));
         setSortedData(tmpRooms);
     }
-
 
     const [isShow, setIsShow] = useState(false)
     const [isUpdate, setIsUpdate] = useState(false)
@@ -79,23 +77,28 @@ const Room = () => {
 
     }, [isUpdate,isDelete])
 
-
     const popUpActive = (mode, item) => {
         setIsShow(true);
         document.querySelector('.form-post').classList.add('active');
         if (mode === "edit") {
             setIsUpdate(true)
             setItem(item)
-            document.querySelector('.dialog__title').textContent = "Sửa trang thiết bị";
+            document.querySelector('.dialog__title').textContent = "Cập nhật công ty";
         } else if (mode === 'delete') {
             setIsDelete(true)
             setItem(item)
             document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
         }
         else {
-            document.querySelector('.dialog__title').textContent = "Thêm trang thiết bị";
+            document.querySelector('.dialog__title').textContent = "Thêm công ty";
         }
     }
+    const initialFormData = {
+        cusName: '',
+        cusEmail: '',
+        cusPhone: '',
+        cusTaxCode:'',
+    };
     const cancelClick = () => {
         setFormData(initialFormData);
         setIsShow(false);
@@ -105,50 +108,35 @@ const Room = () => {
         document.querySelector('.form-post').classList.remove('active');
     }
 
-    const initialFormData = {
-        equipmentName: '',
-        equipmentStatus: 1,
-        equipmentDesc: '',
-        floorId,
-    };
     const [formData, setFormData] = useState(initialFormData);
 
-    useEffect(() => {
-        // Cập nhật formData.floorId khi giá trị của floorId thay đổi
-        setFormData({ ...formData, floorId: floorId });
-    }, [floorId]);
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        const newValue = name === 'equipmentStatus' ? parseInt(value) : value;
-        setFormData({ ...formData, [name]: newValue });
-    };
     const handleSubmit = (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-        console.log(formData);
         setFormData(initialFormData);
         if (!isUpdate && !isDelete ) {
-            dispatch(createEquipment(formData))
+            dispatch(createCompany(formData))
         } else if(isUpdate){
-            dispatch(updateEquipment(formData, idItem))
+            dispatch(updateCompany(formData, idItem))
         }else{
-            console.log('first')
-            dispatch(deleteEquipment(idItem))
+            dispatch(deleteCompany(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         window.location.reload();
         cancelClick();
     };
-
-
-
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        const newValue = name === 'equipmentStatus' || name === 'floorId' ? parseInt(value) : value;
+        setFormData({ ...formData, [name]: newValue });
+    };
     return (
-        <div style={{ minHeight: "100vh" }} className="admin-post__container">
+        <div style={{  minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
                 <div className="form-post" style={{height:isDelete ? '200px' : ''}}>
                     <div className="form-post__title dialog__title">
-                        Thêm trang thiết bị
+                        Thêm công ty
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
                         <div style={{display:'flex',justifyContent:'center',marginTop:'25px'}}>
@@ -163,56 +151,65 @@ const Room = () => {
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <span style={{ flex: '1' }}>
-                                        Tên trang thiết bị:
+                                        Tên công ty:
                                     </span>
                                     <input
-                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
+                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '3.5' }}
                                         type="text"
-                                        id='equipmentName'
-                                        name="equipmentName"
-                                        value={formData.equipmentName}
+                                        id='cusName'
+                                        name="cusName"
+                                        value={formData.cusName}
                                         onChange={handleChange}
                                         required
                                     />
                                 </label>
                             </div>
-                            <div style={{ marginTop: '20px' }}>
-                                <label>
-                                    Trạng thái:
-                                    <select name="equipmentStatus" value={formData.equipmentStatus} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                                        <option value={0}>Ngừng hoạt động</option>
-                                        <option value={1}>Đang hoạt động</option>
-                                        <option value={2}>Đang bảo trì</option>
-                                    </select>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Email công ty:
+                                    </span>
+                                    <input
+                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '3.5' }}
+                                        type="text"
+                                        id='cusEmail'
+                                        name="cusEmail"
+                                        value={formData.cusEmail}
+                                        onChange={handleChange}
+                                        required
+                                    />
                                 </label>
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <span style={{ flex: '1' }}>
-                                        Mô tả:
+                                        Điện thoại:
                                     </span>
                                     <input
-                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '7' }}
+                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '3.5' }}
                                         type="text"
-                                        name="equipmentDesc"
-                                        value={formData.equipmentDesc}
+                                        id='cusPhone'
+                                        name="cusPhone"
+                                        value={formData.cusPhone}
                                         onChange={handleChange}
+                                        required
                                     />
                                 </label>
                             </div>
-                            <div style={{ marginTop: '20px' }}>
-                                <label>
-                                    Tầng chứa trang thiết bị:
-                                    <select name="floorId" value={formData.floorId} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                                        {floorsFromReducer.map((floor) => {
-                                            if (floor.id !== floorId) return null;
-                                            return (
-                                                <option key={floor.id} value={floor.id} >
-                                                    {floor.floorName}
-                                                </option>
-                                            )
-                                        })}
-                                    </select>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Mã số thuế:
+                                    </span>
+                                    <input
+                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '3.5' }}
+                                        type="text"
+                                        id='cusTaxCode'
+                                        name="cusTaxCode"
+                                        value={formData.cusTaxCode}
+                                        onChange={handleChange}
+                                        required
+                                    />
                                 </label>
                             </div>
                             <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -226,22 +223,21 @@ const Room = () => {
                     </div>
                 </div>
             </div>
-
-
-            <div className="admin-post__wrapper" >
+            
+            <div className="admin-post__wrapper">
                 <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ flex: '1' }}>Danh sách trang thiết bị</div>
-                    <div style={{ flex: '1.5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ flex: '1.5' }}>Danh sách công ty</div>
+                    <div style={{ flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
-                            <input style={{ borderRadius: '5px' }}
-                                placeholder='Tìm kiếm phòng' type="search" name="search" pattern=".*\S.*"
+                            <input style={{ borderRadius: '5px',width:'250px' }}
+                                placeholder='Tìm kiếm công ty' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />
                         </form>
-                        <select style={{ width: '150px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
+                        {/* <select style={{ width: '150px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
                             <option value={0}>Ngừng hoạt động</option>
                             <option value={1}>Đang hoạt động</option>
                             <option value={2}>Đang bảo trì</option>
-                        </select>
+                        </select> */}
                         <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
                             <button onClick={() => popUpActive()} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' }}>
                                 Thêm mới
@@ -254,23 +250,21 @@ const Room = () => {
                         <tbody>
                             <tr>
                                 <th>STT</th>
-                                <th style={{ width: '105px' }}>Tên</th>
-                                <th style={{ width: '200px' }}>Tầng</th>
-                                <th style={{ width: '200px' }}>Trạng thái</th>
-                                <th style={{ width: '200px' }}>Thao tác</th>
+                                <th style={{ width: '200px' }}>Tên</th>
+                                <th style={{ width: '220px' }}>Email</th>
+                                <th style={{ width: '180px' }}>Điện thoại</th>
+                                <th style={{ width: '180px' }}>Mã số thuế</th>
+                                <th style={{ width: '250px' }}>Thao tác</th>
 
                             </tr>
                             {
                                 sortedData?.map((item, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item?.equipmentName}</td>
-                                        <td>
-                                            {item.floorId}
-                                        </td>
-                                        <td style={item.equipmentStatus === 0 ? { color: 'red' } : item.equipmentStatus === 1 ? { color: 'teal' } : { color: 'orange' }}>
-                                            {item.equipmentStatus === 0 ? 'Ngừng hoạt động' : item.equipmentStatus === 1 ? 'Đang hoạt động' : 'Đang bảo trì'}
-                                        </td>
+                                        <td>{item?.cusName}</td>
+                                        <td>{item?.cusEmail} </td>
+                                        <td>{item?.cusPhone} </td>
+                                        <td>{item?.cusTaxCode} </td>
                                         <td>
                                             <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
                                                 <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
@@ -287,9 +281,8 @@ const Room = () => {
                     </table>
                 </div>
             </div>
-
         </div>
     )
 }
 
-export default Room;
+export default Company1;

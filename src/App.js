@@ -8,13 +8,13 @@ import {
 } from 'react-router-dom'
 // import "swiper/css/bundle";
 import Login from './components/Login';
-import Company from './components/Company';
 import Home1 from './components/Home1';
 import Floor1 from './components/Floor1';
 import Room from './components/Room';
 import Equip from './components/Equip';
 import Room1 from './components/Room1';
 import Equip1 from './components/Equip1';
+import Company1 from './components/Company1';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -26,8 +26,8 @@ function App() {
                     <Route path="/login">
                         <Login />
                     </Route>
-                    <Route path="/company">
-                        <Company />
+                    <Route path="/company1">
+                        <Company1 />
                     </Route>
                     <Route path="/floor1">
                         <Floor1 />

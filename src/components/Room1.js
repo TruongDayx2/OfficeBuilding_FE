@@ -48,7 +48,9 @@ const Room1 = () => {
             setSortedData(roomsFromReducer)
             return;
         }
-        const tmpRooms = roomsFromReducer.filter(emp => emp.roomName.includes(e.trim()));
+        const searchTerm = e.trim().toLowerCase();
+
+        const tmpRooms = roomsFromReducer.filter(emp => emp.roomName.toLowerCase().includes(searchTerm));
         setSortedData(tmpRooms);
     }
 
@@ -58,7 +60,7 @@ const Room1 = () => {
                 <div style={{ marginTop: '100px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ flex: '1.5' }}>Danh sách các phòng</div>
                     <div style={{ flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <form action="javascript:" class="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
+                        <form class="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
                             <input style={{ borderRadius: '5px' }}
                                 placeholder='Tìm kiếm phòng' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />

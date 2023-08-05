@@ -1,5 +1,4 @@
-export const GET_ALL = 'GET_ALL';
-export const GET_ONE = 'GET_ONE';
-export const POST = 'POST';
-export const UPDATE = 'UPDATE';
-export const DELETE = 'DELETE';
+export const GET_ALL_COMPANY = 'GET_ALL_COMPANY';
+export const CREATE_COMPANY = 'CREATE_COMPANY';
+export const UPDATE_COMPANY = 'UPDATE_COMPANY';
+export const DELETE_COMPANY = 'DELETE_COMPANY';

@@ -132,16 +132,6 @@ const Header = () => {
                                             Quản lý dịch vụ
                                         </Link>
                                     </li>
-                                    {/* <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/' onClick={() => linkAction('about', true)}>
-                                            Dịch vụ 2
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/' onClick={() => linkAction('about', true)}>
-                                            Dịch vụ 3
-                                        </Link>
-                                    </li> */}
                                 </ul>
                             </li>
                             <li className="nav__item dropdown">
@@ -161,6 +151,27 @@ const Header = () => {
                                     <li className="dropdown__item">
                                         <Link className="nav__link link__item" to='/work' onClick={() => linkAction('buildingemployee', true)}>
                                             Quản lý công việc
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li className="nav__item dropdown">
+                                <div id="customer" style={{ cursor: 'pointer' }}
+                                    className="nav__link dropdown__link"
+                                    onClick={() => linkAction('customer', false)}>
+                                    Quản lý Khách hàng
+                                    <i className="bx bx-chevron-down dropdown__icon" />
+                                </div>
+
+                                <ul className="dropdown__menu">
+                                    <li className="dropdown__item">
+                                        <Link className="nav__link link__item" to='/Company1' onClick={() => linkAction('customer', true)}>
+                                            Quản lý công ty
+                                        </Link>
+                                    </li>
+                                    <li className="dropdown__item">
+                                        <Link className="nav__link link__item" to='/work' onClick={() => linkAction('customer', true)}>
+                                            Quản lý hợp đồng
                                         </Link>
                                     </li>
                                 </ul>

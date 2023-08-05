@@ -53,7 +53,9 @@ const Equip1 = () => {
             setSortedData(equipsFromReducer)
             return;
         }
-        const tmpRooms = equipsFromReducer.filter(emp => emp.equipmentName.includes(e.trim()));
+        const searchTerm = e.trim().toLowerCase();
+
+        const tmpRooms = equipsFromReducer.filter(emp => emp.equipmentName.toLowerCase().includes(searchTerm));
         setSortedData(tmpRooms);
     }
 
