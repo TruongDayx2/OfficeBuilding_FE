@@ -26,33 +26,13 @@ const Rental1 = () => {
             console.log(location.pathname);
         }
     }, [location.pathname])
-    console.log(rentalsFromReducer)
+
+    const [sortedData, setSortedData] = useState(rentalsFromReducer);
+
     useEffect(() => {
         setSortedData(rentalsFromReducer)
     }, [rentalsFromReducer])
 
-    const [selectedStatus, setSelectedStatus] = useState(0);
-    const [sortedData, setSortedData] = useState(rentalsFromReducer);
-
-    useEffect(() => {
-        const dataCopy = [...sortedData];
-        dataCopy.sort(sortByStatus);
-        setSortedData(dataCopy);
-    }, [selectedStatus]);
-
-    const sortByStatus = (a, b) => {
-        if ((a.equipmentStatus) === +selectedStatus) {
-            return -1;
-        }
-        if (b.equipmentStatus === +selectedStatus) {
-            return 1;
-        }
-        return 0;
-    };
-
-    const onFilterChange = (e) => {
-        setSelectedStatus(e.target.value);
-    }
 
     const searchRoom = (e) => {
         if (e.trim().length === 0) {
@@ -61,9 +41,14 @@ const Rental1 = () => {
         }
         const searchTerm = e.trim().toLowerCase();
 
-        const tmpRooms = rentalsFromReducer.filter(emp => emp.equipmentName.toLowerCase().includes(searchTerm));
-        setSortedData(tmpRooms);
+        const tmpRooms = companysFromReducer.filter(emp => emp.cusName.toLowerCase().includes(searchTerm));
+        // setSortedData(tmpRooms);
+        console.log(tmpRooms)
+        // setSearchCompany(tmpRooms)
+        const updatedResultArray = rentalsFromReducer.filter(item => tmpRooms.some(company => company.id === item.companyId));
+        setSortedData(updatedResultArray);
     }
+
 
     const [isShow, setIsShow] = useState(false)
     const [isUpdate, setIsUpdate] = useState(false)
@@ -78,8 +63,6 @@ const Rental1 = () => {
             setFormData(item)
             setIdItem(item.id)
         }
-
-
     }, [isUpdate, isDelete, isDetail])
 
     const popUpActive = (mode, item) => {
@@ -143,7 +126,9 @@ const Rental1 = () => {
     };
 
     const CompanyName = ({ companyId }) => {
+        console.log(companysFromReducer)
         const company = companysFromReducer.find(company => company.id === companyId);
+        console.log(company)
         if (company) {
             return (
                 <div>{company.cusName}</div>
@@ -170,7 +155,7 @@ const Rental1 = () => {
         const room = roomsFromReducer.find(room => room.id === roomId);
         if (room) {
             return (
-                <div>{room.roomPrice*1000000} VND</div>
+                <div>{room.roomPrice * 1000000} VND</div>
             );
         }
         else {
@@ -200,7 +185,7 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Tên công ty:
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
                                     <CompanyName companyId={formData.companyId} />
                                 </span>
                             </label>
@@ -210,13 +195,13 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Tên phòng:
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
                                     <RoomName roomId={formData.roomId} />
                                 </span>
                                 <span style={{ flex: '1' }}>
                                     Tòa nhà:
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
                                     77Building
                                 </span>
                             </label>
@@ -226,7 +211,7 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Mã hợp đồng:
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
                                     {formData.id}
                                 </span>
                             </label>
@@ -236,8 +221,8 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Tiền thuê (tháng):
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
-                                    <RentMonth roomId={formData.roomId}/>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
+                                    <RentMonth roomId={formData.roomId} />
                                 </span>
                             </label>
                         </div>
@@ -246,7 +231,7 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Ngày bắt đầu thuê:
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
                                     {formData.reDateBegin}
                                 </span>
                             </label>
@@ -256,7 +241,7 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Ngày hết hạn thuê:
                                 </span>
-                                <span style={{ flex: '1',fontWeight:'500' }}>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
                                     {formData.reDateEnd}
                                 </span>
                             </label>
@@ -337,23 +322,23 @@ const Rental1 = () => {
 
             <div className="admin-post__wrapper">
                 <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ flex: '1' }}>Danh sách hợp đồng</div>
-                    <div style={{ flex: '1.5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ flex: '3' }}>Danh sách hợp đồng</div>
+                    <div style={{ flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
-                            <input style={{ borderRadius: '5px' }}
-                                placeholder='Tìm kiếm phòng' type="search" name="search" pattern=".*\S.*"
+                            <input style={{ borderRadius: '5px', width: '250px' }}
+                                placeholder='Tìm kiếm công ty' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />
                         </form>
-                        <select style={{ width: '150px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
+                        {/* <select style={{ width: '150px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
                             <option value={0}>Ngừng hoạt động</option>
                             <option value={1}>Đang hoạt động</option>
                             <option value={2}>Đang bảo trì</option>
-                        </select>
-                        <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
+                        </select> */}
+                        {/* <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
                             <button onClick={() => popUpActive()} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' }}>
                                 Thêm mới
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="admin-post__body">
@@ -382,11 +367,11 @@ const Rental1 = () => {
                                             <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>
                                                 Cập nhật
                                             </button>
-                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                                                Xóa
-                                            </button>
-                                            <button className="post-delete-btn " style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('detail', item1)}>
+                                            <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('detail', item1)}>
                                                 Chi tiết
+                                            </button>
+                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
+                                                Hủy
                                             </button>
                                         </td>
                                     </tr>
