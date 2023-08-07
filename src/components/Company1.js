@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
+import {  useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { getAllFloors } from "../redux/actions/floor";
 import '../css/company.css'
 import '../css/form.css'
@@ -10,7 +9,6 @@ import '../css/dialog.css'
 import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
 const Company1 = () => {
     const companysFromReducer = useSelector(state => state.company.data1)
-    const floorsFromReducer = useSelector(state => state.floors.data)
 
     const location = useLocation()
     const dispatch = useDispatch();
@@ -47,9 +45,9 @@ const Company1 = () => {
         return 0;
     };
 
-    const onFilterChange = (e) => {
-        setSelectedStatus(e.target.value);
-    }
+    // const onFilterChange = (e) => {
+    //     setSelectedStatus(e.target.value);
+    // }
 
     const searchRoom = (e) => {
         if (e.trim().length === 0) {

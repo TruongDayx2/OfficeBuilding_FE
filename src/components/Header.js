@@ -165,12 +165,12 @@ const Header = () => {
 
                                 <ul className="dropdown__menu">
                                     <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/Company1' onClick={() => linkAction('customer', true)}>
+                                        <Link className="nav__link link__item" to='/company1' onClick={() => linkAction('customer', true)}>
                                             Quản lý công ty
                                         </Link>
                                     </li>
                                     <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/work' onClick={() => linkAction('customer', true)}>
+                                        <Link className="nav__link link__item" to='/rental1' onClick={() => linkAction('customer', true)}>
                                             Quản lý hợp đồng
                                         </Link>
                                     </li>

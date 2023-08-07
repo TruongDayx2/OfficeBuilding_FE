@@ -1,13 +1,13 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { GET_ALL_EQUIP, GET_ALL_EQUIP_FLOOR, CREATE_EQUIP, UPDATE_EQUIP, DELETE_EQUIP } from "../constants/equip";
+import { CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, UPDATE_RENTAL } from "../constants/rental";
 
-export const getAllEquips = () => async dispatch => {
+export const getAllRentals = () => async dispatch => {
     try {
         const res = await axios({
             method: 'GET',
             baseURL: process.env.REACT_APP_URL_USER,
-            url: `equipment/getAll`,
+            url: `rental/getAll`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -15,7 +15,7 @@ export const getAllEquips = () => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: GET_ALL_EQUIP,
+                type: GET_ALL_RENTAL,
                 data: res.data
             })
         }
@@ -33,76 +33,13 @@ export const getAllEquips = () => async dispatch => {
     }
 }
 
-export const getAllEquipsByFloorID = (floorId) => async dispatch => {
-    try {
-        const res = await axios({
-            method: 'GET',
-            baseURL: process.env.REACT_APP_URL_USER,
-            url: `equipment/getAllByFloorId/${floorId}`,
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "application/json"
-            }
-        })
-        if (res.status === 200) {
-            dispatch({
-                type: GET_ALL_EQUIP_FLOOR,
-                data: res.data
-            })
-        }
-        else {
-            dispatch({
-                type: ERROR,
-                data: null,
-            })
-        }
-    } catch (error) {
-        dispatch({
-            type: ERROR,
-            data: null,
-        })
-    }
-}
-
-export const createEquipment = (data) => async dispatch => {
-    try {
-        const res = await axios({
-            method: 'POST',
-            baseURL: process.env.REACT_APP_URL_API,
-            url: `equipment/create`,
-            data: data,
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "application/json"
-            }
-        })
-        if (res.status === 200) {
-            dispatch({
-                type: CREATE_EQUIP,
-                data: res.data
-            })
-        }
-        else {
-            dispatch({
-                type: ERROR,
-                data: null,
-            })
-        }
-    } catch (error) {
-        dispatch({
-            type: ERROR,
-            data: null,
-        })
-    }
-}
-
-export const updateEquipment = (data,id) => async dispatch => {
+export const createRental = (data) => async dispatch => {
     try {
         console.log(data)
         const res = await axios({
-            method: 'PUT',
+            method: 'POST',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `equipment/update/${id}`,
+            url: `rental/create`,
             data: data,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -111,7 +48,7 @@ export const updateEquipment = (data,id) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: UPDATE_EQUIP,
+                type: CREATE_RENTAL,
                 data: res.data
             })
         }
@@ -129,12 +66,44 @@ export const updateEquipment = (data,id) => async dispatch => {
     }
 }
 
-export const deleteEquipment = (id) => async dispatch => {
+export const updateRental = (data,id) => async dispatch => {
+    try {
+        const res = await axios({
+            method: 'PUT',
+            baseURL: process.env.REACT_APP_URL_API,
+            url: `rental/update/${id}`,
+            data: data,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch({
+                type: UPDATE_RENTAL,
+                data: res.data
+            })
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}
+
+export const deleteRental = (id) => async dispatch => {
     try {
         const res = await axios({
             method: 'DELETE',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `equipment/delete/${id}`,
+            url: `rental/delete/${id}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -142,7 +111,7 @@ export const deleteEquipment = (id) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: DELETE_EQUIP,
+                type: DELETE_RENTAL,
                 data: res.data
             })
         }
