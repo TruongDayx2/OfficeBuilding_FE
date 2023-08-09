@@ -126,9 +126,7 @@ const Rental1 = () => {
     };
 
     const CompanyName = ({ companyId }) => {
-        console.log(companysFromReducer)
         const company = companysFromReducer.find(company => company.id === companyId);
-        console.log(company)
         if (company) {
             return (
                 <div>{company.cusName}</div>
@@ -211,8 +209,8 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Mã hợp đồng:
                                 </span>
-                                <span style={{ flex: '1', fontWeight: '500' }}>
-                                    {formData.id}
+                                <span style={{ flex: '1', fontWeight: '500',display:'flex' }}>
+                                    {formData.id}<CompanyName companyId={formData.companyId} />{formData.companyId}{formData.roomId}
                                 </span>
                             </label>
                         </div>

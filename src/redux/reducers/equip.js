@@ -38,12 +38,12 @@ const equipReducers = (state = initState, action) => {
         success: true,
         error: false
       }
-      case DELETE_EQUIP:
-        return {
-          ...state,
-          success: true,
-          error: false
-        }
+    case DELETE_EQUIP:
+      return {
+        ...state,
+        success: true,
+        error: false
+      }
     case ERROR:
       return {
         ...state,

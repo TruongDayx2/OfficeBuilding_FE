@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { getAllRooms } from "../redux/actions/rooms";
+import { getAllRooms, updateRoom } from "../redux/actions/rooms";
 import { getAllCompanys } from "../redux/actions/company";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createRental } from "../redux/actions/rental";
+import { getAllFloors } from "../redux/actions/floor";
 
 const Room1 = () => {
     const roomsFromReducer = useSelector(state => state.room.data1)
     const companysFromReducer = useSelector(state => state.company.data1)
+    const floorsFromReducer = useSelector(state => state.floors.data)
+
     const location = useLocation()
     const dispatch = useDispatch();
 
@@ -18,6 +21,7 @@ const Room1 = () => {
     useEffect(() => {
         dispatch(getAllRooms())
         dispatch(getAllCompanys())
+        dispatch(getAllFloors())
 
         return () => {
         }
@@ -66,6 +70,7 @@ const Room1 = () => {
     const [idItem, setIdItem] = useState({})
     const [isDelete, setIsDelete] = useState(false)
     const [isRental, setIsRental] = useState(false)
+    const [isDetail, setIsDetail] = useState(false)
 
     const popUpActive = (mode, item) => {
         setIsShow(true);
@@ -73,7 +78,7 @@ const Room1 = () => {
         if (mode === "edit") {
             setIsUpdate(true)
             setItem(item)
-            document.querySelector('.dialog__title').textContent = "Sửa trang thiết bị";
+            document.querySelector('.dialog__title').textContent = "Cập nhật phòng";
         }
         else if (mode === 'delete') {
             setIsDelete(true)
@@ -85,6 +90,10 @@ const Room1 = () => {
             setItem(item)
             setFormDataRental({ ...formDataRental, roomId: item.id });
             setIsRental(true)
+        } else if (mode === 'detail') {
+            document.querySelector('.dialog__title').textContent = "Chi tiết phòng";
+            setItem(item)
+            setIsDetail(true)
         }
     }
 
@@ -94,6 +103,7 @@ const Room1 = () => {
         setIsUpdate(false);
         setIsDelete(false)
         setIsRental(false)
+        setIsDetail(false)
         setItem({})
         document.querySelector('.form-post').classList.remove('active');
     }
@@ -117,7 +127,15 @@ const Room1 = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const newValue = name === 'roomStatus' || name === 'roomPrice' || name === 'floorId' ? parseInt(value) : value;
+        let newValue
+        if (name === 'roomPrice') {
+            // Validate if the input is a valid number
+            newValue = value === '' ? '' : parseInt(value) || 0;
+        } else if (name === 'roomStatus' || name === 'floorId') {
+            newValue = parseInt(value);
+        } else {
+            newValue = value;
+        }
         setFormData({ ...formData, [name]: newValue });
     };
     const handleChangeRental = (e) => {
@@ -135,8 +153,7 @@ const Room1 = () => {
             console.log(formData)
             // dispatch(createEquipment(formData))
         } else if (isUpdate) {
-            console.log(formData, idItem)
-            // dispatch(updateEquipment(formData, idItem))
+            dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
             dispatch(createRental(formDataRental))
         }
@@ -146,12 +163,22 @@ const Room1 = () => {
     };
 
     useEffect(() => {
-        if (isRental) {
+        if (isRental || isUpdate || isDetail) {
             setFormData(item)
             setIdItem(item.id)
         }
-    }, [isRental])
-
+    }, [isRental, isUpdate, isDetail])
+    const FloorName = ({ floorId }) => {
+        const floor = floorsFromReducer.find(floor => floor.id === floorId);
+        if (floor) {
+            return (
+                <div>{floor.floorName}</div>
+            );
+        }
+        else {
+            return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
+        }
+    }
     return (
         <div style={{ maxWidth: "1100px", minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -168,7 +195,7 @@ const Room1 = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="form-post__content" style={{ height: '80%', display: isDelete ? 'none' : 'block' }}>
+                    <div className="form-post__content" style={{ height: '80%', display: isRental ? 'block' : 'none' }}>
                         <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '50px', marginRight: '50px' }}>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
@@ -212,7 +239,7 @@ const Room1 = () => {
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <span style={{marginRight:'10px' }}>
+                                    <span style={{ marginRight: '10px' }}>
                                         Ngày bắt đầu thuê:
                                     </span>
                                     <DatePicker
@@ -220,13 +247,13 @@ const Room1 = () => {
                                         onChange={(date) => setFormDataRental({ ...formDataRental, reDateBegin: date.toISOString().split('T')[0] })}
                                         dateFormat="yyyy-MM-dd"
                                         minDate={new Date()}
-                                        style={{  borderRadius: '10px', padding: '5px' }}
+                                        style={{ borderRadius: '10px', padding: '5px' }}
                                     />
                                 </label>
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <span style={{marginRight:'10px' }}>
+                                    <span style={{ marginRight: '10px' }}>
                                         Ngày hết hạn thuê:
                                     </span>
                                     <DatePicker
@@ -234,10 +261,156 @@ const Room1 = () => {
                                         onChange={(date) => setFormDataRental({ ...formDataRental, reDateEnd: date.toISOString().split('T')[0] })}
                                         dateFormat="yyyy-MM-dd"
                                         minDate={new Date()}
-                                        style={{  borderRadius: '10px', padding: '5px' }}
+                                        style={{ borderRadius: '10px', padding: '5px' }}
                                     />
                                 </label>
                             </div>
+                            <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                                <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
+                                    Hủy
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div className="form-post__content" style={{ height: '80%', display: isUpdate ? 'block' : 'none' }}>
+                        <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '50px', marginRight: '50px' }}>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    Tên phòng:
+                                    <input
+                                        style={{ borderRadius: '10px', marginLeft: '10px' }}
+                                        type="text"
+                                        id='roomName'
+                                        name="roomName"
+                                        value={formData.roomName}
+                                        onChange={handleChange}
+                                        required
+                                    />
+
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px' }}>
+                                <label>
+                                    Tầng :
+                                    <select name="floorId" value={formData.floorId} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
+                                        {floorsFromReducer.map((floor) => {
+                                            return (
+                                                <option key={floor.id} value={floor.id} >
+                                                    {floor.floorName}
+                                                </option>
+                                            )
+                                        })}
+                                    </select>
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    Tiền thuê (tháng):
+                                    <span style={{ flex: '2.5', fontWeight: '500' }}>
+                                        <input
+                                            style={{ marginLeft: '10px', marginRight: '10px', borderRadius: '10px', flex: '2.5' }}
+                                            type="text"
+                                            id='roomPrice'
+                                            name="roomPrice"
+                                            value={formData.roomPrice}
+                                            onChange={handleChange}
+                                            required
+                                        />
+                                        triệu VND
+                                    </span>
+
+
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px' }}>
+                                <label>
+                                    Trạng thái:
+                                    <select name="roomStatus" value={formData.roomStatus} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
+                                        <option value={0}>Đang trống</option>
+                                        <option value={2}>Đang bảo trì</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    Mô tả:
+                                    <input
+                                        style={{ borderRadius: '10px', marginLeft: '10px', width: '400px' }}
+                                        type="text"
+                                        id='roomDesc'
+                                        name="roomDesc"
+                                        value={formData.roomDesc}
+                                        onChange={handleChange}
+                                    />
+
+                                </label>
+                            </div>
+
+                            <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                                <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
+                                    Hủy
+                                </button>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div className="form-post__content" style={{ height: '80%', display: isDetail ? 'block' : 'none' }}>
+                        <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '50px', marginRight: '50px' }}>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Tên phòng:
+                                    </span>
+                                    <span style={{ flex: '1', fontWeight: '500' }}>
+                                        {formData.roomName}
+                                    </span>
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px', width: '100%'  }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Vị trí:
+                                    </span>
+                                    <span style={{ flex: '1', fontWeight: '500' }}>
+                                        <FloorName floorId={formData.floorId} />
+                                    </span>
+
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Tiền thuê (tháng):
+                                    </span>
+                                    <span style={{ flex: '1', fontWeight: '500' }}>
+                                        {formData.roomPrice * 1000000} VND
+                                    </span>
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Trạng thái:
+                                    </span>
+                                    <span style={{ flex: '3', fontWeight: '500' }}>
+                                        {formData.roomStatus === 1 ? 'Đang sử dụng' : formData.roomStatus === 0 ? 'Đang trống' : 'Đang bảo trì'}
+                                    </span>
+                                </label>
+                            </div>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                    <span style={{ flex: '1' }}>
+                                        Mô tả:
+                                    </span>
+                                    <span style={{ flex: '3', fontWeight: '500' }}>
+                                        {formData.roomDesc}
+                                    </span>
+                                </label>
+                            </div>
+
                             <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
                                 <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
                                 <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
@@ -271,10 +444,10 @@ const Room1 = () => {
                             <tr>
                                 <th>STT</th>
                                 <th style={{ width: '105px' }}>Phòng</th>
-                                <th style={{ width: '105px' }}>Tầng</th>
+                                <th style={{ width: '90px' }}>Tầng</th>
                                 <th style={{ width: '120px' }}>Giá (VND)</th>
-                                <th style={{ width: '120px' }}>Trạng thái</th>
-                                <th style={{ width: '200px' }}>Thao tác</th>
+                                <th style={{ width: '150px' }}>Trạng thái</th>
+                                <th style={{ width: '190px' }}>Thao tác</th>
 
                             </tr>
                             {
@@ -283,7 +456,7 @@ const Room1 = () => {
                                         <td>{index + 1}</td>
                                         <td>{item?.roomName}</td>
                                         <td>
-                                            {item.floorId}
+                                            <FloorName floorId={item?.floorId} />
                                         </td>
                                         <td>
                                             {item.roomPrice * 1000000}
@@ -291,14 +464,20 @@ const Room1 = () => {
                                         <td style={item.roomStatus === 0 ? { color: 'teal' } : item.roomStatus === 1 ? { color: 'orange' } : { color: 'red' }}>
                                             {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}
                                         </td>
-                                        <td style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                            <button className="post-edit-item-btn" style={{ width: '100px' }}>
-                                                Cập nhật
+                                        <td style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                            <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid pink' }}>
+                                                Chi tiết
                                             </button>
+                                            <div style={item.roomStatus === 1 ? { display: 'none' } : { display: 'block' }}>
+                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid orange' }}>
+                                                    Cập nhật
+                                                </button>
+                                            </div>
                                             <div style={item.roomStatus === 0 ? { display: 'block' } : { display: 'none' }}>
-                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" style={{ width: '100px', backgroundColor: 'teal' }}>
+                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid teal' }}>
                                                     Thuê
                                                 </button>
+
                                             </div>
                                         </td>
                                     </tr>

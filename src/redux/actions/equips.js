@@ -98,7 +98,6 @@ export const createEquipment = (data) => async dispatch => {
 
 export const updateEquipment = (data,id) => async dispatch => {
     try {
-        console.log(data)
         const res = await axios({
             method: 'PUT',
             baseURL: process.env.REACT_APP_URL_API,

@@ -1,9 +1,9 @@
 import { ERROR } from "../constants/base";
-import { GET_ALL_ROOM, GET_ALL_ROOM_FLOOR } from "../constants/room";
+import { DELETE_ROOM, GET_ALL_ROOM, GET_ALL_ROOM_FLOOR, UPDATE_ROOM } from "../constants/room";
 
 const initState = {
   data: [],
-  data1:[],
+  data1: [],
   room: {},
   error: false,
   success: true,
@@ -20,17 +20,29 @@ const roomReducers = (state = initState, action) => {
         error: false
       }
     case GET_ALL_ROOM:
-      return{
+      return {
         ...state,
         data1: action.data,
-        success:true,
-        error:false
+        success: true,
+        error: false
+      }
+    case UPDATE_ROOM:
+      return {
+        ...state,
+        success: true,
+        error: false
+      }
+    case DELETE_ROOM:
+      return {
+        ...state,
+        success: true,
+        error: false
       }
     case ERROR:
-        return {
-            ...state,
-            error: true
-        }
+      return {
+        ...state,
+        error: true
+      }
     default:
       return state;
   }

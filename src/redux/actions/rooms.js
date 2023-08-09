@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import {  GET_ALL_ROOM, GET_ALL_ROOM_FLOOR} from "../constants/room";
+import {  GET_ALL_ROOM, GET_ALL_ROOM_FLOOR, UPDATE_ROOM} from "../constants/room";
 
 
 export const getAllRoomsByFloorID = (floorId) => async dispatch => {
@@ -64,4 +64,34 @@ export const getAllRooms = () => async dispatch => {
         })
     }
 }
-
+export const updateRoom = (data,id) => async dispatch => {
+    try {
+        const res = await axios({
+            method: 'PUT',
+            baseURL: process.env.REACT_APP_URL_API,
+            url: `room/update/${id}`,
+            data: data,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch({
+                type: UPDATE_ROOM,
+                data: res.data
+            })
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}
