@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, UPDATE_RENTAL } from "../constants/rental";
+import { CANCEL_RENTAL, CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, UPDATE_RENTAL } from "../constants/rental";
 
 export const getAllRentals = () => async dispatch => {
     try {
@@ -112,6 +112,37 @@ export const deleteRental = (id) => async dispatch => {
         if (res.status === 200) {
             dispatch({
                 type: DELETE_RENTAL,
+                data: res.data
+            })
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}
+
+export const cancelRental = (id) => async dispatch => {
+    try {
+        const res = await axios({
+            method: 'PUT',
+            baseURL: process.env.REACT_APP_URL_API,
+            url: `rental/cancel/${id}`,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch({
+                type: CANCEL_RENTAL,
                 data: res.data
             })
         }

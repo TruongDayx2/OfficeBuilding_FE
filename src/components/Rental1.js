@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
-import { getAllRentals } from "../redux/actions/rental";
+import { cancelRental, getAllRentals } from "../redux/actions/rental";
 import { getAllCompanys } from "../redux/actions/company";
 import { getAllRooms } from "../redux/actions/rooms";
 
@@ -59,7 +59,6 @@ const Rental1 = () => {
 
     useEffect(() => {
         if (isUpdate || isDelete || isDetail) {
-            console.log(item)
             setFormData(item)
             setIdItem(item.id)
         }
@@ -108,15 +107,11 @@ const Rental1 = () => {
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         console.log(formData);
         setFormData(initialFormData);
-        if (!isUpdate && !isDelete) {
-            dispatch(createEquipment(formData))
-        } else if (isUpdate) {
-            dispatch(updateEquipment(formData, idItem))
-        } else {
-            dispatch(deleteEquipment(idItem))
+        if (isDelete) {
+            dispatch(cancelRental(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
         cancelClick();
     };
     const handleChange = (e) => {
@@ -160,7 +155,7 @@ const Rental1 = () => {
             return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
         }
     }
-
+    console.log(sortedData)
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -250,71 +245,6 @@ const Rental1 = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="form-post__content" style={{ height: '80%', display: isDelete ? 'none' : isDetail ? 'none' : 'block' }}>
-                        <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '50px', marginRight: '50px' }}>
-                            <div style={{ marginTop: '20px', width: '100%' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <span style={{ flex: '1' }}>
-                                        Tên trang thiết bị:
-                                    </span>
-                                    <input
-                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
-                                        type="text"
-                                        id='equipmentName'
-                                        name="equipmentName"
-                                        value={formData.equipmentName}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </label>
-                            </div>
-                            <div style={{ marginTop: '20px' }}>
-                                <label>
-                                    Trạng thái:
-                                    <select name="equipmentStatus" value={formData.equipmentStatus} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                                        <option value={0}>Ngừng hoạt động</option>
-                                        <option value={1}>Đang hoạt động</option>
-                                        <option value={2}>Đang bảo trì</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div style={{ marginTop: '20px', width: '100%' }}>
-                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <span style={{ flex: '1' }}>
-                                        Mô tả:
-                                    </span>
-                                    <input
-                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '7' }}
-                                        type="text"
-                                        name="equipmentDesc"
-                                        value={formData.equipmentDesc}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                            </div>
-                            <div style={{ marginTop: '20px' }}>
-                                <label>
-                                    Tầng chứa trang thiết bị:
-                                    <select name="floorId" value={formData.floorId} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                                        {floorsFromReducer.map((floor) => {
-                                            return (
-                                                <option key={floor.id} value={floor.id} >
-                                                    {floor.floorName}
-                                                </option>
-                                            )
-                                        })}
-                                    </select>
-                                </label>
-                            </div>
-                            <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                                <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
-                                <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
-                                    Hủy
-                                </button>
-                            </div>
-                        </form>
-
-                    </div>
                 </div>
             </div>
 
@@ -347,6 +277,7 @@ const Rental1 = () => {
                                 <th style={{ width: '105px' }}>Mã hợp đồng</th>
                                 <th style={{ width: '200px' }}>Công ty</th>
                                 <th style={{ width: '105px' }}>Phòng</th>
+                                <th style={{ width: '105px' }}>Tình trạng</th>
                                 <th style={{ width: '200px' }}>Thao tác</th>
 
                             </tr>
@@ -361,16 +292,18 @@ const Rental1 = () => {
                                         <td>
                                             <RoomName roomId={item1?.roomId} />
                                         </td>
-                                        <td>
-                                            <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>
-                                                Cập nhật
-                                            </button>
+                                        <td style={item1?.reStatus === 0 ? { color: 'orange' } :  { color: 'teal' }}>
+                                            {item1?.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
+                                        </td>
+                                        <td style={{display:'flex'}}>
                                             <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('detail', item1)}>
                                                 Chi tiết
                                             </button>
-                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                                                Hủy
-                                            </button>
+                                            <div style={item1.reStatus === 0 ? { display: 'none' } : { display: 'block' }}>
+                                                <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
+                                                    Hủy
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

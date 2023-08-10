@@ -1,5 +1,5 @@
 import { ERROR } from "../constants/base";
-import { CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, UPDATE_RENTAL } from "../constants/rental";
+import { CANCEL_RENTAL, CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, UPDATE_RENTAL } from "../constants/rental";
 
 const initState = {
   data: [],
@@ -37,6 +37,12 @@ const rentalReducers = (state = initState, action) => {
         success: true,
         error: false
       }
+      case CANCEL_RENTAL:
+        return {
+          ...state,
+          success: true,
+          error: false
+        }
     case ERROR:
       return {
         ...state,

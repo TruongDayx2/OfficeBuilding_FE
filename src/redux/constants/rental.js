@@ -2,3 +2,4 @@ export const GET_ALL_RENTAL = 'GET_ALL_RENTAL';
 export const CREATE_RENTAL = 'CREATE_RENTAL';
 export const UPDATE_RENTAL = 'UPDATE_RENTAL';
 export const DELETE_RENTAL = 'DELETE_RENTAL';
+export const CANCEL_RENTAL = 'CANCEL_RENTAL';

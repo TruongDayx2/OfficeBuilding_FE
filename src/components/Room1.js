@@ -120,7 +120,7 @@ const Room1 = () => {
         roomId: 1,
         reDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
         reDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
-
+        reStatus:1
     }
     const [formData, setFormData] = useState(initialFormData);
     const [formDataRental, setFormDataRental] = useState(initialrentalData);
@@ -130,7 +130,7 @@ const Room1 = () => {
         let newValue
         if (name === 'roomPrice') {
             // Validate if the input is a valid number
-            newValue = value === '' ? '' : parseInt(value) || 0;
+            newValue = value === '' ? '' : parseFloat(value) || 0;
         } else if (name === 'roomStatus' || name === 'floorId') {
             newValue = parseInt(value);
         } else {
@@ -311,7 +311,7 @@ const Room1 = () => {
                                     <span style={{ flex: '2.5', fontWeight: '500' }}>
                                         <input
                                             style={{ marginLeft: '10px', marginRight: '10px', borderRadius: '10px', flex: '2.5' }}
-                                            type="text"
+                                            type="number"
                                             id='roomPrice'
                                             name="roomPrice"
                                             value={formData.roomPrice}
@@ -411,10 +411,9 @@ const Room1 = () => {
                                 </label>
                             </div>
 
-                            <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                                <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                            <div style={{ marginTop: '50px', width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                                 <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
-                                    Hủy
+                                    Đóng
                                 </button>
                             </div>
                         </form>
@@ -477,7 +476,6 @@ const Room1 = () => {
                                                 <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid teal' }}>
                                                     Thuê
                                                 </button>
-
                                             </div>
                                         </td>
                                     </tr>
