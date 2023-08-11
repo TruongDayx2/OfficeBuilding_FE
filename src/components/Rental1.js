@@ -111,7 +111,7 @@ const Rental1 = () => {
             dispatch(cancelRental(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        // window.location.reload();
+        window.location.reload();
         cancelClick();
     };
     const handleChange = (e) => {

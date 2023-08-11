@@ -1,13 +1,13 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { CANCEL_RENTAL, CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, GET_ALL_RENTAL_BY_STATUS, UPDATE_RENTAL } from "../constants/rental";
+import { CREATE_SERVICE_CONTRACT, DELETE_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT, UPDATE_SERVICE_CONTRACT } from "../constants/serviceContract";
 
-export const getAllRentals = () => async dispatch => {
+export const getAllServiceContract = () => async dispatch => {
     try {
         const res = await axios({
             method: 'GET',
             baseURL: process.env.REACT_APP_URL_USER,
-            url: `rental/getAll`,
+            url: `serviceContract/getAll`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -15,7 +15,7 @@ export const getAllRentals = () => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: GET_ALL_RENTAL,
+                type: GET_ALL_SERVICE_CONTRACT,
                 data: res.data
             })
         }
@@ -33,13 +33,13 @@ export const getAllRentals = () => async dispatch => {
     }
 }
 
-export const createRental = (data) => async dispatch => {
+
+export const createServiceContract = (data) => async dispatch => {
     try {
-        console.log(data)
         const res = await axios({
             method: 'POST',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `rental/create`,
+            url: `serviceContract/create`,
             data: data,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -48,7 +48,7 @@ export const createRental = (data) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: CREATE_RENTAL,
+                type: CREATE_SERVICE_CONTRACT,
                 data: res.data
             })
         }
@@ -66,12 +66,12 @@ export const createRental = (data) => async dispatch => {
     }
 }
 
-export const updateRental = (data,id) => async dispatch => {
+export const updateServiceContract = (data,id) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `rental/update/${id}`,
+            url: `serviceContract/update/${id}`,
             data: data,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -80,7 +80,7 @@ export const updateRental = (data,id) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: UPDATE_RENTAL,
+                type: UPDATE_SERVICE_CONTRACT,
                 data: res.data
             })
         }
@@ -98,12 +98,12 @@ export const updateRental = (data,id) => async dispatch => {
     }
 }
 
-export const deleteRental = (id) => async dispatch => {
+export const deleteServiceContract = (id) => async dispatch => {
     try {
         const res = await axios({
             method: 'DELETE',
             baseURL: process.env.REACT_APP_URL_API,
-            url: `rental/delete/${id}`,
+            url: `serviceContract/delete/${id}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
                 "Content-Type": "application/json"
@@ -111,7 +111,7 @@ export const deleteRental = (id) => async dispatch => {
         })
         if (res.status === 200) {
             dispatch({
-                type: DELETE_RENTAL,
+                type: DELETE_SERVICE_CONTRACT,
                 data: res.data
             })
         }
@@ -129,63 +129,3 @@ export const deleteRental = (id) => async dispatch => {
     }
 }
 
-export const cancelRental = (id) => async dispatch => {
-    try {
-        const res = await axios({
-            method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
-            url: `rental/cancel/${id}`,
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "application/json"
-            }
-        })
-        if (res.status === 200) {
-            dispatch({
-                type: CANCEL_RENTAL,
-                data: res.data
-            })
-        }
-        else {
-            dispatch({
-                type: ERROR,
-                data: null,
-            })
-        }
-    } catch (error) {
-        dispatch({
-            type: ERROR,
-            data: null,
-        })
-    }
-}
-export const getAllRentalsByStatus = (id) => async dispatch => {
-    try {
-        const res = await axios({
-            method: 'GET',
-            baseURL: process.env.REACT_APP_URL_USER,
-            url: `rental/findByStatus/${id}`,
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "application/json"
-            }
-        })
-        if (res.status === 200) {
-            dispatch({
-                type: GET_ALL_RENTAL_BY_STATUS,
-                data: res.data
-            })
-        }
-        else {
-            dispatch({
-                type: ERROR,
-                data: null,
-            })
-        }
-    } catch (error) {
-        dispatch({
-            type: ERROR,
-            data: null,
-        })
-    }
-}

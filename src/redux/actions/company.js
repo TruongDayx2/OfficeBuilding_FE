@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { CREATE_COMPANY, DELETE_COMPANY, GET_ALL_COMPANY, UPDATE_COMPANY } from "../constants/company";
+import { COMPANY_FILTER_RENTAL, CREATE_COMPANY, DELETE_COMPANY, GET_ALL_COMPANY, UPDATE_COMPANY } from "../constants/company";
 
 export const getAllCompanys = () => async dispatch => {
     try {
@@ -66,7 +66,7 @@ export const createCompany = (data) => async dispatch => {
     }
 }
 
-export const updateCompany = (data,id) => async dispatch => {
+export const updateCompany = (data, id) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
@@ -128,4 +128,6 @@ export const deleteCompany = (id) => async dispatch => {
         })
     }
 }
+
+
 

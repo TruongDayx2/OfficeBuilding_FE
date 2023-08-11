@@ -16,6 +16,7 @@ import Room1 from './components/Room1';
 import Equip1 from './components/Equip1';
 import Company1 from './components/Company1';
 import Rental1 from './components/Rental1';
+import Service1 from './components/Service1';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -44,6 +45,9 @@ function App() {
                     </Route>
                     <Route path="/equip1">
                         <Equip1 />
+                    </Route>
+                    <Route path="/service1">
+                        <Service1 />
                     </Route>
                     <Route path="/rental1">
                         <Rental1 />

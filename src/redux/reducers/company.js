@@ -1,9 +1,10 @@
 import { ERROR } from "../constants/base";
-import { CREATE_COMPANY, DELETE_COMPANY, GET_ALL_COMPANY, UPDATE_COMPANY } from "../constants/company";
+import { COMPANY_FILTER_RENTAL, CREATE_COMPANY, DELETE_COMPANY, GET_ALL_COMPANY, UPDATE_COMPANY } from "../constants/company";
 
 const initState = {
   data: [],
   data1: [],
+  filterRental: [],
   room: {},
   error: false,
   success: true,
@@ -19,6 +20,7 @@ const companyReducers = (state = initState, action) => {
         success: true,
         error: false
       }
+
     case CREATE_COMPANY:
       return {
         ...state,
@@ -31,12 +33,12 @@ const companyReducers = (state = initState, action) => {
         success: true,
         error: false
       }
-      case DELETE_COMPANY:
-        return {
-          ...state,
-          success: true,
-          error: false
-        }
+    case DELETE_COMPANY:
+      return {
+        ...state,
+        success: true,
+        error: false
+      }
     case ERROR:
       return {
         ...state,

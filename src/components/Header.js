@@ -111,29 +111,14 @@ const Header = () => {
                                             Trang thiết bị
                                         </Link>
                                     </li>
-                                </ul>
-                            </li>
-                            <li className="nav__item dropdown">
-                                <div id="service" style={{ cursor: 'pointer' }}
-                                    className="nav__link dropdown__link"
-                                    onClick={() => linkAction('service', false)}>
-                                    Quản lý Dịch vụ
-                                    <i className="bx bx-chevron-down dropdown__icon" />
-                                </div>
-
-                                <ul className="dropdown__menu">
                                     <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/service-registration/companies' onClick={() => linkAction('service', true)}>
-                                            Đăng ký dịch vụ
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/service-management' onClick={() => linkAction('service', true)}>
-                                            Quản lý dịch vụ
+                                        <Link className="nav__link link__item" to='/service1' onClick={() => linkAction('about', true)}>
+                                            Dịch vụ
                                         </Link>
                                     </li>
                                 </ul>
                             </li>
+                           
                             <li className="nav__item dropdown">
                                 <div id="buildingemployee" style={{ cursor: 'pointer' }}
                                     className="nav__link dropdown__link"

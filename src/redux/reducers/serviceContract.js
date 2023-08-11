@@ -1,51 +1,37 @@
 import { ERROR } from "../constants/base";
-import { CANCEL_RENTAL, CREATE_RENTAL, DELETE_RENTAL, GET_ALL_RENTAL, GET_ALL_RENTAL_BY_STATUS, UPDATE_RENTAL } from "../constants/rental";
+import { CREATE_SERVICE_CONTRACT, DELETE_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT, UPDATE_SERVICE_CONTRACT } from "../constants/serviceContract";
 
 const initState = {
   data: [],
   data1: [],
-  dataStatus:[],
   room: {},
   error: false,
   success: true,
   restArea: 0,
 }
 
-const rentalReducers = (state = initState, action) => {
+const serviceContractReducers = (state = initState, action) => {
   switch (action.type) {
-    case GET_ALL_RENTAL:
+    case GET_ALL_SERVICE_CONTRACT:
       return {
         ...state,
         data1: action.data,
         success: true,
         error: false
       }
-      case GET_ALL_RENTAL_BY_STATUS:
-        return {
-          ...state,
-          dataStatus: action.data,
-          success: true,
-          error: false
-        }
-    case CREATE_RENTAL:
+    case CREATE_SERVICE_CONTRACT:
       return {
         ...state,
         success: true,
         error: false
       }
-    case UPDATE_RENTAL:
+    case UPDATE_SERVICE_CONTRACT:
       return {
         ...state,
         success: true,
         error: false
       }
-    case DELETE_RENTAL:
-      return {
-        ...state,
-        success: true,
-        error: false
-      }
-      case CANCEL_RENTAL:
+      case DELETE_SERVICE_CONTRACT:
         return {
           ...state,
           success: true,
@@ -61,4 +47,4 @@ const rentalReducers = (state = initState, action) => {
   }
 }
 
-export default rentalReducers
+export default serviceContractReducers;
