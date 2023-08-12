@@ -2,14 +2,11 @@ import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
-import { getAllFloors } from "../redux/actions/floor";
 import { cancelRental, getAllRentals } from "../redux/actions/rental";
 import { getAllCompanys } from "../redux/actions/company";
 import { getAllRooms } from "../redux/actions/rooms";
 
 const Rental1 = () => {
-    const floorsFromReducer = useSelector(state => state.floors.data)
     const rentalsFromReducer = useSelector(state => state.rental.data1)
     const companysFromReducer = useSelector(state => state.company.data1)
     const roomsFromReducer = useSelector(state => state.room.data1)
@@ -19,7 +16,6 @@ const Rental1 = () => {
 
     useEffect(() => {
         dispatch(getAllRentals())
-        dispatch(getAllFloors())
         dispatch(getAllCompanys())
         dispatch(getAllRooms())
         return () => {
@@ -42,9 +38,7 @@ const Rental1 = () => {
         const searchTerm = e.trim().toLowerCase();
 
         const tmpRooms = companysFromReducer.filter(emp => emp.cusName.toLowerCase().includes(searchTerm));
-        // setSortedData(tmpRooms);
-        console.log(tmpRooms)
-        // setSearchCompany(tmpRooms)
+    
         const updatedResultArray = rentalsFromReducer.filter(item => tmpRooms.some(company => company.id === item.companyId));
         setSortedData(updatedResultArray);
     }
@@ -114,11 +108,7 @@ const Rental1 = () => {
         window.location.reload();
         cancelClick();
     };
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        const newValue = name === 'equipmentStatus' || name === 'floorId' ? parseInt(value) : value;
-        setFormData({ ...formData, [name]: newValue });
-    };
+
 
     const CompanyName = ({ companyId }) => {
         const company = companysFromReducer.find(company => company.id === companyId);
@@ -155,7 +145,6 @@ const Rental1 = () => {
             return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
         }
     }
-    console.log(sortedData)
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -204,7 +193,7 @@ const Rental1 = () => {
                                 <span style={{ flex: '1' }}>
                                     Mã hợp đồng:
                                 </span>
-                                <span style={{ flex: '1', fontWeight: '500',display:'flex' }}>
+                                <span style={{ flex: '1', fontWeight: '500', display: 'flex' }}>
                                     {formData.id}<CompanyName companyId={formData.companyId} />{formData.companyId}{formData.roomId}
                                 </span>
                             </label>
@@ -257,16 +246,7 @@ const Rental1 = () => {
                                 placeholder='Tìm kiếm công ty' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />
                         </form>
-                        {/* <select style={{ width: '150px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
-                            <option value={0}>Ngừng hoạt động</option>
-                            <option value={1}>Đang hoạt động</option>
-                            <option value={2}>Đang bảo trì</option>
-                        </select> */}
-                        {/* <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
-                            <button onClick={() => popUpActive()} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' }}>
-                                Thêm mới
-                            </button>
-                        </div> */}
+                       
                     </div>
                 </div>
                 <div className="admin-post__body">
@@ -285,17 +265,21 @@ const Rental1 = () => {
                                 sortedData?.map((item1, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item1?.id}</td>
+                                        <td>
+                                            <span style={{ display: 'flex' }}>
+                                                {item1?.id}<CompanyName companyId={item1?.companyId} />{item1?.companyId}{item1?.roomId}
+                                            </span>
+                                        </td>
                                         <td>
                                             <CompanyName companyId={item1?.companyId} />
                                         </td>
                                         <td>
                                             <RoomName roomId={item1?.roomId} />
                                         </td>
-                                        <td style={item1?.reStatus === 0 ? { color: 'orange' } :  { color: 'teal' }}>
+                                        <td style={item1?.reStatus === 0 ? { color: 'orange' } : { color: 'teal' }}>
                                             {item1?.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
                                         </td>
-                                        <td style={{display:'flex'}}>
+                                        <td style={{ display: 'flex' }}>
                                             <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('detail', item1)}>
                                                 Chi tiết
                                             </button>

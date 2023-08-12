@@ -156,7 +156,12 @@ const Header = () => {
                                     </li>
                                     <li className="dropdown__item">
                                         <Link className="nav__link link__item" to='/rental1' onClick={() => linkAction('customer', true)}>
-                                            Quản lý hợp đồng
+                                            Hợp đồng thuê phòng
+                                        </Link>
+                                    </li>
+                                    <li className="dropdown__item">
+                                        <Link className="nav__link link__item" to='/serviceContract1' onClick={() => linkAction('customer', true)}>
+                                            Hợp đồng dịch vụ
                                         </Link>
                                     </li>
                                 </ul>

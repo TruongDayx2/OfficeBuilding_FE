@@ -9,7 +9,7 @@ import '../css/company.css'
 import '../css/form.css'
 import '../css/dialog.css'
 import { getAllCompanys } from "../redux/actions/company";
-import { createService, getAllServices, updateService } from "../redux/actions/service";
+import { createService, deleteService, getAllServices, updateService } from "../redux/actions/service";
 import { getAllRentals, getAllRentalsByStatus } from "../redux/actions/rental";
 import { getAllRooms } from "../redux/actions/rooms";
 import { createServiceContract, getAllServiceContract } from "../redux/actions/serviceContract";
@@ -61,6 +61,7 @@ const Service1 = () => {
   const [item, setItem] = useState({})
   const [idItem, setIdItem] = useState({})
   const [isDelete, setIsDelete] = useState(false)
+  const [isCheckDelete, setIsCheckDelete] = useState(false)
   const [isRental, setIsRental] = useState(false)
 
   useEffect(() => {
@@ -72,24 +73,30 @@ const Service1 = () => {
 
   }, [isUpdate, isDelete, isRental])
 
-  const popUpActive = (mode, item) => {
+  const popUpActive = (mode, item1) => {
     setIsShow(true);
     document.querySelector('.form-post').classList.add('active');
     if (mode === "edit") {
       setIsUpdate(true)
-      setItem(item)
+      setItem(item1)
       document.querySelector('.dialog__title').textContent = "Cập nhật công ty";
     } else if (mode === 'delete') {
       setIsDelete(true)
-      setItem(item)
-      document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
+      setItem(item1)
+      if(checkDelete(item1.id)){
+        setIsCheckDelete(true)
+        document.querySelector('.dialog__title').textContent = "Dịch vụ đang được thuê không thể xóa";
+      }else{
+        setIsCheckDelete(false)
+        document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
+      }
     } else if (mode === 'create') {
       document.querySelector('.dialog__title').textContent = "Thêm dịch vụ";
     } else if (mode === 'rental') {
       document.querySelector('.dialog__title').textContent = "Hợp đồng dịch vụ";
-      setItem(item)
+      setItem(item1)
       setIsRental(true)
-      setFormDataRental({ ...formDataRental, serviceId: item.id });
+      setFormDataRental({ ...formDataRental, serviceId: item1.id });
 
     }
   }
@@ -111,6 +118,7 @@ const Service1 = () => {
     setIsUpdate(false);
     setIsDelete(false)
     setIsRental(false)
+    setIsCheckDelete(false)
     setItem({})
     document.querySelector('.form-post').classList.remove('active');
   }
@@ -125,6 +133,15 @@ const Service1 = () => {
     setFormDataRental({ ...formDataRental, [name]: newValue });
   };
 
+  function checkDelete(id){
+    console.log(serContractsFromReducer)
+    const data = serContractsFromReducer.filter(comp => comp.serviceId === id)
+    console.log(data)
+    if(data.length === 0)
+      return false
+    return true
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
@@ -135,7 +152,8 @@ const Service1 = () => {
       dispatch(updateService(formData, idItem))
     } else if (isRental) {
       dispatch(createServiceContract(formDataRental))
-
+    }else if (isDelete) {
+      dispatch(deleteService(item.id))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
     window.location.reload();
@@ -168,22 +186,19 @@ const Service1 = () => {
     if (data.length === filteredArray.length){
       return []
     }
-    console.log(data)
     let data1 = []
     if(data.length>0){
        data1 = filteredArray.filter(comp => {
         return data.some(contract => contract.companyId !== comp.companyId);
       });
     }
- 
     
-    console.log(data1)
     if (data1.length>0)
       return data1
     
     return filteredArray
   }
-
+  console.log(isCheckDelete)
   return (
     <div style={{ minHeight: "100vh" }} className="admin-post__container">
       <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -193,10 +208,15 @@ const Service1 = () => {
             Thêm công ty
           </div>
           <div style={{ display: isDelete ? 'block' : 'none' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
+            <div style={{ display: !isCheckDelete ? 'block flex':'none', justifyContent: 'center', marginTop: '25px' }}>
               <button type="button" onClick={(e) => handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
               <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                 Hủy
+              </button>
+            </div>
+            <div style={{ display: isCheckDelete ? 'block flex':'none', justifyContent: 'center', marginTop: '25px' }}>
+              <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange',marginTop:'40px' }}>
+                Đóng
               </button>
             </div>
           </div>
@@ -327,7 +347,7 @@ const Service1 = () => {
                   />
                 </label>
               </div>
-              <div style={{ marginTop: '20px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <div style={{ marginTop: '20px', width: '100%', justifyContent: 'center',display:'flex'}}>
                 <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
                 <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                   Hủy
