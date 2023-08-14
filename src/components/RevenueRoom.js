@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { Link,useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { getAllFloors } from "../redux/actions/floor";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,7 +16,6 @@ const RevenueRoom = () => {
   const companysFromReducer = useSelector(state => state.company.data1)
   const roomsFromReducer = useSelector(state => state.room.data1)
   const rentalMonthReducer = useSelector(state => state.rental.dataMonth)
-
   const location = useLocation()
   const dispatch = useDispatch();
 
@@ -25,7 +24,7 @@ const RevenueRoom = () => {
     dispatch(getAllCompanys())
     dispatch(getAllRentals())
     dispatch(getAllRooms())
-    dispatch(getAllRentalsByMonth())
+    dispatch(getAllRentalsByMonth(1, 2023))
 
     return () => {
       console.log(location.pathname);
@@ -43,33 +42,71 @@ const RevenueRoom = () => {
     setSelectedStatus(e.target.value);
   }
 
+  function getPrice(roomId) {
+    if(roomsFromReducer.length>0)
+      return (roomsFromReducer.filter(item => item.id === roomId))[0].roomPrice
+
+  }
+
+  function setData(arr) {
+    const modifiedCompanies = [];
+    for (let i = 0; i < companysFromReducer.length; i++) {
+      let check = 0
+      for (let j = 0; j < arr.length; j++) {
+        let new1 = {}
+        if (companysFromReducer[i].id === arr[j].companyId) {
+          new1.comId=companysFromReducer[i].id
+          new1.comName = companysFromReducer[i].cusName
+          new1.comTaxCode = companysFromReducer[i].cusTaxCode
+          new1.hidePrice = getPrice(arr[j].roomId)
+
+          if (check < 1) {
+            modifiedCompanies.push(new1);
+          } else {
+            modifiedCompanies[modifiedCompanies.length - 1].hidePrice += new1.hidePrice
+          }
+          check = 1
+        }
+      }
+
+    }
+    setNewData(modifiedCompanies)
+    // return modifiedCompanies
+  }
+
+  const [newData, setNewData] = useState(sortedData)
+  useEffect(() => {
+    setData(sortedData)
+    // setNewData(new2)
+  }, [sortedData])
+  console.log(newData)
+
   useEffect(() => {
     // const dataCopy = [...sortedData];
     // dataCopy.sort(sortByStatus);
     // setSortedData(dataCopy);
+
     if (selectedStatus === '0') {
+      // lọc theo tháng
       setIsMonth(false)
+      setFormDataDate(initialFormDataDate)
+      dispatch(getAllRentalsByMonth(1, 2023))
+
     } else if (selectedStatus === '1') {
+      //tùy chỉnh
       setIsMonth(true)
     }
+
   }, [selectedStatus]);
-  const sortByStatus = (a, b) => {
-    if ((a.equipmentStatus) === +selectedStatus) {
-      return -1;
-    }
-    if (b.equipmentStatus === +selectedStatus) {
-      return 1;
-    }
-    return 0;
-  };
+
 
   const searchRoom = (e) => {
     if (e.trim().length === 0) {
-      setSortedData(rentalMonthReducer)
+      setSortedData(newData)
       return;
     }
     const searchTerm = e.trim().toLowerCase();
-    const tmpRooms = rentalMonthReducer.filter(emp => emp.cusName.toLowerCase().includes(searchTerm));
+    const tmpRooms = newData.filter(emp => emp.comName.toLowerCase().includes(searchTerm));
     setSortedData(tmpRooms);
   }
 
@@ -122,12 +159,27 @@ const RevenueRoom = () => {
   }
   const initialFormDataDate = {
     reYear: new Date('2023-01-01'),
-    reMonth: '12',
   };
   const [formData, setFormData] = useState(initialFormData);
   const [formDataDate, setFormDataDate] = useState(initialFormDataDate);
+  const [reMonth, setReMonth] = useState(1);
+  const [reYear, setReYear] = useState(2023);
 
-  console.log(formDataDate)
+
+  useEffect(() => {
+    console.log(formDataDate)
+    const dateObj = new Date(formDataDate.reYear)
+    const year = dateObj.getFullYear();
+    const month = (dateObj.getMonth() + 1);
+    setReMonth(month)
+    setReYear(year)
+    setIsMonth(false)
+    dispatch(getAllRentalsByMonth(month, year))
+
+  }, [formDataDate])
+
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
@@ -148,28 +200,12 @@ const RevenueRoom = () => {
     const newValue = name === 'equipmentStatus' || name === 'floorId' ? parseInt(value) : value;
     setFormData({ ...formData, [name]: newValue });
   };
-  const CompanyName = ({ companyId }) => {
-    const company = rentalMonthReducer.find(company => company.id === companyId);
-    if (company) {
-      return (
-        <div>{company.cusName}</div>
-      );
-    }
-    else {
-      return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
-    }
+
+
+  function priceVND(amount) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }
-  const RoomName = ({ roomId }) => {
-    const room = roomsFromReducer.find(room => room.id === roomId);
-    if (room) {
-      return (
-        <div>{room.roomName}</div>
-      );
-    }
-    else {
-      return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
-    }
-  }
+
   return (
     <div style={{ minHeight: "100vh" }} className="admin-post__container">
       <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -304,16 +340,20 @@ const RevenueRoom = () => {
 
               </tr>
               {
-                sortedData?.map((item, index) => (
+                newData?.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{item?.cusName}</td>
-                    <td>{item?.cusTaxCode}</td>
-                    <td>50000000 VND </td>
+                    <td>{item?.comName}</td>
+                    <td>{item?.comTaxCode}</td>
+                    <td>{priceVND(item?.hidePrice)} </td>
                     <td>
-                      <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
-                        Chi tiết
-                      </button>
+                      <Link to={
+                        `detailRevenueRental/${item?.comId}/${reMonth}/${reYear}`
+                      }>
+                        <button className="post-edit-item-btn" style={{ width: '150px' }}>
+                          Chi tiết
+                        </button>
+                      </Link>
                       {/* <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
                         Xóa
                       </button> */}

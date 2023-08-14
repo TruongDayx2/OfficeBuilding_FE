@@ -20,6 +20,7 @@ import Service1 from './components/Service1';
 import ServiceContract1 from './components/ServiceContract';
 import RevenueRoom from './components/RevenueRoom';
 import RevenueService from './components/RevenueService';
+import DetailRevenueRoom from './components/DetailRevenueRoom';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -60,6 +61,9 @@ function App() {
                     </Route>
                     <Route path="/revenueRoom">
                         <RevenueRoom />
+                    </Route>
+                    <Route path="/detailRevenueRental">
+                        <DetailRevenueRoom/>
                     </Route>
                     <Route path="/revenueService">
                         <RevenueService />

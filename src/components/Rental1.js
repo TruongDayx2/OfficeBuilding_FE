@@ -208,7 +208,7 @@ const Rental1 = () => {
                         <div style={{ marginTop: '20px', width: '100%' }}>
                             <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                 <span style={{ flex: '1' }}>
-                                    Tiền thuê (ngày):
+                                    Tiền thuê (tháng):
                                 </span>
                                 <span style={{ flex: '1', fontWeight: '500' }}>
                                     <RentMonth roomId={formData.roomId} />
