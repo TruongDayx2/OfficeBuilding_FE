@@ -18,6 +18,7 @@ const ServiceContract1 = () => {
     dispatch(getAllServiceContract())
     dispatch(getAllCompanys())
     dispatch(getAllServices())
+    
     return () => {
       console.log(location.pathname);
     }
@@ -103,11 +104,17 @@ const ServiceContract1 = () => {
     setFormData(initialFormData);
     if (isDelete) {
       // dispatch(cancelRental(idItem))
-      console.log(item)
+      const currentDate =new Date()
+      const year = currentDate.getFullYear();
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+      const day = currentDate.getDate().toString().padStart(2, '0');
+  
+      const formattedDate = `${year}-${month}-${day}`;
+      // console.log(formattedDate)
       const newData = {
         companyId: item.companyId,
         scDateBegin: item.scDateBegin,
-        scDateEnd: item.scDateEnd,
+        scDateEnd: formattedDate,
         scStatus: 0,
         serviceId: item.serviceId
       };
@@ -115,7 +122,7 @@ const ServiceContract1 = () => {
 
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
-    // window.location.reload();
+    window.location.reload();
     cancelClick();
   };
 
@@ -148,7 +155,7 @@ const ServiceContract1 = () => {
     const sser = servicesFromReducer.find(sser => sser.id === serId);
     if (sser) {
       return (
-        <div>{sser.servicePrice * 1000000} VND</div>
+        <div>{sser.servicePrice } VND</div>
       );
     }
     else {
@@ -205,7 +212,7 @@ const ServiceContract1 = () => {
             <div style={{ marginTop: '20px', width: '100%' }}>
               <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                 <span style={{ flex: '1' }}>
-                  Tiền thuê (tháng):
+                  Tiền thuê (ngày):
                 </span>
                 <span style={{ flex: '1', fontWeight: '500' }}>
                   <RentMonth serId={formData.serviceId} />

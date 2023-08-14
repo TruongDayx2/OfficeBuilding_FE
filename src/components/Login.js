@@ -153,12 +153,12 @@ const Login = () => {
                         <button onClick={(e) => signIn(e)} className="login__button">
                             Đăng nhập
                         </button>
-                        <div>
+                        {/* <div>
                             <span className="login__account">Bạn chưa có tài khoản? </span>
                             <span className="login__signin" id="sign-up" onClick={() =>toggleLogin('signUpMode')}>
                                 Đăng kí
                             </span>
-                        </div>
+                        </div> */}
                     </form>
                     <form className="login__create none" id="login-up">
                         <h1 className="login__title">Tạo tài khoản</h1>

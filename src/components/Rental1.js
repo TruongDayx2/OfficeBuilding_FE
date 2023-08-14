@@ -38,7 +38,7 @@ const Rental1 = () => {
         const searchTerm = e.trim().toLowerCase();
 
         const tmpRooms = companysFromReducer.filter(emp => emp.cusName.toLowerCase().includes(searchTerm));
-    
+
         const updatedResultArray = rentalsFromReducer.filter(item => tmpRooms.some(company => company.id === item.companyId));
         setSortedData(updatedResultArray);
     }
@@ -102,7 +102,14 @@ const Rental1 = () => {
         console.log(formData);
         setFormData(initialFormData);
         if (isDelete) {
-            dispatch(cancelRental(idItem))
+            const currentDate = new Date()
+            const year = currentDate.getFullYear();
+            const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = currentDate.getDate().toString().padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day}`;
+
+            dispatch(cancelRental(idItem,formattedDate))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         window.location.reload();
@@ -138,7 +145,7 @@ const Rental1 = () => {
         const room = roomsFromReducer.find(room => room.id === roomId);
         if (room) {
             return (
-                <div>{room.roomPrice * 1000000} VND</div>
+                <div>{room.roomPrice} VND</div>
             );
         }
         else {
@@ -201,7 +208,7 @@ const Rental1 = () => {
                         <div style={{ marginTop: '20px', width: '100%' }}>
                             <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                 <span style={{ flex: '1' }}>
-                                    Tiền thuê (tháng):
+                                    Tiền thuê (ngày):
                                 </span>
                                 <span style={{ flex: '1', fontWeight: '500' }}>
                                     <RentMonth roomId={formData.roomId} />
@@ -246,7 +253,7 @@ const Rental1 = () => {
                                 placeholder='Tìm kiếm công ty' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />
                         </form>
-                       
+
                     </div>
                 </div>
                 <div className="admin-post__body">

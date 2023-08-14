@@ -87,85 +87,93 @@ const Header = () => {
                         </div>
                     </Link>
                     <div className="nav__menu">
-                        <ul className="nav__list" style={{display:'flex'}}>
-                            <li className="nav__item dropdown">
-                                <div id="about" style={{ cursor: 'pointer' }}
-                                    className="nav__link dropdown__link"
-                                    onClick={() => linkAction('about', false)}>
-                                    Quản lý tòa nhà
-                                    <i className="bx bx-chevron-down dropdown__icon" />
-                                </div>
-                                <ul className="dropdown__menu">
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/floor1' onClick={() => linkAction('about', true)}>
-                                            Tầng
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/room1' onClick={() => linkAction('about', true)}>
-                                            Phòng
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/equip1' onClick={() => linkAction('about', true)}>
-                                            Trang thiết bị
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/service1' onClick={() => linkAction('about', true)}>
-                                            Dịch vụ
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </li>
-                           
-                            <li className="nav__item dropdown">
-                                <div id="buildingemployee" style={{ cursor: 'pointer' }}
-                                    className="nav__link dropdown__link"
-                                    onClick={() => linkAction('buildingemployee', false)}>
-                                    Quản lý Doanh Thu
-                                    <i className="bx bx-chevron-down dropdown__icon" />
-                                </div>
+                        <ul className="nav__list" style={{ display: 'flex' }}>
+                            {token ?
+                                (
+                                    <>
+                                        <li className="nav__item dropdown">
+                                            <div id="about" style={{ cursor: 'pointer' }}
+                                                className="nav__link dropdown__link"
+                                                onClick={() => linkAction('about', false)}>
+                                                Quản lý tòa nhà
+                                                <i className="bx bx-chevron-down dropdown__icon" />
+                                            </div>
+                                            <ul className="dropdown__menu">
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/floor1' onClick={() => linkAction('about', true)}>
+                                                        Tầng
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/room1' onClick={() => linkAction('about', true)}>
+                                                        Phòng
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/equip1' onClick={() => linkAction('about', true)}>
+                                                        Trang thiết bị
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/service1' onClick={() => linkAction('about', true)}>
+                                                        Dịch vụ
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </li>
 
-                                <ul className="dropdown__menu">
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/buildingemployee' onClick={() => linkAction('buildingemployee', true)}>
-                                            Quản lý thông tin nhân viên
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/work' onClick={() => linkAction('buildingemployee', true)}>
-                                            Quản lý công việc
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li className="nav__item dropdown">
-                                <div id="customer" style={{ cursor: 'pointer' }}
-                                    className="nav__link dropdown__link"
-                                    onClick={() => linkAction('customer', false)}>
-                                    Quản lý Khách hàng
-                                    <i className="bx bx-chevron-down dropdown__icon" />
-                                </div>
+                                        <li className="nav__item dropdown">
+                                            <div id="buildingemployee" style={{ cursor: 'pointer' }}
+                                                className="nav__link dropdown__link"
+                                                onClick={() => linkAction('buildingemployee', false)}>
+                                                Quản lý Doanh Thu
+                                                <i className="bx bx-chevron-down dropdown__icon" />
+                                            </div>
 
-                                <ul className="dropdown__menu">
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/company1' onClick={() => linkAction('customer', true)}>
-                                            Quản lý công ty
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/rental1' onClick={() => linkAction('customer', true)}>
-                                            Hợp đồng thuê phòng
-                                        </Link>
-                                    </li>
-                                    <li className="dropdown__item">
-                                        <Link className="nav__link link__item" to='/serviceContract1' onClick={() => linkAction('customer', true)}>
-                                            Hợp đồng dịch vụ
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </li>
+                                            <ul className="dropdown__menu">
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/revenueRoom' onClick={() => linkAction('buildingemployee', true)}>
+                                                        Doanh thu thuê phòng
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/revenueService' onClick={() => linkAction('buildingemployee', true)}>
+                                                        Doanh thu dịch vụ
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li className="nav__item dropdown">
+                                            <div id="customer" style={{ cursor: 'pointer' }}
+                                                className="nav__link dropdown__link"
+                                                onClick={() => linkAction('customer', false)}>
+                                                Quản lý Khách hàng
+                                                <i className="bx bx-chevron-down dropdown__icon" />
+                                            </div>
+
+                                            <ul className="dropdown__menu">
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/company1' onClick={() => linkAction('customer', true)}>
+                                                        Quản lý công ty
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/rental1' onClick={() => linkAction('customer', true)}>
+                                                        Hợp đồng thuê phòng
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/serviceContract1' onClick={() => linkAction('customer', true)}>
+                                                        Hợp đồng dịch vụ
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </>
+                                ) : (<div></div>)
+
+                            }
+
                             {
                                 !token ?
                                     (
@@ -189,15 +197,14 @@ const Header = () => {
 
                                             </div>
                                             <ul className="dropdown__menu">
-                                                <li style={{ cursor: "pointer" }} className="dropdown__item" onClick={() => handleClickOrder()}>
-                                                    <div className="nav__link1" >
-                                                        Đơn hàng
-                                                    </div>
-                                                </li>
                                                 <li style={{ cursor: "pointer" }} className="dropdown__item" onClick={() => logout()}>
-                                                    <div className="nav__link1">
-                                                        Đăng xuất
-                                                    </div>
+                                                    <Link
+                                                    to={`/`}
+                                                    >
+                                                        <div className="nav__link1">
+                                                            Đăng xuất
+                                                        </div>
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </li>

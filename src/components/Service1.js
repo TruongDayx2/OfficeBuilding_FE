@@ -12,13 +12,13 @@ import { getAllCompanys } from "../redux/actions/company";
 import { createService, deleteService, getAllServices, updateService } from "../redux/actions/service";
 import { getAllRentals, getAllRentalsByStatus } from "../redux/actions/rental";
 import { getAllRooms } from "../redux/actions/rooms";
-import { createServiceContract, getAllServiceContract } from "../redux/actions/serviceContract";
+import { createServiceContract, getAllServiceContract, getAllServiceContractsByStatus } from "../redux/actions/serviceContract";
 const Service1 = () => {
   const companysRentalStatus = useSelector(state => state.rental.dataStatus)
   const servicesFromReducer = useSelector(state => state.service.data1)
   const roomsFromReducer = useSelector(state => state.room.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
-  const serContractsFromReducer = useSelector(state => state.serviceContract.data1)
+  const serContractsFromReducer = useSelector(state => state.serviceContract.dataStatus)
 
 
   const location = useLocation()
@@ -31,7 +31,7 @@ const Service1 = () => {
     dispatch(getAllFloors())
     dispatch(getAllServices())
     dispatch(getAllRentalsByStatus(1))
-    dispatch(getAllServiceContract())
+    dispatch(getAllServiceContractsByStatus(1))
 
     return () => {
       console.log(location.pathname);
@@ -181,7 +181,7 @@ const Service1 = () => {
       }
       return false;
     });
-
+    console.log(serContractsFromReducer)
     const data = serContractsFromReducer.filter(comp => comp.serviceId === item.id)
     if (data.length === filteredArray.length){
       return []
@@ -240,7 +240,7 @@ const Service1 = () => {
               </div>
               <div style={{ marginTop: '20px', width: '100%' }}>
                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  Giá tiền (tháng):
+                  Giá tiền (ngày):
                   <span style={{ flex: '2.5', fontWeight: '500' }}>
 
                     <input
@@ -252,7 +252,7 @@ const Service1 = () => {
                       onChange={handleChange}
                       required
                     />
-                    triệu VND
+                     VND
                   </span>
                 </label>
               </div>
@@ -312,10 +312,10 @@ const Service1 = () => {
               <div style={{ marginTop: '20px', width: '100%' }}>
                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   <span style={{ flex: '1' }}>
-                    Tiền thuê (tháng):
+                    Tiền thuê (ngày):
                   </span>
                   <span style={{ flex: '1', fontWeight: '500' }}>
-                    {formData.servicePrice * 1000000} VND
+                    {formData.servicePrice} VND
                   </span>
                 </label>
               </div>
@@ -381,7 +381,7 @@ const Service1 = () => {
               <tr>
                 <th>STT</th>
                 <th style={{ width: '200px' }}>Tên dịch vụ</th>
-                <th style={{ width: '120px' }}>Giá (tháng)</th>
+                <th style={{ width: '120px' }}>Giá (ngày)</th>
                 <th style={{ width: '250px' }}>Mô tả</th>
                 <th style={{ width: '250px' }}>Thao tác</th>
               </tr>
@@ -390,7 +390,7 @@ const Service1 = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item1?.serviceName}</td>
-                    <td>{item1?.servicePrice * 1000000} VND</td>
+                    <td>{item1?.servicePrice } VND</td>
                     <td>{item1?.serviceDesc} </td>
                     <td>
                       <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>
