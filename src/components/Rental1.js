@@ -68,7 +68,7 @@ const Rental1 = () => {
         } else if (mode === 'delete') {
             setIsDelete(true)
             setItem(item)
-            document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
+            document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn hoàn tất?";
         } else if (mode === 'detail') {
             setIsDetail(true)
             setItem(item)
@@ -145,13 +145,16 @@ const Rental1 = () => {
         const room = roomsFromReducer.find(room => room.id === roomId);
         if (room) {
             return (
-                <div>{room.roomPrice} VND</div>
+                <div>{priceVND(room.roomPrice)}</div>
             );
         }
         else {
             return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
         }
     }
+    function priceVND(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+      }
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -211,7 +214,8 @@ const Rental1 = () => {
                                     Tiền thuê (tháng):
                                 </span>
                                 <span style={{ flex: '1', fontWeight: '500' }}>
-                                    <RentMonth roomId={formData.roomId} />
+                                    {/* <RentMonth roomId={formData.roomId} /> */}
+                                    {priceVND(formData.rePrice)}
                                 </span>
                             </label>
                         </div>
@@ -235,7 +239,17 @@ const Rental1 = () => {
                                 </span>
                             </label>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '80px' }}>
+                        <div style={{ marginTop: '20px', width: '100%' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                <span style={{ flex: '1' }}>
+                                    Trạng thái:
+                                </span>
+                                <span style={{ flex: '1', fontWeight: '500' }}>
+                                    {item.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'} 
+                                </span>
+                            </label>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '40px' }}>
                             <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                                 Đóng
                             </button>
@@ -246,7 +260,7 @@ const Rental1 = () => {
 
             <div className="admin-post__wrapper">
                 <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ flex: '3' }}>Danh sách hợp đồng</div>
+                    <div style={{ flex: '3' }}>Danh sách hợp đồng thuê phòng</div>
                     <div style={{ flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
                             <input style={{ borderRadius: '5px', width: '250px' }}
@@ -291,8 +305,8 @@ const Rental1 = () => {
                                                 Chi tiết
                                             </button>
                                             <div style={item1.reStatus === 0 ? { display: 'none' } : { display: 'block' }}>
-                                                <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                                                    Hủy
+                                                <button className="post-delete-btn " style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
+                                                    Hoàn tất
                                                 </button>
                                             </div>
                                         </td>

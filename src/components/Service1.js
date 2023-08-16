@@ -28,7 +28,6 @@ const Service1 = () => {
   useEffect(() => {
     dispatch(getAllRooms())
     dispatch(getAllCompanys())
-    dispatch(getAllFloors())
     dispatch(getAllServices())
     dispatch(getAllRentalsByStatus(1))
     dispatch(getAllServiceContractsByStatus(1))
@@ -83,10 +82,10 @@ const Service1 = () => {
     } else if (mode === 'delete') {
       setIsDelete(true)
       setItem(item1)
-      if(checkDelete(item1.id)){
+      if (checkDelete(item1.id)) {
         setIsCheckDelete(true)
         document.querySelector('.dialog__title').textContent = "Dịch vụ đang được thuê không thể xóa";
-      }else{
+      } else {
         setIsCheckDelete(false)
         document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
       }
@@ -110,7 +109,8 @@ const Service1 = () => {
     companyId: 1,
     scDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
     scDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
-    scStatus: 1
+    scStatus: 1,
+    scPrice: 0
   }
   const cancelClick = () => {
     setFormData(initialFormData);
@@ -127,17 +127,19 @@ const Service1 = () => {
   const [formDataRental, setFormDataRental] = useState(initialrentalData);
   const handleChangeRental = (e) => {
     const { name, value } = e.target;
-    console.log(value)
-    const newValue = name === 'companyId' || name === 'serviceId' || name === 'scStatus' ? parseInt(value) : value;
+    let newValue
+    if (name === 'scPrice') {
+      newValue = value === '' ? '' : parseFloat(value) || 0;
+    }else{
+       newValue = name === 'companyId' || name === 'serviceId' || name === 'scStatus' ? parseInt(value) : value;
+    }
 
     setFormDataRental({ ...formDataRental, [name]: newValue });
   };
 
-  function checkDelete(id){
-    console.log(serContractsFromReducer)
+  function checkDelete(id) {
     const data = serContractsFromReducer.filter(comp => comp.serviceId === id)
-    console.log(data)
-    if(data.length === 0)
+    if (data.length === 0)
       return false
     return true
   }
@@ -147,12 +149,14 @@ const Service1 = () => {
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     setFormData(initialFormData);
     if (!isUpdate && !isDelete && !isRental) {
+      // console.log(formData)
       dispatch(createService(formData))
     } else if (isUpdate) {
       dispatch(updateService(formData, idItem))
     } else if (isRental) {
+      // console.log(formDataRental)
       dispatch(createServiceContract(formDataRental))
-    }else if (isDelete) {
+    } else if (isDelete) {
       dispatch(deleteService(item.id))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
@@ -173,7 +177,6 @@ const Service1 = () => {
 
   function filterDuplicates(arr) {
     const uniqueCompanies = {};
-
     const filteredArray = arr.filter((obj) => {
       if (!uniqueCompanies[obj.companyId]) {
         uniqueCompanies[obj.companyId] = true;
@@ -181,24 +184,26 @@ const Service1 = () => {
       }
       return false;
     });
-    console.log(serContractsFromReducer)
     const data = serContractsFromReducer.filter(comp => comp.serviceId === item.id)
-    if (data.length === filteredArray.length){
+    if (data.length === filteredArray.length) {
       return []
     }
     let data1 = []
-    if(data.length>0){
-       data1 = filteredArray.filter(comp => {
+    if (data.length > 0) {
+      data1 = filteredArray.filter(comp => {
         return data.some(contract => contract.companyId !== comp.companyId);
       });
     }
-    
-    if (data1.length>0)
+
+    if (data1.length > 0)
       return data1
-    
+
     return filteredArray
   }
-  console.log(isCheckDelete)
+  function priceVND(amount) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  }
+  console.log(companysRentalStatus)
   return (
     <div style={{ minHeight: "100vh" }} className="admin-post__container">
       <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -208,14 +213,14 @@ const Service1 = () => {
             Thêm công ty
           </div>
           <div style={{ display: isDelete ? 'block' : 'none' }}>
-            <div style={{ display: !isCheckDelete ? 'block flex':'none', justifyContent: 'center', marginTop: '25px' }}>
+            <div style={{ display: !isCheckDelete ? 'block flex' : 'none', justifyContent: 'center', marginTop: '25px' }}>
               <button type="button" onClick={(e) => handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
               <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                 Hủy
               </button>
             </div>
-            <div style={{ display: isCheckDelete ? 'block flex':'none', justifyContent: 'center', marginTop: '25px' }}>
-              <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange',marginTop:'40px' }}>
+            <div style={{ display: isCheckDelete ? 'block flex' : 'none', justifyContent: 'center', marginTop: '25px' }}>
+              <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange', marginTop: '40px' }}>
                 Đóng
               </button>
             </div>
@@ -240,7 +245,7 @@ const Service1 = () => {
               </div>
               <div style={{ marginTop: '20px', width: '100%' }}>
                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  Giá tiền (ngày):
+                  Giá tiền (tháng):
                   <span style={{ flex: '2.5', fontWeight: '500' }}>
 
                     <input
@@ -252,7 +257,7 @@ const Service1 = () => {
                       onChange={handleChange}
                       required
                     />
-                     VND
+                    VND
                   </span>
                 </label>
               </div>
@@ -305,17 +310,24 @@ const Service1 = () => {
                     Dịch vụ:
                   </span>
                   <span style={{ flex: '1', fontWeight: '500' }}>
-                    {formData.serviceName} 
+                    {formData.serviceName}
                   </span>
                 </label>
               </div>
               <div style={{ marginTop: '20px', width: '100%' }}>
                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <span style={{ flex: '1' }}>
-                    Tiền thuê (ngày):
-                  </span>
-                  <span style={{ flex: '1', fontWeight: '500' }}>
-                    {formData.servicePrice} VND
+                  Tiền thuê (tháng):
+                  <span style={{ flex: '2.5' }}>
+                    <input
+                      style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
+                      type="number"
+                      id='scPrice'
+                      name='scPrice'
+                      value={formDataRental.scPrice}
+                      onChange={handleChangeRental}
+                      required
+                    />
+                    VND
                   </span>
                 </label>
               </div>
@@ -347,7 +359,7 @@ const Service1 = () => {
                   />
                 </label>
               </div>
-              <div style={{ marginTop: '20px', width: '100%', justifyContent: 'center',display:'flex'}}>
+              <div style={{ marginTop: '20px', width: '100%', justifyContent: 'center', display: 'flex' }}>
                 <button type="submit" style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
                 <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                   Hủy
@@ -381,7 +393,7 @@ const Service1 = () => {
               <tr>
                 <th>STT</th>
                 <th style={{ width: '200px' }}>Tên dịch vụ</th>
-                <th style={{ width: '120px' }}>Giá (ngày)</th>
+                <th style={{ width: '120px' }}>Giá (tháng)</th>
                 <th style={{ width: '250px' }}>Mô tả</th>
                 <th style={{ width: '250px' }}>Thao tác</th>
               </tr>
@@ -390,7 +402,7 @@ const Service1 = () => {
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item1?.serviceName}</td>
-                    <td>{item1?.servicePrice } VND</td>
+                    <td>{priceVND(item1?.servicePrice)} </td>
                     <td>{item1?.serviceDesc} </td>
                     <td>
                       <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>

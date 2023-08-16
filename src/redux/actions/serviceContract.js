@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ERROR } from "../constants/base";
-import { CREATE_SERVICE_CONTRACT, DELETE_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT_BY_STATUS, UPDATE_SERVICE_CONTRACT } from "../constants/serviceContract";
+import { CREATE_SERVICE_CONTRACT, DELETE_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT_BY_MONTH, GET_ALL_SERVICE_CONTRACT_BY_STATUS, UPDATE_SERVICE_CONTRACT } from "../constants/serviceContract";
 
 export const getAllServiceContract = () => async dispatch => {
     try {
@@ -159,3 +159,36 @@ export const getAllServiceContractsByStatus = (id) => async dispatch => {
         })
     }
 }
+
+export const getAllServiceContractsByMonth = (month,year) => async dispatch => {
+    try {
+        const res = await axios({
+            method: 'GET',
+            baseURL: process.env.REACT_APP_URL_USER,
+            url: `serviceContract/hide?month=${month}&year=${year}`,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch({
+                type: GET_ALL_SERVICE_CONTRACT_BY_MONTH,
+                data: res.data
+            })
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}
+
+

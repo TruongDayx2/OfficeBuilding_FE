@@ -120,7 +120,8 @@ const Room1 = () => {
         roomId: 1,
         reDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
         reDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
-        reStatus:1
+        reStatus:1,
+        rePrice:0
     }
     const [formData, setFormData] = useState(initialFormData);
     const [formDataRental, setFormDataRental] = useState(initialrentalData);
@@ -140,7 +141,12 @@ const Room1 = () => {
     };
     const handleChangeRental = (e) => {
         const { name, value } = e.target;
-        const newValue = name === 'companyId' || name === 'roomId' ? parseInt(value) : value;
+        let newValue
+        if (name === 'rePrice') {
+            newValue = value === '' ? '' : parseFloat(value) || 0;
+        }else{
+            newValue = name === 'companyId' || name === 'roomId' ? parseInt(value) : value;
+        }
 
         setFormDataRental({ ...formDataRental, [name]: newValue });
     };
@@ -179,6 +185,9 @@ const Room1 = () => {
             return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
         }
     }
+    function priceVND(amount) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+      }
     return (
         <div style={{ maxWidth: "1100px", minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -229,11 +238,18 @@ const Room1 = () => {
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    <span style={{ flex: '1' }}>
-                                        Tiền thuê (ngày):
-                                    </span>
-                                    <span style={{ flex: '1', fontWeight: '500' }}>
-                                        {formData.roomPrice } VND
+                                        Tiền thuê (tháng):
+                                    <span style={{ flex: '2.5' }}>
+                                    <input
+                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
+                                        type="number"
+                                        id='rePrice'
+                                        name='rePrice'
+                                        value={formDataRental.rePrice}
+                                        onChange={handleChangeRental}
+                                        required
+                                    />
+                                    VND
                                     </span>
                                 </label>
                             </div>
@@ -307,7 +323,7 @@ const Room1 = () => {
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                    Tiền thuê (ngày):
+                                    Tiền thuê (tháng):
                                     <span style={{ flex: '2.5', fontWeight: '500' }}>
                                         <input
                                             style={{ marginLeft: '10px', marginRight: '10px', borderRadius: '10px', flex: '2.5' }}
@@ -383,10 +399,10 @@ const Room1 = () => {
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <span style={{ flex: '1' }}>
-                                        Tiền thuê (ngày):
+                                        Tiền thuê (tháng):
                                     </span>
                                     <span style={{ flex: '1', fontWeight: '500' }}>
-                                        {formData.roomPrice } VND
+                                        {priceVND(formData.roomPrice) }
                                     </span>
                                 </label>
                             </div>
@@ -458,7 +474,7 @@ const Room1 = () => {
                                             <FloorName floorId={item?.floorId} />
                                         </td>
                                         <td>
-                                            {item.roomPrice }
+                                            {priceVND(item.roomPrice )}
                                         </td>
                                         <td style={item.roomStatus === 0 ? { color: 'teal' } : item.roomStatus === 1 ? { color: 'orange' } : { color: 'red' }}>
                                             {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}

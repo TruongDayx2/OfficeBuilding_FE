@@ -12,7 +12,6 @@ import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../
 import { getAllRentals, getAllRentalsByMonth } from "../redux/actions/rental";
 import { getAllRooms } from "../redux/actions/rooms";
 const RevenueRoom = () => {
-  const rentalsFromReducer = useSelector(state => state.rental.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
   const roomsFromReducer = useSelector(state => state.room.data1)
   const rentalMonthReducer = useSelector(state => state.rental.dataMonth)
@@ -47,7 +46,6 @@ const RevenueRoom = () => {
       return (roomsFromReducer.filter(item => item.id === roomId))[0].roomPrice
 
   }
-
   function setData(arr) {
     const modifiedCompanies = [];
     for (let i = 0; i < companysFromReducer.length; i++) {
@@ -58,7 +56,7 @@ const RevenueRoom = () => {
           new1.comId=companysFromReducer[i].id
           new1.comName = companysFromReducer[i].cusName
           new1.comTaxCode = companysFromReducer[i].cusTaxCode
-          new1.hidePrice = getPrice(arr[j].roomId)
+          new1.hidePrice = arr[j].rePrice
 
           if (check < 1) {
             modifiedCompanies.push(new1);
@@ -301,7 +299,7 @@ const RevenueRoom = () => {
 
       <div className="admin-post__wrapper">
         <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ flex: '1.5' }}>Danh sách công ty</div>
+          <div style={{ flex: '1.5' }}>Doanh thu thuê phòng tháng {reMonth} năm {reYear}</div>
           <div style={{ flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
               <input style={{ borderRadius: '5px', width: '250px' }}

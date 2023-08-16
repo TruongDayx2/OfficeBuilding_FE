@@ -230,7 +230,7 @@ const Room = () => {
 
             <div className="admin-post__wrapper" >
                 <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ flex: '1' }}>Danh sách trang thiết bị</div>
+                    <div style={{ flex: '1' }}>Trang thiết bị tầng {floorId}</div>
                     <div style={{ flex: '1.5', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
                             <input style={{ borderRadius: '5px' }}

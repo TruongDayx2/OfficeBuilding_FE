@@ -1,10 +1,11 @@
 import { ERROR } from "../constants/base";
-import { CREATE_SERVICE_CONTRACT, DELETE_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT_BY_STATUS, UPDATE_SERVICE_CONTRACT } from "../constants/serviceContract";
+import { CREATE_SERVICE_CONTRACT, DELETE_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT, GET_ALL_SERVICE_CONTRACT_BY_MONTH, GET_ALL_SERVICE_CONTRACT_BY_STATUS, UPDATE_SERVICE_CONTRACT } from "../constants/serviceContract";
 
 const initState = {
   data: [],
   data1: [],
-  dataStatus:[],
+  dataStatus: [],
+  dataMonth: [],
   room: {},
   error: false,
   success: true,
@@ -20,13 +21,20 @@ const serviceContractReducers = (state = initState, action) => {
         success: true,
         error: false
       }
-      case GET_ALL_SERVICE_CONTRACT_BY_STATUS:
-        return {
-          ...state,
-          dataStatus: action.data,
-          success: true,
-          error: false
-        }
+    case GET_ALL_SERVICE_CONTRACT_BY_STATUS:
+      return {
+        ...state,
+        dataStatus: action.data,
+        success: true,
+        error: false
+      }
+    case GET_ALL_SERVICE_CONTRACT_BY_MONTH:
+      return {
+        ...state,
+        dataMonth: action.data,
+        success: true,
+        error: false
+      }
     case CREATE_SERVICE_CONTRACT:
       return {
         ...state,
@@ -39,12 +47,12 @@ const serviceContractReducers = (state = initState, action) => {
         success: true,
         error: false
       }
-      case DELETE_SERVICE_CONTRACT:
-        return {
-          ...state,
-          success: true,
-          error: false
-        }
+    case DELETE_SERVICE_CONTRACT:
+      return {
+        ...state,
+        success: true,
+        error: false
+      }
     case ERROR:
       return {
         ...state,

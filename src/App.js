@@ -21,6 +21,7 @@ import ServiceContract1 from './components/ServiceContract';
 import RevenueRoom from './components/RevenueRoom';
 import RevenueService from './components/RevenueService';
 import DetailRevenueRoom from './components/DetailRevenueRoom';
+import DetailRevenueService from './components/DetailRevenueService';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -62,8 +63,14 @@ function App() {
                     <Route path="/revenueRoom">
                         <RevenueRoom />
                     </Route>
+                    <Route path="/revenueService">
+                        <RevenueService />
+                    </Route>
                     <Route path="/detailRevenueRental">
                         <DetailRevenueRoom/>
+                    </Route>
+                    <Route path="/detailRevenueService">
+                        <DetailRevenueService/>
                     </Route>
                     <Route path="/revenueService">
                         <RevenueService />

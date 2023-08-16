@@ -11,10 +11,12 @@ import '../css/dialog.css'
 import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
 import { getAllRentals, getAllRentalsByMonth } from "../redux/actions/rental";
 import { getAllRooms } from "../redux/actions/rooms";
-const DetailRevenueRoom = () => {
+import { getAllServices } from "../redux/actions/service";
+import { getAllServiceContractsByMonth } from "../redux/actions/serviceContract";
+const DetailRevenueService = () => {
   const companysFromReducer = useSelector(state => state.company.data1)
-  const roomsFromReducer = useSelector(state => state.room.data1)
-  const rentalMonthReducer = useSelector(state => state.rental.dataMonth)
+  const servicesFromReducer = useSelector(state => state.service.data1)
+  const ServiceContractMonth = useSelector(state => state.serviceContract.dataMonth)
   const location = useLocation()
   const dispatch = useDispatch();
 
@@ -27,8 +29,8 @@ const DetailRevenueRoom = () => {
     const ye = location.pathname.split('/')[4];
     setReYear(ye)
     dispatch(getAllCompanys())
-    dispatch(getAllRooms())
-    dispatch(getAllRentalsByMonth(mo, ye))
+    dispatch(getAllServices())
+    dispatch(getAllServiceContractsByMonth(mo, ye))
 
     return () => {
       console.log(location.pathname);
@@ -36,10 +38,10 @@ const DetailRevenueRoom = () => {
   }, [location.pathname])
 
   useEffect(() => {
-    setSortedData(rentalMonthReducer)
-  }, [rentalMonthReducer])
+    setSortedData(ServiceContractMonth)
+  }, [ServiceContractMonth])
 
-  const [sortedData, setSortedData] = useState(rentalMonthReducer);
+  const [sortedData, setSortedData] = useState(ServiceContractMonth);
   const [comId, setComId] = useState(0);
 
 
@@ -66,7 +68,7 @@ const DetailRevenueRoom = () => {
     }
   }
   const RoomName = ({ roomId }) => {
-    const room = roomsFromReducer.find(room => room.id === roomId);
+    const room = servicesFromReducer.find(room => room.id === roomId);
     if (room) {
       return (
         <div>{room.roomName}</div>
@@ -76,11 +78,22 @@ const DetailRevenueRoom = () => {
       return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
     }
   }
-  const RentMonth = ({ roomId }) => {
-    const room = roomsFromReducer.find(room => room.id === roomId);
-    if (room) {
+  const RentMonth = ({ serId }) => {
+    const sser = servicesFromReducer.find(sser => sser.id === serId);
+    if (sser) {
       return (
-        <div>{priceVND(room.roomPrice)}</div>
+        <div>{priceVND(sser.servicePrice)}</div>
+      );
+    }
+    else {
+      return <div>Đang tải...</div>; // Bạn có thể hiển thị thông báo tải hoặc xử lý trường hợp này theo cách khác
+    }
+  }
+  const ServiceName = ({ serId }) => {
+    const sser = servicesFromReducer.find(ser => ser.id === serId);
+    if (sser) {
+      return (
+        <div>{sser.serviceName}</div>
       );
     }
     else {
@@ -92,7 +105,7 @@ const DetailRevenueRoom = () => {
 
       <div className="admin-post__wrapper">
         <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ flex: '1.5', display: 'flex' }}>Chi tiết doanh thu thuê phòng tháng {reMonth} năm {reYear} từ công ty &nbsp; <b><CompanyName companyId={+comId} /></b></div>
+          <div style={{ flex: '1.5', display: 'flex' }}>Chi tiết doanh thu phục vụ tháng {reMonth} năm {reYear} từ công ty &nbsp; <b><CompanyName companyId={+comId} /></b></div>
         </div>
         <div className="admin-post__body">
           {sortedData?.map((item1, index) => {
@@ -112,16 +125,10 @@ const DetailRevenueRoom = () => {
                   <div style={{ marginTop: '20px', width: '100%' }}>
                     <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                       <span style={{ flex: '1' }}>
-                        Tên phòng:
+                        Tên dịch vụ:
                       </span>
                       <span style={{ flex: '1', fontWeight: '500' }}>
-                        <RoomName roomId={item1.roomId} />
-                      </span>
-                      <span style={{ flex: '1' }}>
-                        Tòa nhà:
-                      </span>
-                      <span style={{ flex: '1', fontWeight: '500' }}>
-                        77Building
+                        <ServiceName serId={item1.serviceId} />
                       </span>
                     </label>
                   </div>
@@ -131,7 +138,7 @@ const DetailRevenueRoom = () => {
                         Mã hợp đồng:
                       </span>
                       <span style={{ flex: '1', fontWeight: '500', display: 'flex' }}>
-                        {item1?.id}<CompanyName companyId={item1?.companyId} />{item1?.companyId}{item1?.roomId}
+                        {item1?.id}<CompanyName companyId={item1?.companyId} />{item1?.companyId}{item1?.serviceId}
                       </span>
                     </label>
                   </div>
@@ -141,8 +148,8 @@ const DetailRevenueRoom = () => {
                         Tiền thuê (tháng):
                       </span>
                       <span style={{ flex: '1', fontWeight: '500' }}>
-                        {/* <RentMonth roomId={item1?.roomId} /> */}
-                        {priceVND(item1?.rePrice)}
+                        {/* <RentMonth serId={item1?.serviceId} /> */}
+                        {priceVND(item1?.scPrice)}
                       </span>
                     </label>
                   </div>
@@ -152,7 +159,7 @@ const DetailRevenueRoom = () => {
                         Ngày bắt đầu thuê:
                       </span>
                       <span style={{ flex: '1', fontWeight: '500' }}>
-                        {item1?.reDateBegin}
+                        {item1?.scDateBegin}
                       </span>
                     </label>
                   </div>
@@ -162,19 +169,19 @@ const DetailRevenueRoom = () => {
                         Ngày hết hạn thuê:
                       </span>
                       <span style={{ flex: '1', fontWeight: '500' }}>
-                        {item1?.reDateEnd}
+                        {item1?.scDateEnd}
                       </span>
                     </label>
-                  </div>
-                  <div style={{ marginTop: '20px', width: '100%' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                      <span style={{ flex: '1' }}>
-                        Trạng thái:
-                      </span>
-                      <span style={{ flex: '1', fontWeight: '500' }}>
-                        {item1?.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
-                      </span>
-                    </label>
+                    <div style={{ marginTop: '20px', width: '100%' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                        <span style={{ flex: '1' }}>
+                          Trạng thái:
+                        </span>
+                        <span style={{ flex: '1', fontWeight: '500' }}>
+                          {item1?.scStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
+                        </span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               );
@@ -189,4 +196,4 @@ const DetailRevenueRoom = () => {
   )
 }
 
-export default DetailRevenueRoom;
+export default DetailRevenueService;
