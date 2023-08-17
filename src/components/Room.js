@@ -126,7 +126,7 @@ const Room = () => {
         reDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
         reDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
         reStatus:1,
-        rePrice:0
+        rePrice:1
     }
     const [formData, setFormData] = useState(initialFormData);
     const [formDataRental, setFormDataRental] = useState(initialrentalData);

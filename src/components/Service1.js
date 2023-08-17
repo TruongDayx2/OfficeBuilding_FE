@@ -103,6 +103,7 @@ const Service1 = () => {
     serviceName: '',
     servicePrice: 0,
     serviceDesc: '',
+    serviceStatus:0,
   };
   const initialrentalData = {
     serviceId: 1,
@@ -130,8 +131,8 @@ const Service1 = () => {
     let newValue
     if (name === 'scPrice') {
       newValue = value === '' ? '' : parseFloat(value) || 0;
-    }else{
-       newValue = name === 'companyId' || name === 'serviceId' || name === 'scStatus' ? parseInt(value) : value;
+    } else {
+      newValue = name === 'companyId' || name === 'serviceId' || name === 'scStatus' ? parseInt(value) : value;
     }
 
     setFormDataRental({ ...formDataRental, [name]: newValue });
@@ -152,12 +153,16 @@ const Service1 = () => {
       // console.log(formData)
       dispatch(createService(formData))
     } else if (isUpdate) {
+      console.log(formData)
       dispatch(updateService(formData, idItem))
     } else if (isRental) {
       // console.log(formDataRental)
       dispatch(createServiceContract(formDataRental))
     } else if (isDelete) {
-      dispatch(deleteService(item.id))
+      // console.log(item)
+      const data = {...item,serviceStatus:1}
+      // console.log(data)
+      dispatch(updateService(data,item.id))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
     window.location.reload();
@@ -398,25 +403,30 @@ const Service1 = () => {
                 <th style={{ width: '250px' }}>Thao tác</th>
               </tr>
               {
-                sortedData?.map((item1, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{item1?.serviceName}</td>
-                    <td>{priceVND(item1?.servicePrice)} </td>
-                    <td>{item1?.serviceDesc} </td>
-                    <td>
-                      <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>
-                        Cập nhật
-                      </button>
-                      <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('rental', item1)}>
-                        Thuê
-                      </button>
-                      <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                        Xóa
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                sortedData?.map((item1, index) => {
+                  if (item1.serviceStatus === 0) {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{item1?.serviceName}</td>
+                        <td>{priceVND(item1?.servicePrice)} </td>
+                        <td>{item1?.serviceDesc} </td>
+                        <td>
+                          <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>
+                            Cập nhật
+                          </button>
+                          <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('rental', item1)}>
+                            Thuê
+                          </button>
+                          <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
+                            Xóa
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  }
+                }
+                )
               }
             </tbody>
           </table>

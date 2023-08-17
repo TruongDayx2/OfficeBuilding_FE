@@ -106,15 +106,19 @@ const RevenueService = () => {
 
   }, [selectedStatus]);
 
+  const [isSearch,setSearch] = useState(false)
+  const [searchData,setSearchData] = useState(newData)
 
   const searchRoom = (e) => {
     if (e.trim().length === 0) {
-      setSortedData(newData)
+      setSortedData(ServiceContractMonth)
+      setSearch(false)
       return;
     }
     const searchTerm = e.trim().toLowerCase();
     const tmpRooms = newData.filter(emp => emp.comName.toLowerCase().includes(searchTerm));
-    setSortedData(tmpRooms);
+    setSearch(true)
+    setSearchData(tmpRooms);
   }
 
 //   const [isShow, setIsShow] = useState(false)
@@ -258,7 +262,29 @@ const RevenueService = () => {
 
               </tr>
               {
-                newData?.map((item, index) => (
+                !isSearch && newData?.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{item?.comName}</td>
+                    <td>{item?.comTaxCode}</td>
+                    <td>{priceVND(item?.hidePrice)} </td>
+                    <td>
+                      <Link to={
+                        `detailRevenueService/${item?.comId}/${reMonth}/${reYear}`
+                      }>
+                        <button className="post-edit-item-btn" style={{ width: '150px' }}>
+                          Chi tiết
+                        </button>
+                      </Link>
+                      {/* <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
+                        Xóa
+                      </button> */}
+                    </td>
+                  </tr>
+                ))
+              }
+              {
+                isSearch && searchData?.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item?.comName}</td>

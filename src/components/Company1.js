@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
-import {  useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { getAllFloors } from "../redux/actions/floor";
 import '../css/company.css'
 import '../css/form.css'
 import '../css/dialog.css'
 import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
+import { getAllRentals } from "../redux/actions/rental";
 const Company1 = () => {
     const companysFromReducer = useSelector(state => state.company.data1)
+    const rentalsFromReducer = useSelector(state => state.rental.data1)
 
     const location = useLocation()
     const dispatch = useDispatch();
@@ -16,15 +18,16 @@ const Company1 = () => {
 
     useEffect(() => {
         dispatch(getAllCompanys())
+        dispatch(getAllRentals())
         dispatch(getAllFloors())
 
         return () => {
             console.log(location.pathname);
         }
     }, [location.pathname])
-    useEffect(()=>{
+    useEffect(() => {
         setSortedData(companysFromReducer)
-    },[companysFromReducer])
+    }, [companysFromReducer])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
     const [sortedData, setSortedData] = useState(companysFromReducer);
@@ -73,7 +76,16 @@ const Company1 = () => {
         }
 
 
-    }, [isUpdate,isDelete])
+    }, [isUpdate, isDelete])
+
+    function checkDelete(id) {
+        const data = rentalsFromReducer.filter(comp => comp.companyId === id)
+        if (data.length === 0)
+            return false
+        return true
+    }
+    const [isCheckDelete, setIsCheckDelete] = useState(false)
+    const [isRental, setIsRental] = useState(false)
 
     const popUpActive = (mode, item) => {
         setIsShow(true);
@@ -85,7 +97,13 @@ const Company1 = () => {
         } else if (mode === 'delete') {
             setIsDelete(true)
             setItem(item)
-            document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
+            if (checkDelete(item.id)) {
+                setIsCheckDelete(true)
+                document.querySelector('.dialog__title').textContent = "Công ty đang thuê không thể xóa";
+            } else {
+                setIsCheckDelete(false)
+                document.querySelector('.dialog__title').textContent = "Bạn có chắc chắn xóa?";
+            }
         }
         else {
             document.querySelector('.dialog__title').textContent = "Thêm công ty";
@@ -95,13 +113,16 @@ const Company1 = () => {
         cusName: '',
         cusEmail: '',
         cusPhone: '',
-        cusTaxCode:'',
+        cusTaxCode: '',
+        cusStatus: 0
     };
     const cancelClick = () => {
         setFormData(initialFormData);
         setIsShow(false);
         setIsUpdate(false);
         setIsDelete(false)
+        setIsRental(false)
+        setIsCheckDelete(false)
         setItem({})
         document.querySelector('.form-post').classList.remove('active');
     }
@@ -112,12 +133,13 @@ const Company1 = () => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         setFormData(initialFormData);
-        if (!isUpdate && !isDelete ) {
+        if (!isUpdate && !isDelete) {
             dispatch(createCompany(formData))
-        } else if(isUpdate){
+        } else if (isUpdate) {
             dispatch(updateCompany(formData, idItem))
-        }else{
-            dispatch(deleteCompany(idItem))
+        } else {
+            const data = { ...item, cusStatus: 1 }
+            dispatch(updateCompany(data, item.id))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         window.location.reload();
@@ -129,18 +151,23 @@ const Company1 = () => {
         setFormData({ ...formData, [name]: newValue });
     };
     return (
-        <div style={{  minHeight: "100vh" }} className="admin-post__container">
+        <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
-                <div className="form-post" style={{height:isDelete ? '200px' : ''}}>
+                <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
                     <div className="form-post__title dialog__title">
                         Thêm công ty
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
-                        <div style={{display:'flex',justifyContent:'center',marginTop:'25px'}}>
-                            <button type="button" onClick={(e)=>handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                        <div style={{ display: !isCheckDelete ? 'block flex' : 'none', justifyContent: 'center', marginTop: '25px' }}>
+                            <button type="button" onClick={(e) => handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
                             <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                                 Hủy
+                            </button>
+                        </div>
+                        <div style={{ display: isCheckDelete ? 'block flex' : 'none', justifyContent: 'center', marginTop: '25px' }}>
+                            <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange', marginTop: '40px' }}>
+                                Đóng
                             </button>
                         </div>
                     </div>
@@ -221,13 +248,13 @@ const Company1 = () => {
                     </div>
                 </div>
             </div>
-            
+
             <div className="admin-post__wrapper">
                 <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ flex: '1.5' }}>Danh sách công ty</div>
                     <div style={{ flex: '1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <form className="search-bar" style={{ height: '30px', fontSize: '15px', borderRadius: '10px' }}>
-                            <input style={{ borderRadius: '5px',width:'250px' }}
+                            <input style={{ borderRadius: '5px', width: '250px' }}
                                 placeholder='Tìm kiếm công ty' type="search" name="search" pattern=".*\S.*"
                                 required onChange={(e) => searchRoom(e.target.value)} />
                         </form>
@@ -249,31 +276,35 @@ const Company1 = () => {
                             <tr>
                                 <th>STT</th>
                                 <th style={{ width: '200px' }}>Tên</th>
-                                <th style={{ width: '220px' }}>Email</th>
+                                <th style={{ width: '240px' }}>Email</th>
                                 <th style={{ width: '180px' }}>Điện thoại</th>
-                                <th style={{ width: '180px' }}>Mã số thuế</th>
+                                <th style={{ width: '160px' }}>Mã số thuế</th>
                                 <th style={{ width: '250px' }}>Thao tác</th>
-
                             </tr>
                             {
-                                sortedData?.map((item, index) => (
-                                    <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td>{item?.cusName}</td>
-                                        <td>{item?.cusEmail} </td>
-                                        <td>{item?.cusPhone} </td>
-                                        <td>{item?.cusTaxCode} </td>
-                                        <td>
-                                            <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
-                                                <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
-                                                Cập nhật
-                                            </button>
-                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
-                                                Xóa
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
+                                sortedData?.map((item, index) => {
+                                    if (item.cusStatus === 0) {
+                                        return (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>{item?.cusName}</td>
+                                                <td>{item?.cusEmail} </td>
+                                                <td>{item?.cusPhone} </td>
+                                                <td>{item?.cusTaxCode} </td>
+                                                <td>
+                                                    <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
+                                                        <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
+                                                        Cập nhật
+                                                    </button>
+                                                    <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
+                                                        Xóa
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                                }
+                                )
                             }
                         </tbody>
                     </table>
