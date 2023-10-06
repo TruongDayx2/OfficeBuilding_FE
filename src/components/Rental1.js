@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { cancelRental, getAllRentals } from "../redux/actions/rental";
 import { getAllCompanys } from "../redux/actions/company";
 import { getAllRooms } from "../redux/actions/rooms";
+import { Icon } from '@iconify/react';
 
 const Rental1 = () => {
     const rentalsFromReducer = useSelector(state => state.rental.data1)
@@ -300,15 +301,24 @@ const Rental1 = () => {
                                         <td style={item1?.reStatus === 0 ? { color: 'orange' } : { color: 'teal' }}>
                                             {item1?.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
                                         </td>
-                                        <td style={{ display: 'flex' }}>
-                                            <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('detail', item1)}>
-                                                Chi tiết
-                                            </button>
-                                            <div style={item1.reStatus === 0 ? { display: 'none' } : { display: 'block' }}>
-                                                <button className="post-delete-btn " style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                                                    Hoàn tất
+
+                                        <td style={{ display: 'flex', justifyContent: 'center' }}>
+                                        <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+
+                                                    <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
+                                                    <span id="spann" >chi tiết</span>
                                                 </button>
                                             </div>
+
+                                        <div id="div_hover" >
+                                                <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red'}}>
+
+                                                <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                                                    <span id="spann" >Hoàn tất</span>
+                                                </button>
+                                            </div>
+                                         
                                         </td>
                                     </tr>
                                 ))

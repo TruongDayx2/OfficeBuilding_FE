@@ -8,6 +8,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { createRental } from "../redux/actions/rental";
 import { getAllFloors } from "../redux/actions/floor";
+import { Icon } from '@iconify/react';
 
 const Room1 = () => {
     const roomsFromReducer = useSelector(state => state.room.data1)
@@ -480,17 +481,25 @@ const Room1 = () => {
                                             {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}
                                         </td>
                                         <td style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid pink' }}>
-                                                Chi tiết
-                                            </button>
-                                            <div style={item.roomStatus === 1 ? { display: 'none' } : { display: 'block' }}>
-                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid orange' }}>
-                                                    Cập nhật
+                                        <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+
+                                                    <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
+                                                    <span id="spann" >chi tiết</span>
                                                 </button>
                                             </div>
-                                            <div style={item.roomStatus === 0 ? { display: 'block' } : { display: 'none' }}>
-                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid teal' }}>
-                                                    Thuê
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange'}}>
+
+                                                    <Icon icon="jam:write-f" id="icon_hover"  width="24" />
+                                                    <span id="spann" >cập nhật</span>
+                                                </button>
+                                            </div>
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal'}}>
+
+                                                    <Icon icon="tdesign:money" id="icon_hover"  width="24" />
+                                                    <span id="spann" >Thuê</span>
                                                 </button>
                                             </div>
                                         </td>

@@ -8,7 +8,7 @@ import { getAllRoomsByFloorID, updateRoom } from "../redux/actions/rooms";
 import { getAllCompanys } from "../redux/actions/company";
 import { getAllFloors } from "../redux/actions/floor";
 import { createRental } from "../redux/actions/rental";
-
+import { Icon } from '@iconify/react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
@@ -128,8 +128,8 @@ const Room = () => {
         roomId: 1,
         reDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
         reDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
-        reStatus:1,
-        rePrice:1
+        reStatus: 1,
+        rePrice: 1
     }
     const [formData, setFormData] = useState(initialFormData);
     const [formDataRental, setFormDataRental] = useState(initialrentalData);
@@ -151,7 +151,7 @@ const Room = () => {
         let newValue
         if (name === 'rePrice') {
             newValue = value === '' ? '' : parseFloat(value) || 0;
-        }else{
+        } else {
             newValue = name === 'companyId' || name === 'roomId' ? parseInt(value) : value;
         }
         setFormDataRental({ ...formDataRental, [name]: newValue });
@@ -193,7 +193,7 @@ const Room = () => {
     }
     function priceVND(amount) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-      }
+    }
     return (
         <div style={{ maxWidth: "1100px", minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -244,18 +244,18 @@ const Room = () => {
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                        Tiền thuê (tháng):
-                                        <span style={{ flex: '2.5' }}>
-                                    <input
-                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
-                                        type="number"
-                                        id='rePrice'
-                                        name='rePrice'
-                                        value={formDataRental.rePrice}
-                                        onChange={handleChangeRental}
-                                        required
-                                    />
-                                    VND
+                                    Tiền thuê (tháng):
+                                    <span style={{ flex: '2.5' }}>
+                                        <input
+                                            style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
+                                            type="number"
+                                            id='rePrice'
+                                            name='rePrice'
+                                            value={formDataRental.rePrice}
+                                            onChange={handleChangeRental}
+                                            required
+                                        />
+                                        VND
                                     </span>
                                 </label>
                             </div>
@@ -340,7 +340,7 @@ const Room = () => {
                                             onChange={handleChange}
                                             required
                                         />
-                                         VND
+                                        VND
                                     </span>
 
 
@@ -391,7 +391,7 @@ const Room = () => {
                                     </span>
                                 </label>
                             </div>
-                            <div style={{ marginTop: '20px', width: '100%'  }}>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <span style={{ flex: '1' }}>
                                         Vị trí:
@@ -485,22 +485,31 @@ const Room = () => {
                                         <td style={item.roomStatus === 0 ? { color: 'teal' } : item.roomStatus === 1 ? { color: 'orange' } : { color: 'red' }}>
                                             {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}
                                         </td>
-                                        <td style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" style={{  color: '#000',padding:"0px", width: "20px", backgroundColor: '#fff', border: '2px solid pink' }}>
-                                           <i style={{ fontSize: "26px",padding:"0px"}} className='bx bx-info-circle'></i>  
-                                             {/* chi tiết */}
-                                          </button>
-                                            
-                                            <div style={item.roomStatus === 1 ? { display: 'none' } : { display: 'block' }}>
-                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid orange' }}>
-                                                    Cập nhật
+                                        <td style={{ display: 'flex', justifyContent: 'center' }}>
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+
+                                                    <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
+                                                    <span id="spann" >chi tiết</span>
                                                 </button>
                                             </div>
-                                            <div style={item.roomStatus === 0 ? { display: 'block' } : { display: 'none' }}>
-                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid teal' }}>
-                                                    Thuê
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange'}}>
+
+                                                    <Icon icon="jam:write-f" id="icon_hover"  width="24" />
+                                                    <span id="spann" >cập nhật</span>
                                                 </button>
                                             </div>
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal'}}>
+
+                                                    <Icon icon="tdesign:money" id="icon_hover"  width="24" />
+                                                    <span id="spann" >Thuê</span>
+                                                </button>
+                                            </div>
+
+
+
                                         </td>
                                     </tr>
                                 ))
