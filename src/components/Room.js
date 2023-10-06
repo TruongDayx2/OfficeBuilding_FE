@@ -9,6 +9,9 @@ import { getAllCompanys } from "../redux/actions/company";
 import { getAllFloors } from "../redux/actions/floor";
 import { createRental } from "../redux/actions/rental";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+
 const Room = () => {
     const roomFromReducer = useSelector(state => state.room.data)
     const floorsFromReducer = useSelector(state => state.floors.data)
@@ -483,9 +486,11 @@ const Room = () => {
                                             {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}
                                         </td>
                                         <td style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid pink' }}>
-                                                Chi tiết
-                                            </button>
+                                            <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" style={{  color: '#000',padding:"0px", width: "20px", backgroundColor: '#fff', border: '2px solid pink' }}>
+                                           <i style={{ fontSize: "26px",padding:"0px"}} className='bx bx-info-circle'></i>  
+                                             {/* chi tiết */}
+                                          </button>
+                                            
                                             <div style={item.roomStatus === 1 ? { display: 'none' } : { display: 'block' }}>
                                                 <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" style={{ marginRight: '10px', width: '100px', color: '#000', backgroundColor: '#fff', border: '2px solid orange' }}>
                                                     Cập nhật
