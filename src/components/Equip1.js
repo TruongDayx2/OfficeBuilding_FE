@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
+import { Icon } from '@iconify/react';
 
 const Equip1 = () => {
     const equipsFromReducer = useSelector(state => state.equip.data1)
@@ -21,9 +22,9 @@ const Equip1 = () => {
             console.log(location.pathname);
         }
     }, [location.pathname])
-    useEffect(()=>{
+    useEffect(() => {
         setSortedData(equipsFromReducer)
-    },[equipsFromReducer])
+    }, [equipsFromReducer])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
     const [sortedData, setSortedData] = useState(equipsFromReducer);
@@ -73,7 +74,7 @@ const Equip1 = () => {
         }
 
 
-    }, [isUpdate,isDelete])
+    }, [isUpdate, isDelete])
 
     const popUpActive = (mode, item) => {
         setIsShow(true);
@@ -95,7 +96,7 @@ const Equip1 = () => {
         equipmentName: '',
         equipmentStatus: 1,
         equipmentDesc: '',
-        floorId:1,
+        floorId: 1,
     };
     const cancelClick = () => {
         setFormData(initialFormData);
@@ -113,11 +114,11 @@ const Equip1 = () => {
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         console.log(formData);
         setFormData(initialFormData);
-        if (!isUpdate && !isDelete ) {
+        if (!isUpdate && !isDelete) {
             dispatch(createEquipment(formData))
-        } else if(isUpdate){
+        } else if (isUpdate) {
             dispatch(updateEquipment(formData, idItem))
-        }else{
+        } else {
             dispatch(deleteEquipment(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
@@ -130,19 +131,21 @@ const Equip1 = () => {
         setFormData({ ...formData, [name]: newValue });
     };
     return (
-        <div style={{  minHeight: "100vh" }} className="admin-post__container">
+        <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
-                <div className="form-post" style={{height:isDelete ? '200px' : ''}}>
+                <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
                     <div className="form-post__title dialog__title">
                         Thêm trang thiết bị
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
-                        <div style={{display:'flex',justifyContent:'center',marginTop:'25px'}}>
-                            <button type="button" onClick={(e)=>handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
+                            <button type="button" onClick={(e) => handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
                             <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                                 Hủy
                             </button>
+
+
                         </div>
                     </div>
                     <div className="form-post__content" style={{ height: '80%', display: isDelete ? 'none' : 'block' }}>
@@ -206,13 +209,18 @@ const Equip1 = () => {
                                 <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                                     Hủy
                                 </button>
+
+
+
+
+
                             </div>
                         </form>
 
                     </div>
                 </div>
             </div>
-            
+
             <div className="admin-post__wrapper">
                 <div style={{ marginTop: '50px', fontSize: '30px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ flex: '1' }}>Danh sách trang thiết bị</div>
@@ -256,14 +264,25 @@ const Equip1 = () => {
                                         <td style={item.equipmentStatus === 0 ? { color: 'red' } : item.equipmentStatus === 1 ? { color: 'teal' } : { color: 'orange' }}>
                                             {item.equipmentStatus === 0 ? 'Ngừng hoạt động' : item.equipmentStatus === 1 ? 'Đang hoạt động' : 'Đang bảo trì'}
                                         </td>
-                                        <td>
-                                            <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
-                                                <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
-                                                Cập nhật
-                                            </button>
-                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
-                                                Xóa
-                                            </button>
+                                        <td style={{ display: "flex", justifyContent:"center"}}>
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid aqua' }}>
+
+                                          
+                                                    <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                                    <span id="spann" >cập nhật </span>
+                                                </button>
+                                            </div>
+
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                                                    <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                                                    <span id="spann" >Xóa </span>
+                                                </button>
+                                            </div>
+
+
                                         </td>
                                     </tr>
                                 ))

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
-import { Link,useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { getAllFloors } from "../redux/actions/floor";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,6 +11,8 @@ import '../css/dialog.css'
 import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
 import { getAllRentals, getAllRentalsByMonth } from "../redux/actions/rental";
 import { getAllRooms } from "../redux/actions/rooms";
+import { Icon } from '@iconify/react';
+
 const RevenueRoom = () => {
   const companysFromReducer = useSelector(state => state.company.data1)
   const roomsFromReducer = useSelector(state => state.room.data1)
@@ -42,7 +44,7 @@ const RevenueRoom = () => {
   }
 
   function getPrice(roomId) {
-    if(roomsFromReducer.length>0)
+    if (roomsFromReducer.length > 0)
       return (roomsFromReducer.filter(item => item.id === roomId))[0].roomPrice
 
   }
@@ -53,7 +55,7 @@ const RevenueRoom = () => {
       for (let j = 0; j < arr.length; j++) {
         let new1 = {}
         if (companysFromReducer[i].id === arr[j].companyId) {
-          new1.comId=companysFromReducer[i].id
+          new1.comId = companysFromReducer[i].id
           new1.comName = companysFromReducer[i].cusName
           new1.comTaxCode = companysFromReducer[i].cusTaxCode
           new1.hidePrice = arr[j].rePrice
@@ -96,10 +98,10 @@ const RevenueRoom = () => {
 
   }, [selectedStatus]);
 
-  const [isSearch,setSearch] = useState(false)
-  const [searchData,setSearchData] = useState(newData)
+  const [isSearch, setSearch] = useState(false)
+  const [searchData, setSearchData] = useState(newData)
 
-  
+
   const searchRoom = (e) => {
     if (e.trim().length === 0) {
       setSortedData(rentalMonthReducer)
@@ -352,9 +354,13 @@ const RevenueRoom = () => {
                       <Link to={
                         `detailRevenueRental/${item?.comId}/${reMonth}/${reYear}`
                       }>
-                        <button className="post-edit-item-btn" style={{ width: '150px' }}>
-                          Chi tiết
-                        </button>
+                            <div id="div_hover" >
+                          <button className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+
+                            <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
+                            <span id="spann" >chi tiết</span>
+                          </button>
+                        </div>
                       </Link>
                       {/* <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
                         Xóa
@@ -363,7 +369,7 @@ const RevenueRoom = () => {
                   </tr>
                 ))
               }
-               {
+              {
                 isSearch && searchData?.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
@@ -374,9 +380,18 @@ const RevenueRoom = () => {
                       <Link to={
                         `detailRevenueRental/${item?.comId}/${reMonth}/${reYear}`
                       }>
-                        <button className="post-edit-item-btn" style={{ width: '150px' }}>
-                          Chi tiết
-                        </button>
+                        
+
+
+                        <div id="div_hover" >
+                          <button className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+
+                            <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
+                            <span id="spann" >chi tiết</span>
+                          </button>
+                        </div>
+
+
                       </Link>
                       {/* <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
                         Xóa

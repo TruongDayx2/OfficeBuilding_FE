@@ -1,0 +1,82 @@
+ /* #div_hover:hover #spann {
+    display: flex !important;
+    z-index: 100 !important;
+}
+
+#div_hover {
+    display: flex !important;
+    justify-content: center !important;
+}
+#div_hover:hover #icon_hover {
+    display: none;
+}
+#div_hover:hover #btn_hover {
+    width: 100px !important;
+}
+
+#btn_hover {
+    margin-right: 10px !important;
+    color: #000 !important;
+    padding: 0px !important;
+    width: 40px !important;
+    background-color: #fff !important;
+    border: 2px solid pink !important;
+
+
+}
+
+#spann {
+    position: absolute;
+    display: none;
+}  */
+
+
+
+/* Mặc định, ẩn chữ "chi tiết" và icon có opacity 1 */
+
+#div_hover {
+    display: flex !important;
+    justify-content: center !important;
+}
+#btn_hover {
+    margin-right: 10px !important;
+    color: #000 !important;
+    padding: 0px !important;
+    width: 40px !important;
+    background-color: #fff !important;
+
+
+}
+
+
+ #icon_hover {
+    opacity: 1 !important;
+    transition: opacity 0.3s ease-in-out !important;
+  }
+  
+  #div_hover #spann {
+    margin: auto !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-in-out !important;
+  }
+  
+  #div_hover:hover #btn_hover {
+    width: 120px !important;
+}
+
+  /* Khi hover vào nút, ẩn icon và hiện chữ "chi tiết" */
+  #div_hover:hover #icon_hover {
+    display:none !important;
+  }
+  
+  #div_hover:hover #spann {
+    opacity: 1 !important;
+  }
+  
+  /* Khi hover vào nút, tăng kích thước của nút và thêm hiệu ứng transition cho mượt mà */
+  #div_hover #btn_hover {
+    transition: width 0.3s ease-in-out, padding 0.3s ease-in-out !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  

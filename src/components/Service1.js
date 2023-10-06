@@ -13,6 +13,9 @@ import { createService, deleteService, getAllServices, updateService } from "../
 import { getAllRentals, getAllRentalsByStatus } from "../redux/actions/rental";
 import { getAllRooms } from "../redux/actions/rooms";
 import { createServiceContract, getAllServiceContract, getAllServiceContractsByStatus } from "../redux/actions/serviceContract";
+
+import { Icon } from '@iconify/react';
+
 const Service1 = () => {
   const companysRentalStatus = useSelector(state => state.rental.dataStatus)
   const servicesFromReducer = useSelector(state => state.service.data1)
@@ -411,16 +414,34 @@ const Service1 = () => {
                         <td>{item1?.serviceName}</td>
                         <td>{priceVND(item1?.servicePrice)} </td>
                         <td>{item1?.serviceDesc} </td>
-                        <td>
-                          <button className="post-edit-item-btn" style={{ width: '100px' }} onClick={() => popUpActive('edit', item1)}>
-                            Cập nhật
-                          </button>
-                          <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('rental', item1)}>
-                            Thuê
-                          </button>
-                          <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                            Xóa
-                          </button>
+                        <td style={{ display: "flex", justifyContent:"center"}}>
+
+
+                          <div id="div_hover" >
+                                <button  onClick={() => popUpActive('edit', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+
+                                <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                    <span id="spann" >Cập nhật </span>
+                                </button>
+                            </div>
+
+                            <div id="div_hover" >
+                                <button  onClick={() => popUpActive('rental', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
+
+                                <Icon icon="tdesign:money" id="icon_hover"  width="24" />
+                                    <span id="spann" >Thuê </span>
+                                </button>
+                            </div>
+
+                            <div id="div_hover" >
+                                <button  onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                                    <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                                    <span id="spann" >Xóa </span>
+                                </button>
+                            </div>
+
+
                         </td>
                       </tr>
                     )

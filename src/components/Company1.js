@@ -8,6 +8,8 @@ import '../css/form.css'
 import '../css/dialog.css'
 import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
 import { getAllRentals } from "../redux/actions/rental";
+import { Icon } from '@iconify/react';
+
 const Company1 = () => {
     const companysFromReducer = useSelector(state => state.company.data1)
     const rentalsFromReducer = useSelector(state => state.rental.data1)
@@ -291,14 +293,21 @@ const Company1 = () => {
                                                 <td>{item?.cusEmail} </td>
                                                 <td>{item?.cusPhone} </td>
                                                 <td>{item?.cusTaxCode} </td>
-                                                <td>
-                                                    <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
-                                                        <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
-                                                        Cập nhật
-                                                    </button>
-                                                    <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
-                                                        Xóa
-                                                    </button>
+                                                <td style={{ display: "flex", justifyContent: "center" }}>
+                                                    <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+
+                                                            <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                                            <span id="spann" >Cập nhật </span>
+                                                        </button>
+                                                    </div>
+                                                    <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                                                            <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                                                            <span id="spann" >Xóa </span>
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         )

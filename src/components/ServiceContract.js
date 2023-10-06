@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { getAllCompanys } from "../redux/actions/company";
 import { getAllServiceContract, updateServiceContract } from "../redux/actions/serviceContract";
 import { getAllServices } from "../redux/actions/service";
+import { Icon } from '@iconify/react';
 
 const ServiceContract1 = () => {
   const rentalsFromReducer = useSelector(state => state.serviceContract.data1)
@@ -18,7 +19,7 @@ const ServiceContract1 = () => {
     dispatch(getAllServiceContract())
     dispatch(getAllCompanys())
     dispatch(getAllServices())
-    
+
     return () => {
       console.log(location.pathname);
     }
@@ -104,11 +105,11 @@ const ServiceContract1 = () => {
     setFormData(initialFormData);
     if (isDelete) {
       // dispatch(cancelRental(idItem))
-      const currentDate =new Date()
+      const currentDate = new Date()
       const year = currentDate.getFullYear();
       const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
       const day = currentDate.getDate().toString().padStart(2, '0');
-  
+
       const formattedDate = `${year}-${month}-${day}`;
       // console.log(formattedDate)
       const newData = {
@@ -118,7 +119,7 @@ const ServiceContract1 = () => {
         scStatus: 0,
         serviceId: item.serviceId
       };
-      dispatch(updateServiceContract(newData,item.id))
+      dispatch(updateServiceContract(newData, item.id))
 
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
@@ -249,10 +250,10 @@ const ServiceContract1 = () => {
                   Trạng thái:
                 </span>
                 <span style={{ flex: '1', fontWeight: '500' }}>
-                {item.scStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
+                  {item.scStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
                 </span>
               </label>
-            </div>  
+            </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '40px' }}>
               <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                 Đóng
@@ -302,17 +303,22 @@ const ServiceContract1 = () => {
                     <td style={item1?.scStatus === 0 ? { color: 'orange' } : { color: 'teal' }}>
                       {item1?.scStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
                     </td>
-                    <td >
-                      <span style={{ display: 'flex', alignItems: 'center' }}>
-                        <button className="post-edit-item-btn" style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('detail', item1)}>
-                          Chi tiết
+                    <td style={{ display: 'flex', justifyContent: 'center' }}>
+                      <div id="div_hover" >
+                        <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+
+                          <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
+                          <span id="spann" >chi tiết</span>
                         </button>
-                        <div style={item1.scStatus === 0 ? { display: 'none' } : { display: 'block' }}>
-                          <button className="post-delete-btn " style={{ width: '100px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item1)}>
-                            Hoàn tất
-                          </button>
-                        </div>
-                      </span>
+                      </div>
+
+                      <div id="div_hover" >
+                        <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                          <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                          <span id="spann" >Hoàn tất</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))

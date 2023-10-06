@@ -91,6 +91,8 @@ a {
 
 #nav-menu {
   background-color: teal;
+  display: flex;
+  justify-content: center;
 }
 /*=== Dropdown ===*/
 .dropdown__link {
