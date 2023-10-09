@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllFloors } from "../redux/actions/floor";
 import { getAllRooms, updateRoom } from "../redux/actions/rooms";
 import { getAllCompanys } from "../redux/actions/company";
+import DatePicker from "react-datepicker";
+import { combineReducers } from 'redux';
+import { createRental } from '../redux/actions/rental';
 
 function CheckRoom() {
     const [isRoomChecked, setIsRoomChecked] = useState(false);
@@ -37,16 +40,14 @@ function CheckRoom() {
 
 
 
-    const handleThueClick = () => {
-        // Xử lý khi nhấn nút "Thuê"
-        // Chuyển sang popup mới nếu cần
-    };
-
-    const handleCapNhatClick = () => {
-        // Xử lý khi nhấn nút "Cập nhật"
-        // Chuyển sang popup mới nếu cần
-    };
-
+    const [addRoom, setAddRoom] = useState({
+        companyId: 1,
+        roomId: 1,
+        reDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
+        reDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
+        reStatus: 1,
+        rePrice: 0
+    });
 
 
 
@@ -64,6 +65,34 @@ function CheckRoom() {
         setIsPopupVisible(false);
         setTmpval("")
     };
+    const handleChangeInputAdd = (e) => {
+
+        const { name, value } = e.target
+        console.log(name, value);
+        setAddRoom({ ...addRoom, [name]: value })
+    }
+    const handelAddClick = async () => {
+
+        // setAddRoom({ ...addRoom, roomId: roomPopup.id })
+        // setAddRoom({ ...addRoom, reStatus: roomPopup.roomStatus })
+        setAddRoom({
+            ...addRoom,
+            roomId: roomPopup.id,
+            reStatus: roomPopup.roomStatus
+          });
+          
+        console.log("popup", roomPopup);
+        console.log(addRoom);
+        console.log("umf", roomPopup.id);
+        console.log("stt", roomPopup.roomStatus);
+
+        // Đợi cho việc cập nhật phòng hoàn thành
+        await dispatch(createRental(addRoom));
+        await dispatch(getAllRooms());
+
+        closePopup();
+    }
+
     const handleChangeInput = (e) => {
 
         const { name, value } = e.target
@@ -72,16 +101,16 @@ function CheckRoom() {
     }
     const handelUpdateClick = async () => {
         console.log(roomPopup);
-        
+
         // Đợi cho việc cập nhật phòng hoàn thành
         await dispatch(updateRoom(roomPopup, roomPopup.id));
-        
+
         // Sau khi đã cập nhật, lấy lại danh sách phòng và hiển thị trên màn hình
         await dispatch(getAllRooms());
-        
+
         closePopup();
     }
-    
+
 
     return (
         <div style={{ marginTop: "100px" }}>
@@ -188,10 +217,12 @@ function CheckRoom() {
                                                     borderRadius: "5px",
                                                     cursor: "pointer",
                                                 }}
+                                                onClick={() => openPopup(roomPopup, "thue")}
                                             >
                                                 Thuê
                                             </button>) : null
                                     }
+
 
                                     <button
                                         style={{
@@ -400,6 +431,168 @@ function CheckRoom() {
                                             onClick={handelUpdateClick}
                                         >
                                             Cập nhật
+                                        </button>
+                                        <button
+                                            style={{
+                                                backgroundColor: "#e74c3c",
+                                                color: "#fff",
+                                                border: "none",
+                                                padding: "10px 20px",
+                                                borderRadius: "5px",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={closePopup}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : tmpval === "thue" ? (
+                            <div
+
+                                style={{
+                                    top: 0,
+                                    position: "fixed",
+                                    display: isPopupVisible ? "flex" : "none",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    zIndex: 3,
+                                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                                    height: "100vh",
+                                    width: "100vw",
+
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        backgroundColor: "#ffffff",
+                                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                        padding: "20px",
+                                        borderRadius: "10px",
+                                        width: "600px",
+                                        height: "400px",
+                                        margin: "0 auto",
+                                        textAlign: "left",
+                                    }}
+                                >
+                                    <h2 style={{ width: "100%", textAlign: "center", alignItems: "center" }}>Tạo Hợp đồng thuê Phòng</h2>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                            }}>
+                                            <div>
+                                                <span  >ID:  </span>
+                                                <span>{roomPopup.id}</span>
+                                            </div>
+                                            <div>
+                                                <span  >Tên phòng:  </span>
+                                                <span>{roomPopup.roomName}</span>
+                                            </div>
+                                            <div>
+                                                <span  >Tầng:  </span>
+                                                <span>
+                                                    {floorsFromReducer.find((floor) => floor.id === roomPopup.floorId)?.floorName}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div style={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                        }}>
+                                            <div>
+                                                <span  >Giá Tiền:  </span>
+                                                <span >
+                                                    <input
+                                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
+                                                        type="text"
+                                                        id='rePrice'
+                                                        name='rePrice'
+                                                        placeholder={roomPopup.roomPrice}
+                                                        onChange={handleChangeInputAdd}
+                                                        required
+                                                    />
+                                                    VND
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span  >Công ty:  </span>
+                                                <span>
+                                                    <select name="companyId" value={companysFromReducer.id} onChange={handleChangeInputAdd} style={{ marginLeft: '10px', borderRadius: '10px' }}>
+                                                        {companysFromReducer.map((company) => {
+                                                            return (
+                                                                <option key={company.id} value={company.id} >
+                                                                    {company.cusName}
+                                                                </option>
+                                                            )
+                                                        })}
+                                                    </select>
+
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-start;",
+                                            }}>
+                                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                                    <span style={{ marginRight: '10px' }}>
+                                                        Ngày bắt đầu thuê:
+                                                    </span>
+                                                    <DatePicker
+                                                        selected={new Date(addRoom.reDateBegin)}
+                                                        onChange={(date) => setAddRoom({ ...addRoom, reDateBegin: date.toISOString().split('T')[0] })}
+                                                        dateFormat="yyyy-MM-dd"
+                                                        minDate={new Date()}
+                                                        style={{ borderRadius: '10px', padding: '5px' }}
+                                                    />
+                                                </label>
+                                            </div>
+                                            <div style={{ marginTop: '20px', width: '100%' }}>
+                                                <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                                                    <span style={{ marginRight: '10px' }}>
+                                                        Ngày hết hạn thuê:
+                                                    </span>
+                                                    <DatePicker
+                                                        selected={new Date(addRoom.reDateEnd)}
+                                                        onChange={(date) => setAddRoom({ ...addRoom, reDateEnd: date.toISOString().split('T')[0] })}
+                                                        dateFormat="yyyy-MM-dd"
+                                                        minDate={new Date()}
+                                                        style={{ borderRadius: '10px', padding: '5px' }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "space-evenly",
+                                            marginTop: "20px",
+                                        }}
+                                    >
+                                        <button
+                                            style={{
+                                                backgroundColor: "#3498db",
+                                                color: "#fff",
+                                                border: "none",
+                                                padding: "10px 20px",
+                                                borderRadius: "5px",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={handelAddClick}
+                                        >
+                                            Thuê
                                         </button>
                                         <button
                                             style={{

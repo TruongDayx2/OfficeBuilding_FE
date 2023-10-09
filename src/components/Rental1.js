@@ -56,6 +56,8 @@ const Rental1 = () => {
         if (isUpdate || isDelete || isDetail) {
             setFormData(item)
             setIdItem(item.id)
+            console.log("item",item);
+            console.log("idItem",item.id);
         }
     }, [isUpdate, isDelete, isDetail])
 
@@ -113,7 +115,7 @@ const Rental1 = () => {
             dispatch(cancelRental(idItem,formattedDate))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
         cancelClick();
     };
 
@@ -304,7 +306,7 @@ const Rental1 = () => {
 
                                         <td style={{ display: 'flex', justifyContent: 'center' }}>
                                         <div id="div_hover" >
-                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+                                                <button onClick={() => popUpActive('detail', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
 
                                                     <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
                                                     <span id="spann" >chi tiết</span>
@@ -312,7 +314,7 @@ const Rental1 = () => {
                                             </div>
 
                                         <div id="div_hover" >
-                                                <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red'}}>
+                                                <button onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red'}}>
 
                                                 <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
                                                     <span id="spann" >Hoàn tất</span>
