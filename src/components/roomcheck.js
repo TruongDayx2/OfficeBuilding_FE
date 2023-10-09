@@ -75,12 +75,7 @@ function CheckRoom() {
 
         // setAddRoom({ ...addRoom, roomId: roomPopup.id })
         // setAddRoom({ ...addRoom, reStatus: roomPopup.roomStatus })
-        setAddRoom({
-            ...addRoom,
-            roomId: roomPopup.id,
-            reStatus: roomPopup.roomStatus
-          });
-          
+        setAddRoom({...addRoom,roomId: roomPopup.id,});
         console.log("popup", roomPopup);
         console.log(addRoom);
         console.log("umf", roomPopup.id);

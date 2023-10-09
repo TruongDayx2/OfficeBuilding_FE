@@ -15,6 +15,14 @@ const Rental1 = () => {
     const location = useLocation()
     const dispatch = useDispatch();
 
+    const [isShow, setIsShow] = useState(false)
+    const [isUpdate, setIsUpdate] = useState(false)
+    const [item, setItem] = useState({})
+    const [idItem, setIdItem] = useState({})
+    const [isDelete, setIsDelete] = useState(false)
+    const [isDetail, setIsDetail] = useState(false)
+
+
     useEffect(() => {
         dispatch(getAllRentals())
         dispatch(getAllCompanys())
@@ -22,7 +30,7 @@ const Rental1 = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname])
+    }, [location.pathname, isDelete])
 
     const [sortedData, setSortedData] = useState(rentalsFromReducer);
 
@@ -45,19 +53,14 @@ const Rental1 = () => {
     }
 
 
-    const [isShow, setIsShow] = useState(false)
-    const [isUpdate, setIsUpdate] = useState(false)
-    const [item, setItem] = useState({})
-    const [idItem, setIdItem] = useState({})
-    const [isDelete, setIsDelete] = useState(false)
-    const [isDetail, setIsDetail] = useState(false)
+
 
     useEffect(() => {
         if (isUpdate || isDelete || isDetail) {
             setFormData(item)
             setIdItem(item.id)
-            console.log("item",item);
-            console.log("idItem",item.id);
+            console.log("item", item);
+            console.log("idItem", item.id);
         }
     }, [isUpdate, isDelete, isDetail])
 
@@ -99,7 +102,7 @@ const Rental1 = () => {
 
     const [formData, setFormData] = useState(initialFormData);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         console.log(formData);
@@ -112,7 +115,8 @@ const Rental1 = () => {
 
             const formattedDate = `${year}-${month}-${day}`;
 
-            dispatch(cancelRental(idItem,formattedDate))
+            await dispatch(cancelRental(idItem, formattedDate))
+
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();
@@ -157,7 +161,7 @@ const Rental1 = () => {
     }
     function priceVND(amount) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-      }
+    }
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -248,7 +252,7 @@ const Rental1 = () => {
                                     Trạng thái:
                                 </span>
                                 <span style={{ flex: '1', fontWeight: '500' }}>
-                                    {item.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'} 
+                                    {item.reStatus === 0 ? 'Hết hạn' : 'Còn hạn'}
                                 </span>
                             </label>
                         </div>
@@ -305,22 +309,27 @@ const Rental1 = () => {
                                         </td>
 
                                         <td style={{ display: 'flex', justifyContent: 'center' }}>
-                                        <div id="div_hover" >
-                                                <button onClick={() => popUpActive('detail', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
 
                                                     <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
                                                     <span id="spann" >chi tiết</span>
                                                 </button>
                                             </div>
 
-                                        <div id="div_hover" >
-                                                <button onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red'}}>
+                                            {
+                                                item1.reStatus === 1? (
 
-                                                <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
-                                                    <span id="spann" >Hoàn tất</span>
-                                                </button>
-                                            </div>
-                                         
+                                                    <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                                                            <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                                                            <span id="spann" >Hoàn tất</span>
+                                                        </button>
+                                                    </div>
+                                                ) : null
+                                            }
+
                                         </td>
                                     </tr>
                                 ))
