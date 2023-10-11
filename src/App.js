@@ -23,6 +23,7 @@ import RevenueService from './components/RevenueService';
 import DetailRevenueRoom from './components/DetailRevenueRoom';
 import DetailRevenueService from './components/DetailRevenueService';
 import CheckRoom from './components/roomcheck';
+import Footer from './components/footer';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -77,13 +78,13 @@ function App() {
                         <RevenueService />
                     </Route>
                     <Route path="/nolan">
-                        <CheckRoom />
+                        <CheckRoom /> 
                     </Route>
                     <Route path="/">
                         <Home1 />
-                    </Route>
-                    
+                    </Route> 
                 </Switch>
+                <Footer />
             </Router>
         </div>
     );

@@ -119,6 +119,7 @@ const Header = () => {
                                                         Dịch vụ
                                                     </Link>
                                                 </li>
+                                             
                                             </ul>
                                         </li>
 
@@ -176,15 +177,18 @@ const Header = () => {
 
                             {
                                 !token ?
-                                    (
-                                        <li className="nav__item">
+                                    ( location.pathname != '/login' ?(
+                                       
+                                         <li className="nav__item">
                                             <Link id='contact'
                                                 className="login-btn"
                                                 to={`/login`}
                                                 onClick={() => linkAction('contact', true)}>
                                                 <div style={{ textAlign: 'center', color: '#fff' }} >ĐĂNG NHẬP</div>
                                             </Link>
-                                        </li>
+                                        </li>       
+
+                                    ):null
                                     ) :
                                     (
                                         <li className="nav__item dropdown" >
