@@ -16,6 +16,7 @@ const Login = () => {
     const [visible, setVisible] = useState(false);
     const dispatch = useDispatch();
     const dataLogin = useSelector(state => state.login.data);
+    console.log("datalogin",dataLogin);
     const error = useSelector(state => state.login.error);
     console.log(error)
     useEffect(() => {
@@ -103,7 +104,7 @@ const Login = () => {
         }
         setLoginOrSignUp(true);
         dispatch(login(data));
-        
+        console.log( "okko",username, password);
     }
 
 

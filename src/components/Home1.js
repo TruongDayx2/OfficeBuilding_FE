@@ -14,7 +14,7 @@ const Home1 = () => {
   const location = useLocation();
   const history = useHistory();
   const userId = useSelector(state=> state.login)
-  console.log('userId',userId)
+
   useEffect(() => {
     return () => {
       console.log(location.pathname);

@@ -17,7 +17,8 @@ const Room1 = () => {
 
     const location = useLocation()
     const dispatch = useDispatch();
-
+    const dataLogin = useSelector(state => state.login.data);
+    console.log("dataa",dataLogin);
 
     useEffect(() => {
         dispatch(getAllRooms())
