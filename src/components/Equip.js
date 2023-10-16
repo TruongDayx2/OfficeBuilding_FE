@@ -13,16 +13,20 @@ const Room = () => {
     const dispatch = useDispatch();
     const [isReload, setIsReload] = useState(false)
     useEffect(() => {
+        setIsReload(!isReload)
+    }, [])
+    useEffect(async() => {
 
         const id = location.pathname.split('/')[2];
         console.log(id)
         setFloorId(Number(id))
-        dispatch(getAllEquipsByFloorID(Number(id)))
-        dispatch(getAllFloors())
-        return () => {
-            console.log(location.pathname);
-        }
-    }, [location.pathname,isReload])
+        await dispatch(getAllEquipsByFloorID(Number(id)))
+        await dispatch(getAllFloors())
+        console.log("eee");
+        // return () => {
+        //     console.log(location.pathname);
+        // }
+    }, [isReload])
 
     useEffect(() => {
         setSortedData(equipFromReducer);
@@ -122,18 +126,19 @@ const Room = () => {
         const newValue = name === 'equipmentStatus' ? parseInt(value) : value;
         setFormData({ ...formData, [name]: newValue });
     };
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         console.log(formData);
         setFormData(initialFormData);
         if (!isUpdate && !isDelete ) {
-            dispatch(createEquipment(formData))
+            await dispatch(createEquipment(formData))
         } else if(isUpdate){
-            dispatch(updateEquipment(formData, idItem))
+            await dispatch(updateEquipment(formData, idItem))
+            console.log("updattt");
         }else{
             console.log('first')
-            dispatch(deleteEquipment(idItem))
+            await dispatch(deleteEquipment(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();

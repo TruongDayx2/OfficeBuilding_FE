@@ -149,24 +149,24 @@ const Service1 = () => {
     return true
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     setFormData(initialFormData);
     if (!isUpdate && !isDelete && !isRental) {
       // console.log(formData)
-      dispatch(createService(formData))
+      await dispatch(createService(formData))
     } else if (isUpdate) {
       console.log(formData)
-      dispatch(updateService(formData, idItem))
+      await dispatch(updateService(formData, idItem))
     } else if (isRental) {
       // console.log(formDataRental)
-      dispatch(createServiceContract(formDataRental))
+      await dispatch(createServiceContract(formDataRental))
     } else if (isDelete) {
       // console.log(item)
       const data = {...item,serviceStatus:1}
       // console.log(data)
-      dispatch(updateService(data,item.id))
+      await dispatch(updateService(data,item.id))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
     // window.location.reload();

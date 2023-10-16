@@ -185,16 +185,16 @@ const RevenueRoom = () => {
 
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     setFormData(initialFormData);
     if (!isUpdate && !isDelete) {
-      dispatch(createCompany(formData))
+      await dispatch(createCompany(formData))
     } else if (isUpdate) {
-      dispatch(updateCompany(formData, idItem))
+      await dispatch(updateCompany(formData, idItem))
     } else {
-      dispatch(deleteCompany(idItem))
+      await dispatch(deleteCompany(idItem))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
     // window.location.reload();

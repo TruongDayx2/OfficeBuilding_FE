@@ -99,7 +99,7 @@ const ServiceContract1 = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     console.log(formData);
@@ -120,7 +120,7 @@ const ServiceContract1 = () => {
         scStatus: 0,
         serviceId: item.serviceId
       };
-      dispatch(updateServiceContract(newData, item.id))
+      await dispatch(updateServiceContract(newData, item.id))
 
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
