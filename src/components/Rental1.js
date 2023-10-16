@@ -21,6 +21,7 @@ const Rental1 = () => {
     const [idItem, setIdItem] = useState({})
     const [isDelete, setIsDelete] = useState(false)
     const [isDetail, setIsDetail] = useState(false)
+    const [isReload, setIsReload] = useState(false)
 
 
     useEffect(() => {
@@ -30,7 +31,7 @@ const Rental1 = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname, isDelete])
+    }, [location.pathname, isDelete,isReload])
 
     const [sortedData, setSortedData] = useState(rentalsFromReducer);
 
@@ -120,6 +121,7 @@ const Rental1 = () => {
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();
+        setIsReload(!isReload)
         cancelClick();
     };
 

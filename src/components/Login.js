@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect,useContext} from 'react'
 import {Redirect, useLocation } from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux'
 import '../css/login.css'
 import imgPath from '../assets/img/img-login.svg'
 import { login, signUp } from '../redux/actions/login';
+import  {NotifiContext}  from './notify/notify';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -18,7 +19,8 @@ const Login = () => {
     const dataLogin = useSelector(state => state.login.data);
     console.log("datalogin",dataLogin);
     const error = useSelector(state => state.login.error);
-    console.log(error)
+    console.log("errrr",error)
+    const opennotifi= useContext(NotifiContext);
     useEffect(() => {
         if(error === true){
             if(loginOrSignUp) {
@@ -28,7 +30,10 @@ const Login = () => {
                     document.querySelector('.msg-log').classList.remove('active');
                     setVisible(false);
                 }, 1200);
-                console.log("Đăng nhập thất bại!");
+
+                opennotifi.setNotifiCode(1);
+                opennotifi.setNotifiMessage("Đăng nhập thất bại");
+                console.log("Đăng nhập thất bại!", opennotifi.notifiCode);
             }
                 
             else  {

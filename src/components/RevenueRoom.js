@@ -19,6 +19,7 @@ const RevenueRoom = () => {
   const rentalMonthReducer = useSelector(state => state.rental.dataMonth)
   const location = useLocation()
   const dispatch = useDispatch();
+  const [isReload, setIsReload] = useState(false)
 
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const RevenueRoom = () => {
     return () => {
       console.log(location.pathname);
     }
-  }, [location.pathname])
+  }, [location.pathname,isReload])
   useEffect(() => {
     setSortedData(rentalMonthReducer)
   }, [rentalMonthReducer])
@@ -196,7 +197,8 @@ const RevenueRoom = () => {
       dispatch(deleteCompany(idItem))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
-    window.location.reload();
+    // window.location.reload();
+    setIsReload(!isReload)
     cancelClick();
   };
   const handleChange = (e) => {

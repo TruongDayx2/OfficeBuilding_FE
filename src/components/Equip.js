@@ -11,7 +11,7 @@ const Room = () => {
     const [floorId, setFloorId] = useState(0);
     const location = useLocation()
     const dispatch = useDispatch();
-
+    const [isReload, setIsReload] = useState(false)
     useEffect(() => {
 
         const id = location.pathname.split('/')[2];
@@ -22,7 +22,7 @@ const Room = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname])
+    }, [location.pathname,isReload])
 
     useEffect(() => {
         setSortedData(equipFromReducer);
@@ -136,7 +136,8 @@ const Room = () => {
             dispatch(deleteEquipment(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
+        setIsReload(!isReload)
         cancelClick();
     };
 

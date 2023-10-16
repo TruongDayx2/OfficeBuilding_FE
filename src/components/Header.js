@@ -15,6 +15,8 @@ const Header = () => {
     const username = localStorage.getItem('username');
     const token = localStorage.getItem('token');
     const isAdmin = localStorage.getItem('isAdmin');
+    const [isReload, setIsReload] = useState(false)
+
     // const dispatch = useDispatch();
     const location = useLocation();
     useEffect(() => {
@@ -25,7 +27,7 @@ const Header = () => {
     useEffect(() => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.pathname])
+    }, [location.pathname,isReload])
 
     const logout = () => {
         // dispatch({type: LOGOUT, data: null})
@@ -63,7 +65,9 @@ const Header = () => {
     }
     useEffect(() => {
         if (isLogout) {
-            window.location.reload()
+            // window.location.reload()
+            setIsReload(!isReload)
+            
         }
 
 
@@ -117,6 +121,11 @@ const Header = () => {
                                                 <li className="dropdown__item">
                                                     <Link className="nav__link link__item" to='/service1' onClick={() => linkAction('about', true)}>
                                                         Dịch vụ
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/nolan' onClick={() => linkAction('about', true)}>
+                                                        map
                                                     </Link>
                                                 </li>
                                              

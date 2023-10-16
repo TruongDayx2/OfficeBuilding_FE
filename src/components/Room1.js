@@ -14,6 +14,7 @@ const Room1 = () => {
     const roomsFromReducer = useSelector(state => state.room.data1)
     const companysFromReducer = useSelector(state => state.company.data1)
     const floorsFromReducer = useSelector(state => state.floors.data)
+    const [isReload, setIsReload] = useState(false)
 
     const location = useLocation()
     const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const Room1 = () => {
 
         return () => {
         }
-    }, [location.pathname])
+    }, [location.pathname,isReload])
 
     useEffect(() => {
         setSortedData(roomsFromReducer)
@@ -166,7 +167,8 @@ const Room1 = () => {
             dispatch(createRental(formDataRental))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
+        setIsReload(!isReload)
         cancelClick();
     };
 

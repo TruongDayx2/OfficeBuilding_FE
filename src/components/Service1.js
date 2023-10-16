@@ -27,6 +27,7 @@ const Service1 = () => {
   const location = useLocation()
   const dispatch = useDispatch();
 
+  const [isReload, setIsReload] = useState(false)
 
   useEffect(() => {
     dispatch(getAllRooms())
@@ -38,7 +39,7 @@ const Service1 = () => {
     return () => {
       console.log(location.pathname);
     }
-  }, [location.pathname])
+  }, [location.pathname, isReload])
 
   useEffect(() => {
     setSortedData(servicesFromReducer)
@@ -168,7 +169,8 @@ const Service1 = () => {
       dispatch(updateService(data,item.id))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
-    window.location.reload();
+    // window.location.reload();
+    setIsReload(!isReload)  
     cancelClick();
   };
   const handleChange = (e) => {

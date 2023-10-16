@@ -22,6 +22,7 @@ const RevenueService = () => {
   const location = useLocation()
   const dispatch = useDispatch();
 
+  const [isReload, setIsReload] = useState(false)
 
   useEffect(() => {
     dispatch(getAllCompanys())

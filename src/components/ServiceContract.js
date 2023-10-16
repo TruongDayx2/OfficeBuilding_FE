@@ -11,6 +11,7 @@ const ServiceContract1 = () => {
   const rentalsFromReducer = useSelector(state => state.serviceContract.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
   const servicesFromReducer = useSelector(state => state.service.data1)
+  const [isReload, setIsReload] = useState(false)
 
   const location = useLocation()
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const ServiceContract1 = () => {
     return () => {
       console.log(location.pathname);
     }
-  }, [location.pathname])
+  }, [location.pathname, isReload])
 
   const [sortedData, setSortedData] = useState(rentalsFromReducer);
 
@@ -123,7 +124,8 @@ const ServiceContract1 = () => {
 
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
-    window.location.reload();
+    // window.location.reload();
+    setIsReload(!isReload)
     cancelClick();
   };
 

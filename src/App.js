@@ -24,6 +24,7 @@ import DetailRevenueRoom from './components/DetailRevenueRoom';
 import DetailRevenueService from './components/DetailRevenueService';
 import CheckRoom from './components/roomcheck';
 import Footer from './components/footer';
+import Test from './components/test';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -69,20 +70,23 @@ function App() {
                         <RevenueService />
                     </Route>
                     <Route path="/detailRevenueRental">
-                        <DetailRevenueRoom/>
+                        <DetailRevenueRoom />
                     </Route>
                     <Route path="/detailRevenueService">
-                        <DetailRevenueService/>
+                        <DetailRevenueService />
                     </Route>
                     <Route path="/revenueService">
                         <RevenueService />
                     </Route>
                     <Route path="/nolan">
-                        <CheckRoom /> 
+                        <CheckRoom />
+                    </Route>
+                    <Route path="/test">
+                        <Test />
                     </Route>
                     <Route path="/">
                         <Home1 />
-                    </Route> 
+                    </Route>
                 </Switch>
                 <Footer />
             </Router>

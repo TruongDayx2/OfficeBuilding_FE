@@ -16,7 +16,7 @@ const Company1 = () => {
 
     const location = useLocation()
     const dispatch = useDispatch();
-
+    const [isReload, setIsReload] = useState(false)
 
     useEffect(() => {
         dispatch(getAllCompanys())
@@ -26,10 +26,10 @@ const Company1 = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname])
+    }, [location.pathname,isReload])
     useEffect(() => {
         setSortedData(companysFromReducer)
-    }, [companysFromReducer])
+    }, [companysFromReducer,isReload])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
     const [sortedData, setSortedData] = useState(companysFromReducer);
@@ -38,7 +38,7 @@ const Company1 = () => {
         const dataCopy = [...sortedData];
         dataCopy.sort(sortByStatus);
         setSortedData(dataCopy);
-    }, [selectedStatus]);
+    }, [selectedStatus,isReload]);
 
     const sortByStatus = (a, b) => {
         if ((a.equipmentStatus) === +selectedStatus) {
@@ -144,7 +144,8 @@ const Company1 = () => {
             dispatch(updateCompany(data, item.id))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
+        setIsReload(!isReload)
         cancelClick();
     };
     const handleChange = (e) => {

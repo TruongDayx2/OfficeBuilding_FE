@@ -103,7 +103,8 @@ function Footer() {
                     <div style={searchContainerStyles}>
                         <input type="text" style={searchInputStyles} placeholder="Tìm kiếm trên Facebook" />
                         <button style={searchButtonStyles}>
-<Icon icon="bi:send" />                        </button>
+                            <Icon icon="bi:send" />
+                        </button>
                     </div>
                 </div>
 
