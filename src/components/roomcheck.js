@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { Icon } from '@iconify/react';
 import { useDispatch, useSelector } from "react-redux";
 import { getAllFloors } from "../redux/actions/floor";
@@ -7,7 +7,7 @@ import { getAllCompanys } from "../redux/actions/company";
 import DatePicker from "react-datepicker";
 import { combineReducers } from 'redux';
 import { cancelRental, createRental, getAllRentals } from "../redux/actions/rental";
-
+import {NotifiContext} from './notify/notify';
 function CheckRoom() {
     const [isRoomChecked, setIsRoomChecked] = useState(false);
     const roomsFromReducer = useSelector(state => state.room.data1)
@@ -19,7 +19,7 @@ function CheckRoom() {
     const [popupType, setPopupType] = useState(""); // "thue" or "cap-nhat"
     const [selectedRoom, setSelectedRoom] = useState(null);
     const dispatch = useDispatch();
-
+    const checknotifi= useContext(NotifiContext);
     useEffect(() => {
         dispatch(getAllRooms())
         dispatch(getAllCompanys())
@@ -44,18 +44,19 @@ function CheckRoom() {
     const [roomPopup, setRoomPopup] = useState();
     const [tmpval, setTmpval] = useState();
     const [rentalPopup, setRentalPopup] = useState();
-    console.log("dataa",localStorage.getItem("role"));
 
     const closePopup = () => {
         setIsPopupVisible(false);
         setTmpval("")
+        console.log("check log errr",checknotifi.errorCode);
+
     };
     const openPopup = (room, tmp) => {
         setRoomPopup(room)
         setTmpval(tmp)
         setIsPopupVisible(true);
         setRentalPopup(rentalsFromReducer.find((rental) => rental.roomId === room.id && rental.reStatus === 1))
-
+        checknotifi.setErrorCode(3)
     };
    
     const [numValue, setNumValue] = useState();

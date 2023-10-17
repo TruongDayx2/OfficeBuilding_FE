@@ -11,6 +11,7 @@ const ServiceContract1 = () => {
   const rentalsFromReducer = useSelector(state => state.serviceContract.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
   const servicesFromReducer = useSelector(state => state.service.data1)
+  const [isReload, setIsReload] = useState(false)
 
   const location = useLocation()
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const ServiceContract1 = () => {
     return () => {
       console.log(location.pathname);
     }
-  }, [location.pathname])
+  }, [location.pathname, isReload])
 
   const [sortedData, setSortedData] = useState(rentalsFromReducer);
 
@@ -98,7 +99,7 @@ const ServiceContract1 = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     console.log(formData);
@@ -119,11 +120,12 @@ const ServiceContract1 = () => {
         scStatus: 0,
         serviceId: item.serviceId
       };
-      dispatch(updateServiceContract(newData, item.id))
+      await dispatch(updateServiceContract(newData, item.id))
 
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
-    window.location.reload();
+    // window.location.reload();
+    setIsReload(!isReload)
     cancelClick();
   };
 

@@ -19,6 +19,7 @@ const RevenueRoom = () => {
   const rentalMonthReducer = useSelector(state => state.rental.dataMonth)
   const location = useLocation()
   const dispatch = useDispatch();
+  const [isReload, setIsReload] = useState(false)
 
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const RevenueRoom = () => {
     return () => {
       console.log(location.pathname);
     }
-  }, [location.pathname])
+  }, [location.pathname,isReload])
   useEffect(() => {
     setSortedData(rentalMonthReducer)
   }, [rentalMonthReducer])
@@ -184,19 +185,20 @@ const RevenueRoom = () => {
 
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     setFormData(initialFormData);
     if (!isUpdate && !isDelete) {
-      dispatch(createCompany(formData))
+      await dispatch(createCompany(formData))
     } else if (isUpdate) {
-      dispatch(updateCompany(formData, idItem))
+      await dispatch(updateCompany(formData, idItem))
     } else {
-      dispatch(deleteCompany(idItem))
+      await dispatch(deleteCompany(idItem))
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
-    window.location.reload();
+    // window.location.reload();
+    setIsReload(!isReload)
     cancelClick();
   };
   const handleChange = (e) => {

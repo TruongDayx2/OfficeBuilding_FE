@@ -9,6 +9,7 @@ import { Icon } from '@iconify/react';
 const Equip1 = () => {
     const equipsFromReducer = useSelector(state => state.equip.data1)
     const floorsFromReducer = useSelector(state => state.floors.data)
+    const [isReload, setIsReload] = useState(false)
 
     const location = useLocation()
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const Equip1 = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname])
+    }, [location.pathname, isReload])
     useEffect(() => {
         setSortedData(equipsFromReducer)
     }, [equipsFromReducer])
@@ -109,20 +110,21 @@ const Equip1 = () => {
 
     const [formData, setFormData] = useState(initialFormData);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         console.log(formData);
         setFormData(initialFormData);
         if (!isUpdate && !isDelete) {
-            dispatch(createEquipment(formData))
+            await dispatch(createEquipment(formData))
         } else if (isUpdate) {
-            dispatch(updateEquipment(formData, idItem))
+             await dispatch(updateEquipment(formData, idItem))
         } else {
-            dispatch(deleteEquipment(idItem))
+            await dispatch(deleteEquipment(idItem))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
+        setIsReload(!isReload)
         cancelClick();
     };
     const handleChange = (e) => {

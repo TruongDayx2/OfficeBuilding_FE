@@ -16,6 +16,7 @@ const Room = () => {
     const roomFromReducer = useSelector(state => state.room.data)
     const floorsFromReducer = useSelector(state => state.floors.data)
     const companysFromReducer = useSelector(state => state.company.data1)
+    const [isReload, setIsReload] = useState(false)
 
     const [floorId, setFloorId] = useState(0);
     const location = useLocation()
@@ -33,7 +34,7 @@ const Room = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname])
+    }, [location.pathname,isReload])
 
     useEffect(() => {
         setSortedData(roomFromReducer);
@@ -157,20 +158,21 @@ const Room = () => {
         setFormDataRental({ ...formDataRental, [name]: newValue });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         setFormData(initialFormData);
         if (!isUpdate && !isDelete && !isRental) {
             console.log(formData)
-            // dispatch(createEquipment(formData))
+            // await dispatch(createEquipment(formData))
         } else if (isUpdate) {
-            dispatch(updateRoom(formData, idItem))
+            await dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
-            dispatch(createRental(formDataRental))
+            await dispatch(createRental(formDataRental))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
-        window.location.reload();
+        // window.location.reload();
+        setIsReload(!isReload)
         cancelClick();
     };
 
