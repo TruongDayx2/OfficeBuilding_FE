@@ -168,28 +168,9 @@ export const NotifiProvider = ({ children }) => {
 
       const error = errorList.find((error) => error.id == errorCode);
       const msglogAll = document.querySelector('.msg-log-all');
-      // msglogAll.style.backgroundColor = error.type === "log" ? "green" : (error.type === "error" ? "red" : "yellow");
+      msglogAll.style.backgroundColor = error.type === "log" ? "green" : (error.type === "error" ? "red" : "yellow");
       
-      if(error.type === "log")      
-      {
-        
-        msglogAll.style.backgroundColor = "green";
-        console.log("log",error.type);
-      } 
-
-      else if(error.type === "error")  
-      {
-        
-        msglogAll.style.backgroundColor = "red";
-        console.log("err",error.type);
-      } 
-
-      else  
-      {
-        
-        msglogAll.style.backgroundColor = "yellow";
-        console.log("wa",error.type);
-      } 
+      
 
 
       // console.log(error.type);

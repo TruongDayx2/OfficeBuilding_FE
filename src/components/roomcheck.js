@@ -57,6 +57,8 @@ function CheckRoom() {
         setIsPopupVisible(true);
         setRentalPopup(rentalsFromReducer.find((rental) => rental.roomId === room.id && rental.reStatus === 1))
         checknotifi.setErrorCode(checknotifi.errorCode+1);
+        setAddRoom({ ...addRoom, roomId: roomPopup.id });
+
     };
    
     const [numValue, setNumValue] = useState();
@@ -65,7 +67,6 @@ function CheckRoom() {
         const { name, value } = e.target
         if ((name == "rePrice" && Number(value) < 0) || value == "-0") {
             setNumValue("")
-            console.log("pingggg");
         }
         else {
             setNumValue(value)
@@ -73,7 +74,7 @@ function CheckRoom() {
         setAddRoom({ ...addRoom, [name]: value })
     }
     const handelAddClick = async () => {
-        setAddRoom({ ...addRoom, roomId: roomPopup.id, });
+        console.log("object", addRoom);
         await dispatch(createRental(addRoom));
         await dispatch(getAllRooms());
         closePopup();
