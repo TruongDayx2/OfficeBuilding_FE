@@ -56,7 +56,7 @@ function CheckRoom() {
         setTmpval(tmp)
         setIsPopupVisible(true);
         setRentalPopup(rentalsFromReducer.find((rental) => rental.roomId === room.id && rental.reStatus === 1))
-        checknotifi.setErrorCode(3)
+        checknotifi.setErrorCode(checknotifi.errorCode+1);
     };
    
     const [numValue, setNumValue] = useState();

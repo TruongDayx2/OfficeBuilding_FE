@@ -20,30 +20,16 @@ const Login = () => {
     console.log("datalogin",dataLogin);
     const error = useSelector(state => state.login.error);
     console.log("errrr",error)
-    const opennotifi= useContext(NotifiContext);
+    const {errorCode,setErrorCode} = useContext(NotifiContext);
+
     useEffect(() => {
         if(error === true){
             if(loginOrSignUp) {
-                document.querySelector('.msg-log').textContent = "Đăng nhập thất bại";
-                document.querySelector('.msg-log').classList.add('active');
-                setTimeout(() => {
-                    document.querySelector('.msg-log').classList.remove('active');
-                    setVisible(false);
-                }, 1200);
-
-                opennotifi.setNotifiCode(1);
-                opennotifi.setNotifiMessage("Đăng nhập thất bại");
-                console.log("Đăng nhập thất bại!", opennotifi.notifiCode);
+                setErrorCode(1);
             }
                 
             else  {
-                document.querySelector('.msg-log').textContent = "Đăng kí thất bại";
-                document.querySelector('.msg-log').classList.add('active');
-                setTimeout(() => {
-                    document.querySelector('.msg-log').classList.remove('active');
-                    setVisible(false);
-                }, 1200);
-                console.log("Đăng kí thất bại");
+                setErrorCode(2);
             }
         }
         return () => console.log("")
