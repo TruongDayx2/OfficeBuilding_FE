@@ -25,7 +25,7 @@ const Login = () => {
     useEffect(() => {
         if(error === true){
             if(loginOrSignUp) {
-                setErrorCode(1);
+                setErrorCode(4);
             }
                 
             else  {
@@ -89,6 +89,22 @@ const Login = () => {
     const signIn = async (e) => {
         e.preventDefault();
         // api
+        if(password.trim().length < 6)
+        {
+            setErrorCode(3);
+            document.getElementById('password').focus();
+            return
+        }
+        if(username.trim().length < 5)
+        {
+            setErrorCode(1);
+            document.getElementById('username-up').focus();
+            return
+        }
+        if (password.trim().length < 1) {
+            setErrorCode(2);
+            return;
+        }
         const data = {
             username: username,
             password: password
@@ -124,6 +140,7 @@ const Login = () => {
                                 onFocus={onFocusInput} 
                                 type="text" 
                                 placeholder="Username" 
+                                name='username'
                                 className="login__input" 
                                 onChange = {(e) => setUsername(e.target.value)}
                                 id="username-up"

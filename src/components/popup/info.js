@@ -27,8 +27,7 @@ function info(props) {
         console.log(rentalsFromReducer);
 
     }, [roomsFromReducer, companysFromReducer, floorsFromReducer])
-
-    const [roomPopup, setRoomPopup] = useState();
+    const [roomPopup, setRoomPopup] = useState(props);
     const openPopup = (room, tmp) => {
         setRoomPopup(room)
         setTmpval(tmp)
@@ -40,10 +39,6 @@ function info(props) {
         setIsPopupVisible(false);
         setTmpval("")
     };
-
-
-
-
     return (
         <div style={{ marginTop: "100px" }}>
             <h2 style={{ width: "100%", textAlign: "center", alignItems: "center" }}>Thông tin phòng</h2>

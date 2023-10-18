@@ -8,23 +8,23 @@ export const NotifiProvider = ({ children }) => {
     {
       "id": 1,
       "type": "error",
-      "message": "Error 1"
+      "message": "Vui lòng nhập username"
     },
     {
       "id": 2,
       "type": "error",
-      "message": "Error 2"
+      "message": "Vui lòng nhập mật khẩu"
     },
 
     {
       "id": 3,
       "type": "error",
-      "message": "Error 3"
+      "message": "Mật khẩu tối thiểu 6 kí tự có chứ chữ hoa, chữ thường và kí tự số"
     },
     {
       "id": 4,
       "type": "error",
-      "message": "Error 4"
+      "message": "Tài khoản hoặc mật khẩu không chính xác"
     },
     {
       "id": 5,

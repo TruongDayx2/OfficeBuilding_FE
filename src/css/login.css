@@ -268,9 +268,10 @@ img{
 .msg-log-all{
   position: absolute;
   width:250px;
-  height: 50px;
+  padding: 20px;
+  /* height: 50px; */
   /* padding:30px 40px; */
-  border-radius:5px;
+  border-radius:15px;
   box-sizing:border-box;
   z-index:99;
   text-align:center;
