@@ -496,14 +496,14 @@ const Room = () => {
                                                 </button>
                                             </div>
                                             <div id="div_hover" >
-                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange'}}>
+                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange'}}>
 
                                                     <Icon icon="jam:write-f" id="icon_hover"  width="24" />
                                                     <span id="spann" >cập nhật</span>
                                                 </button>
                                             </div>
                                             <div id="div_hover" >
-                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal'}}>
+                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal'}}>
 
                                                     <Icon icon="tdesign:money" id="icon_hover"  width="24" />
                                                     <span id="spann" >Thuê</span>
