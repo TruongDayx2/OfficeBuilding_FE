@@ -182,7 +182,7 @@ const Login = () => {
 
     return (token) ?
     <Redirect to="/"/> : (
-        <div  className="login" style={{ marginTop: `${headerr.height}px`, minHeight: `${window.innerHeight - footerr.height - headerr.height}px`, maxHeight: `${window.innerHeight - footerr.height - headerr.height}px` }}>
+        <div  className="login" style={{ marginTop: `100px`, minHeight: '50vh' }}>
             <div className="msg-log">MSG LOG nè</div>
             <div className="login__content">
                 <div className="login__img">

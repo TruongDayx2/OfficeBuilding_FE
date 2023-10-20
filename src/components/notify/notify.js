@@ -233,7 +233,7 @@ export const NotifiProvider = ({ children }) => {
       msglogAll.classList.add('active');
       setTimeout(() => {
         msglogAll.classList.remove('active');
-      }, 5200);
+      }, 1200);
       setErrorCode(0);
     }
   }, [errorCode]);

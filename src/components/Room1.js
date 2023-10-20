@@ -146,7 +146,7 @@ const Room1 = () => {
         } else {
             newValue = value;
         }
-        if (name === 'roomPrice' && newValue < 0) {
+        if (name === 'roomPrice' && newValue <= 0) {
             setErrorCode("ERROR_MONEY_001")
             newValue = 0;
         }
@@ -156,6 +156,7 @@ const Room1 = () => {
             setErrorCode("ERROR_ROOM_001")
             newValue = value;
         }
+   
         setFormData({ ...formData, [name]: newValue });
     };
     const [NumVal, setNumVal] = useState(0);
@@ -169,9 +170,10 @@ const Room1 = () => {
             newValue = name === 'companyId' || name === 'roomId' ? parseInt(value) : value;
         }
         // nếu nhập số âm thì giá trị của ô input thay đổi thành 0
+        if (newValue <= 0) {
+            setNumVal();
         console.log("check number", NumVal);
-        if (newValue < 0) {
-            setNumVal(0);
+
             setErrorCode("ERROR_MONEY_001")
         }
         else {
@@ -196,11 +198,14 @@ const Room1 = () => {
                 cancelClick();
                 return;
             }
+            if(formData.roomPrice <=0){
+                setErrorCode("ERROR_MONEY_001")
+                return;
+            }
 
 
 
-
-            await dispatch(updateRoom(formData, idItem))
+            // await dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
 
             console.log("rentall", formDataRental);

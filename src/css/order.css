@@ -51,13 +51,13 @@
 
  #icon_hover {
     opacity: 1 !important;
-    transition: opacity 0.3s ease-in-out !important;
+    transition: opacity 1s ease-in-out !important;
   }
   
   #div_hover #spann {
     margin: auto !important;
     opacity: 0 !important;
-    transition: opacity 0.3s ease-in-out !important;
+    transition: opacity 1s ease-in-out !important;
   }
   
   #div_hover:hover #btn_hover {
