@@ -1,11 +1,13 @@
-import { ERROR } from "../constants/base";
-import { LOGIN, SIGNUP } from "../constants/login";
+import { ERROR, MESSAGE_ERROR, SWITCH_ERROR } from "../constants/base";
+import { ERRORBE, LOGIN, SIGNUP } from "../constants/login";
+
 
 const initState = {
     data: {},
-    error: false
+    error: false,
+    dataError: {}
 }
-const loginReducers = (state=initState, payload) => {
+const loginReducers = (state = initState, payload) => {
     switch (payload.type) {
         case LOGIN:
             return {
@@ -25,10 +27,28 @@ const loginReducers = (state=initState, payload) => {
                 data: {},
                 error: true
             }
+        case SWITCH_ERROR:
+            return {
+                ...state,
+                data: {},
+                error: false,
+            }
+        case MESSAGE_ERROR:
+            return {
+                ...state,
+                // error: false,
+                dataError: payload.data
+            }
+        case ERRORBE:
+            return {
+                data: {},
+                error: false,
+                dataError: {}
+            }
         default:
             return state;
+            }
     }
-}
 
 
-export default loginReducers;
+    export default loginReducers;

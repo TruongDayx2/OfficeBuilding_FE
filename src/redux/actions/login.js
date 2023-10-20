@@ -1,6 +1,8 @@
 import axios from "axios";
-import { ERROR } from "../constants/base";
+import { ERROR, MESSAGE_ERROR } from "../constants/base";
 import { LOGIN, SIGNUP } from "../constants/login";
+
+
 export const login = (data) => async dispatch => {
     try {
         const res = await axios({
@@ -9,24 +11,38 @@ export const login = (data) => async dispatch => {
             url: "login",
             data: data
         });
+        console.log("aaaaaaaaaaaaaaa",res.data.message);
 
-        if(res.status === 200 ){
-             localStorage.setItem("role", res.data.roles[0].authority);
-            localStorage.setItem("token", res.data.accessToken);
-            localStorage.setItem("username", res.data.username);
-            localStorage.setItem("idUser", res.data.id);
-            dispatch({
-                type: LOGIN,
-                data: res.data
-            })
+        if(res.data.message)
+        {
+           dispatch({
+               type: MESSAGE_ERROR,
+               data: res.data.message
+           })
         }
+
+
         else {
-            dispatch({
-                type: ERROR,
-                data: null
-            })
+            if(res.status === 200  ){
+                localStorage.setItem("role", res.data.roles[0].authority);
+               localStorage.setItem("token", res.data.accessToken);
+               localStorage.setItem("username", res.data.username);
+               localStorage.setItem("idUser", res.data.id);
+               localStorage.setItem("DataUser", res.data);
+               dispatch({
+                   type: LOGIN,
+                   data: res.data
+               })
+           }
+           else {
+               dispatch({
+                   type: ERROR,
+                   data: null
+               })
+           }
         }
     } catch (error) {
+        console.log("cahasdasdas",error);
         dispatch({
             type: ERROR,
             data: null

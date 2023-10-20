@@ -27,6 +27,7 @@ import Footer from './components/footer';
 import Test from './components/test';
 import '../src/css/login.css';
 import { NotifiContext } from './components/notify/notify';
+import Admin from './components/admin';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
@@ -87,6 +88,10 @@ function App() {
                     </Route>
                     <Route path="/test">
                         <Test />
+                    </Route>
+
+                    <Route path="/admin">
+                        <Admin />
                     </Route>
                     <Route path="/">
                         <Home1 />

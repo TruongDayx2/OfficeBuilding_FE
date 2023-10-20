@@ -77,7 +77,7 @@ const Header = () => {
     }
 
     return (
-        <header className="header">
+        <header className="header" id='headerr'>
             {/* <Link className="header__logo" to='/'  >
                 77Booking
             </Link>
@@ -131,6 +131,11 @@ const Header = () => {
                                                 <li className="dropdown__item">
                                                     <Link className="nav__link link__item" to='/test' onClick={() => linkAction('about', true)}>
                                                         test
+                                                    </Link>
+                                                </li>
+                                                <li className="dropdown__item">
+                                                    <Link className="nav__link link__item" to='/admin' onClick={() => linkAction('about', true)}>
+                                                        admin
                                                     </Link>
                                                 </li>
                                              

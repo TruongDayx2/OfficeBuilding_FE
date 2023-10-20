@@ -34,7 +34,7 @@ const Room = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname,isReload])
+    }, [location.pathname, isReload])
 
     useEffect(() => {
         setSortedData(roomFromReducer);
@@ -82,6 +82,7 @@ const Room = () => {
     const [isDetail, setIsDetail] = useState(false)
 
     const popUpActive = (mode, item) => {
+        console.log("1231231");
         setIsShow(true);
         document.querySelector('.form-post').classList.add('active');
         if (mode === "edit") {
@@ -158,7 +159,7 @@ const Room = () => {
         setFormDataRental({ ...formDataRental, [name]: newValue });
     };
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         setFormData(initialFormData);
@@ -168,6 +169,8 @@ const Room = () => {
         } else if (isUpdate) {
             await dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
+
+            // if (companysFromReducer)
             await dispatch(createRental(formDataRental))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
@@ -489,26 +492,34 @@ const Room = () => {
                                         </td>
                                         <td style={{ display: 'flex', justifyContent: 'center' }}>
                                             <div id="div_hover" >
-                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
 
                                                     <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
                                                     <span id="spann" >chi tiết</span>
                                                 </button>
                                             </div>
-                                            <div id="div_hover" >
-                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange'}}>
+                                            {
+                                                item.roomStatus != 1 ?
+                                                    (<div id="div_hover" >
+                                                        <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange' }}>
 
-                                                    <Icon icon="jam:write-f" id="icon_hover"  width="24" />
-                                                    <span id="spann" >cập nhật</span>
-                                                </button>
-                                            </div>
-                                            <div id="div_hover" >
-                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal'}}>
-
-                                                    <Icon icon="tdesign:money" id="icon_hover"  width="24" />
-                                                    <span id="spann" >Thuê</span>
-                                                </button>
-                                            </div>
+                                                            <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                                            <span id="spann" >cập nhật</span>
+                                                        </button>
+                                                    </div>) : null
+                                            }
+                                            {
+                                                item.roomStatus === 0 ?
+                                                    (
+                                                        <div id="div_hover" >
+                                                            <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
+                                                                
+                                                                <Icon icon="tdesign:money" id="icon_hover" width="24" />
+                                                                <span id="spann" >Thuê</span>
+                                                            </button>
+                                                        </div>
+                                                    ) : null
+                                            }
 
 
 

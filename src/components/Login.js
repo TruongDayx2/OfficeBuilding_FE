@@ -5,7 +5,8 @@ import '../css/login.css'
 import imgPath from '../assets/img/img-login.svg'
 import { login, signUp } from '../redux/actions/login';
 import  {NotifiContext}  from './notify/notify';
-
+import {MESSAGE_ERROR, SWITCH_ERROR} from '../redux/constants/base';
+import { ERRORBE } from '../redux/constants/login';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -21,19 +22,41 @@ const Login = () => {
     const error = useSelector(state => state.login.error);
     console.log("errrr",error)
     const {errorCode,setErrorCode} = useContext(NotifiContext);
-
+    const messageLogin = useSelector(state => state.login.dataError);
+    useEffect(() => {
+        console.log("messs login",messageLogin);
+        // if(messageLogin){
+            if(messageLogin === "Tài khoản không tồn tại")
+            {
+                setErrorCode("ERROR_USERNAME_003");
+            }
+            if(messageLogin === "Mật khẩu không đúng")
+            {
+                setErrorCode("ERROR_PASSWORD_004");
+            }
+            // dispatch({
+            //     type: ERRORBE,
+            //     data: {}
+            // })
+        // }
+    }, [messageLogin])
     useEffect(() => {
         if(error === true){
             if(loginOrSignUp) {
-                setErrorCode(4);
+                setErrorCode("ERROR_USERNAME_003");
             }
                 
             else  {
-                setErrorCode(2);
+                setErrorCode("ERROR_USERNAME_004");
             }
+            // gán lại error = false để tránh việc lặp lại việc hiện thông báo
+            dispatch({
+                type: SWITCH_ERROR,
+                data: false
+            })
         }
-        return () => console.log("")
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
     }, [error])
     const toggleLogin = (mode) => {
         const loginIn = document.getElementById('login-in')
@@ -88,29 +111,58 @@ const Login = () => {
 
     const signIn = async (e) => {
         e.preventDefault();
+        console.log("footer height ", footerr.height);
+        console.log("header height ", headerr.height);
         // api
-        if(password.trim().length < 6)
+
+        if(username.trim().length < 1)
         {
-            setErrorCode(3);
-            document.getElementById('password').focus();
-            return
-        }
-        if(username.trim().length < 5)
-        {
-            setErrorCode(1);
+            setErrorCode("ERROR_USERNAME_001");
             document.getElementById('username-up').focus();
             return
         }
-        if (password.trim().length < 1) {
-            setErrorCode(2);
+        if(username.trim().match(/[^a-zA-Z0-9]/g))
+        {
+            setErrorCode("ERROR_USERNAME_002");
+            document.getElementById('username-up').focus();
             return;
         }
+
+        if (password.trim().length < 1) {
+            setErrorCode("ERROR_PASSWORD_001");
+            return;
+        }
+
+       // username không được chứa kí tự đặc biệt
+  
+      
+        // password phải có ít nhất 8 ký tự
+        if(password.trim().length < 8)
+        {
+            setErrorCode("ERROR_PASSWORD_002");
+            document.getElementById('password').focus();
+            return;
+        }
+        // password phải có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 số và 1 ký tự đặc biệt
+        // if(!password.trim().match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/g))
+        // {
+        //     setErrorCode("ERROR_PASSWORD_003");
+        //     document.getElementById('password').focus();
+        //     return;
+        // }
+
+     
+    
         const data = {
             username: username,
             password: password
         }
         setLoginOrSignUp(true);
-        dispatch(login(data));
+        await dispatch({
+                type: ERRORBE,
+                data: {}
+            })
+        await dispatch(login(data));
         console.log( "okko",username, password);
     }
 
@@ -122,10 +174,15 @@ const Login = () => {
         }
     }
 
+    const footerr = document.getElementById("footerr").getBoundingClientRect();
+    const headerr = document.getElementById("headerr").getBoundingClientRect();
+
+
+
 
     return (token) ?
     <Redirect to="/"/> : (
-        <div className="login">
+        <div  className="login" style={{ marginTop: `${headerr.height}px`, minHeight: `${window.innerHeight - footerr.height - headerr.height}px`, maxHeight: `${window.innerHeight - footerr.height - headerr.height}px` }}>
             <div className="msg-log">MSG LOG nè</div>
             <div className="login__content">
                 <div className="login__img">

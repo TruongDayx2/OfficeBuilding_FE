@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
@@ -9,6 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { createRental } from "../redux/actions/rental";
 import { getAllFloors } from "../redux/actions/floor";
 import { Icon } from '@iconify/react';
+import { NotifiContext } from "./notify/notify";
 
 const Room1 = () => {
     const roomsFromReducer = useSelector(state => state.room.data1)
@@ -19,7 +20,7 @@ const Room1 = () => {
     const location = useLocation()
     const dispatch = useDispatch();
     const dataLogin = useSelector(state => state.login.data);
-    console.log("dataa",dataLogin);
+    console.log("dataa", dataLogin);
 
     useEffect(() => {
         dispatch(getAllRooms())
@@ -28,7 +29,7 @@ const Room1 = () => {
 
         return () => {
         }
-    }, [location.pathname,isReload])
+    }, [location.pathname, isReload])
 
     useEffect(() => {
         setSortedData(roomsFromReducer)
@@ -74,8 +75,13 @@ const Room1 = () => {
     const [isDelete, setIsDelete] = useState(false)
     const [isRental, setIsRental] = useState(false)
     const [isDetail, setIsDetail] = useState(false)
+    const { errorCode, setErrorCode } = useContext(NotifiContext);
 
     const popUpActive = (mode, item) => {
+        if (companysFromReducer.length === 0) {
+            setErrorCode("ERROR_COMPANY_001")
+            return;
+        }
         setIsShow(true);
         document.querySelector('.form-post').classList.add('active');
         if (mode === "edit") {
@@ -91,7 +97,7 @@ const Room1 = () => {
         else if (mode === 'rental') {
             document.querySelector('.dialog__title').textContent = "Hợp đồng thuê phòng";
             setItem(item)
-            setFormDataRental({ ...formDataRental, roomId: item.id });
+            setFormDataRental({ ...formDataRental, roomId: item.id, rePrice: item.roomPrice });
             setIsRental(true)
         } else if (mode === 'detail') {
             document.querySelector('.dialog__title').textContent = "Chi tiết phòng";
@@ -123,8 +129,8 @@ const Room1 = () => {
         roomId: 1,
         reDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
         reDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
-        reStatus:1,
-        rePrice:0
+        reStatus: 1,
+        rePrice: 0
     }
     const [formData, setFormData] = useState(initialFormData);
     const [formDataRental, setFormDataRental] = useState(initialrentalData);
@@ -140,21 +146,41 @@ const Room1 = () => {
         } else {
             newValue = value;
         }
+        if (name === 'roomPrice' && newValue < 0) {
+            setErrorCode("ERROR_MONEY_001")
+            newValue = 0;
+        }
+
+        const room = roomsFromReducer.find(room => room.roomName === newValue && room.floorId === item.floorId && item.id !== room.id);
+        if (name === 'roomName' && room) {
+            setErrorCode("ERROR_ROOM_001")
+            newValue = value;
+        }
         setFormData({ ...formData, [name]: newValue });
     };
+    const [NumVal, setNumVal] = useState(0);
     const handleChangeRental = (e) => {
+
         const { name, value } = e.target;
         let newValue
         if (name === 'rePrice') {
             newValue = value === '' ? '' : parseFloat(value) || 0;
-        }else{
+        } else {
             newValue = name === 'companyId' || name === 'roomId' ? parseInt(value) : value;
         }
-
+        // nếu nhập số âm thì giá trị của ô input thay đổi thành 0
+        console.log("check number", NumVal);
+        if (newValue < 0) {
+            setNumVal(0);
+            setErrorCode("ERROR_MONEY_001")
+        }
+        else {
+            setNumVal(newValue);
+        }
         setFormDataRental({ ...formDataRental, [name]: newValue });
     };
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         setFormData(initialFormData);
@@ -162,8 +188,45 @@ const Room1 = () => {
             console.log(formData)
             // await dispatch(createEquipment(formData))
         } else if (isUpdate) {
+            const room = roomsFromReducer.find(room => room.roomName === formData.roomName && room.floorId === formData.floorId && formData.id !== room.id);
+            if (room) {
+                console.log("phòng có bị trùngggg",room);
+                setErrorCode("ERROR_ROOM_001")
+                setIsReload(!isReload)
+                cancelClick();
+                return;
+            }
+
+
+
+
             await dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
+
+            console.log("rentall", formDataRental);
+            //reDateBegin:"2023-10-24"
+            //reDateEnd:"2023-10-25"
+            //formDataRental có 2 trường dữ liệu sau. kiểm tra nếu ngày bắt đầu thuê lớn hơn ngày hết hạn thuê thì thông báo lỗi
+            if (formDataRental.reDateBegin > formDataRental.reDateEnd) {
+                setErrorCode("ERROR_DATE_001")
+                return;
+            }
+
+            if (NumVal <= 0) {
+                setErrorCode("ERROR_MONEY_001")
+                document.getElementById("rePrice").focus();
+                return;
+            }
+            // ngày kết thức thuê phải cách ngày bắt đầu thuê 6 tháng
+            let dateBegin = new Date(formDataRental.reDateBegin);
+            let dateEnd = new Date(formDataRental.reDateEnd);
+            let month = dateEnd.getMonth() - dateBegin.getMonth() + (12 * (dateEnd.getFullYear() - dateBegin.getFullYear()));
+            if (month < 6) {
+                console.log("lỗi 6 tháng");
+                setErrorCode("ERROR_DATE_002")
+                return;
+            }
+            setErrorCode("LOG_CONTRACT_001")
             await dispatch(createRental(formDataRental))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
@@ -191,7 +254,7 @@ const Room1 = () => {
     }
     function priceVND(amount) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-      }
+    }
     return (
         <div style={{ maxWidth: "1100px", minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
@@ -242,18 +305,19 @@ const Room1 = () => {
                             </div>
                             <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                        Tiền thuê (tháng):
+                                    Tiền thuê (tháng):
                                     <span style={{ flex: '2.5' }}>
-                                    <input
-                                        style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
-                                        type="number"
-                                        id='rePrice'
-                                        name='rePrice'
-                                        value={formDataRental.rePrice}
-                                        onChange={handleChangeRental}
-                                        required
-                                    />
-                                    VND
+                                        <input
+                                            style={{ marginLeft: '10px', borderRadius: '10px', flex: '2.5' }}
+                                            type="number"
+                                            id='rePrice'
+                                            name='rePrice'
+                                            value={NumVal}
+                                            placeholder={formDataRental.rePrice}
+                                            onChange={handleChangeRental}
+                                            required
+                                        />
+                                        VND
                                     </span>
                                 </label>
                             </div>
@@ -338,7 +402,7 @@ const Room1 = () => {
                                             onChange={handleChange}
                                             required
                                         />
-                                         VND
+                                        VND
                                     </span>
 
 
@@ -389,7 +453,7 @@ const Room1 = () => {
                                     </span>
                                 </label>
                             </div>
-                            <div style={{ marginTop: '20px', width: '100%'  }}>
+                            <div style={{ marginTop: '20px', width: '100%' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                                     <span style={{ flex: '1' }}>
                                         Vị trí:
@@ -406,7 +470,7 @@ const Room1 = () => {
                                         Tiền thuê (tháng):
                                     </span>
                                     <span style={{ flex: '1', fontWeight: '500' }}>
-                                        {priceVND(formData.roomPrice) }
+                                        {priceVND(formData.roomPrice)}
                                     </span>
                                 </label>
                             </div>
@@ -478,33 +542,41 @@ const Room1 = () => {
                                             <FloorName floorId={item?.floorId} />
                                         </td>
                                         <td>
-                                            {priceVND(item.roomPrice )}
+                                            {priceVND(item.roomPrice)}
                                         </td>
                                         <td style={item.roomStatus === 0 ? { color: 'teal' } : item.roomStatus === 1 ? { color: 'orange' } : { color: 'red' }}>
                                             {item.roomStatus === 0 ? 'Đang trống' : item.roomStatus === 1 ? 'Đang sử dụng' : 'Đang bảo trì'}
                                         </td>
                                         <td style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                        <div id="div_hover" >
-                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink'}}>
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
 
                                                     <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
                                                     <span id="spann" >chi tiết</span>
                                                 </button>
                                             </div>
-                                            <div id="div_hover" >
-                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange'}}>
+                                            {
+                                                item.roomStatus != 1 ? (
+                                                    <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange' }}>
 
-                                                    <Icon icon="jam:write-f" id="icon_hover"  width="24" />
-                                                    <span id="spann" >cập nhật</span>
-                                                </button>
-                                            </div>
-                                            <div id="div_hover" >
-                                                <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal'}}>
+                                                            <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                                            <span id="spann" >cập nhật</span>
+                                                        </button>
+                                                    </div>) : null
+                                            }
 
-                                                    <Icon icon="tdesign:money" id="icon_hover"  width="24" />
-                                                    <span id="spann" >Thuê</span>
-                                                </button>
-                                            </div>
+                                            {
+                                                item.roomStatus === 0 ? (
+                                                    <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
+
+                                                            <Icon icon="tdesign:money" id="icon_hover" width="24" />
+                                                            <span id="spann" >Thuê</span>
+                                                        </button>
+                                                    </div>
+                                                ) : null
+                                            }
                                         </td>
                                     </tr>
                                 ))

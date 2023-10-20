@@ -5,52 +5,99 @@ export const NotifiContext = createContext();
 export const NotifiProvider = ({ children }) => {
   const [errorCode, setErrorCode] = useState(0);
   const errorList = [
+    // chưa nhập
     {
-      "id": 1,
+      "id": "ERROR_USERNAME_001",
       "type": "error",
       "message": "Vui lòng nhập username"
     },
     {
-      "id": 2,
+      "id": "ERROR_PASSWORD_001",
       "type": "error",
       "message": "Vui lòng nhập mật khẩu"
     },
 
+    // sai định dạng
     {
-      "id": 3,
+      "id": "ERROR_USERNAME_002",
       "type": "error",
-      "message": "Mật khẩu tối thiểu 6 kí tự có chứ chữ hoa, chữ thường và kí tự số"
+      "message": "Username không được chứa ký tự đặc biệt"
     },
     {
-      "id": 4,
+      "id": "ERROR_PASSWORD_002",
       "type": "error",
-      "message": "Tài khoản hoặc mật khẩu không chính xác"
+      "message": "Mật khẩu phải có ít nhất 8 ký tự"
     },
     {
-      "id": 5,
+      "id": "ERROR_PASSWORD_003",
       "type": "error",
-      "message": "Error 5"
+      "message": "Mật khẩu phải có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 số và 1 ký tự đặc biệt"
+    },
+
+    // sai thông tin
+    {
+      "id": "ERROR_USERNAME_003",
+      "type": "error",
+      "message": "Username không tồn tại"
     },
     {
-      "id": 6,
+      "id": "ERROR_PASSWORD_004",
       "type": "error",
-      "message": "Error 6"
+      "message": "Mật khẩu không đúng"
     },
+
+    // lỗi hệ thống
     {
-      "id": 7,
+      "id": "ERROR_SYSTEM_001",
       "type": "error",
-      "message": "Error 7"
+      "message": "Lỗi hệ thống"
     },
+
+
+
+    
+    // looix ddawng kys
     {
-      "id": 8,
+      "id": "ERROR_USERNAME_004",
       "type": "error",
-      "message": "Error 8"
+      "message": "Username đã tồn tại"
     },
+    //lỗi không có công ty khy thuê phòng
     {
-      "id": 9,
+      "id": "ERROR_COMPANY_001",
       "type": "error",
-      "message": "Error 9"
+      "message": "Không có công ty ký hợp đồng thuê phòng"
     },
+    
+// lỗi nhập input số tiền là số âm
+    {
+      "id": "ERROR_MONEY_001",
+      "type": "error",
+      "message": "Số tiền không được nhỏ hơn hoặc bằng 0"
+    },
+
+
+
+// lỗi ngày hết hạn thuê trước ngày bắt đầu
+    {
+      "id": "ERROR_DATE_001",
+      "type": "error",
+      "message": "Ngày hết hạn thuê phải sau ngày bắt đầu thuê"
+    },
+    //lỗi ngày thuê nhỏ hơn 6 tháng 
+    {
+      "id": "ERROR_DATE_002",
+      "type": "error",
+      "message": "Ngày thuê phải lớn hơn 6 tháng"
+    },
+// lỗi trùng tên phòng
+    {
+      "id": "ERROR_ROOM_001",
+      "type": "error",
+      "message": "Tên phòng đã tồn tại"
+    },
+
+
     {
       "id": 10,
       "type": "error",
@@ -162,6 +209,13 @@ export const NotifiProvider = ({ children }) => {
       "type": "log",
       "message": "log 10"
     },
+
+    // thông báo thuê thành công ( type = log)
+    {
+      "id": "LOG_CONTRACT_001",
+      "type": "log",
+      "message": "Thuê phòng thành công"
+    },
   ]
   useEffect(() => {
     if (errorCode !== 0) {
@@ -179,7 +233,7 @@ export const NotifiProvider = ({ children }) => {
       msglogAll.classList.add('active');
       setTimeout(() => {
         msglogAll.classList.remove('active');
-      }, 1200);
+      }, 5200);
       setErrorCode(0);
     }
   }, [errorCode]);
