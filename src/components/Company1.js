@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
@@ -9,11 +9,12 @@ import '../css/dialog.css'
 import { createCompany, deleteCompany, getAllCompanys, updateCompany } from "../redux/actions/company";
 import { getAllRentals } from "../redux/actions/rental";
 import { Icon } from '@iconify/react';
+import { NotifiContext } from "./notify/notify";
 
 const Company1 = () => {
     const companysFromReducer = useSelector(state => state.company.data1)
     const rentalsFromReducer = useSelector(state => state.rental.data1)
-
+    const { setErrorCode } = useContext(NotifiContext);
     const location = useLocation()
     const dispatch = useDispatch();
     const [isReload, setIsReload] = useState(false)
@@ -26,10 +27,10 @@ const Company1 = () => {
         return () => {
             console.log(location.pathname);
         }
-    }, [location.pathname,isReload])
+    }, [location.pathname, isReload])
     useEffect(() => {
         setSortedData(companysFromReducer)
-    }, [companysFromReducer,isReload])
+    }, [companysFromReducer, isReload])
 
     const [selectedStatus, setSelectedStatus] = useState(0);
     const [sortedData, setSortedData] = useState(companysFromReducer);
@@ -38,7 +39,7 @@ const Company1 = () => {
         const dataCopy = [...sortedData];
         dataCopy.sort(sortByStatus);
         setSortedData(dataCopy);
-    }, [selectedStatus,isReload]);
+    }, [selectedStatus, isReload]);
 
     const sortByStatus = (a, b) => {
         if ((a.equipmentStatus) === +selectedStatus) {
@@ -131,17 +132,76 @@ const Company1 = () => {
 
     const [formData, setFormData] = useState(initialFormData);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-        setFormData(initialFormData);
         if (!isUpdate && !isDelete) {
-            dispatch(createCompany(formData))
+            if (formData.cusName === '' || formData.cusEmail === '' || formData.cusPhone === '' || formData.cusTaxCode === '') {
+                setErrorCode("ERROR_COMPANY_002")
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusName === formData.cusName)) {
+                setErrorCode("ERROR_COMPANY_003")
+                document.getElementById('cusName').focus()
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusEmail === formData.cusEmail)) {
+                setErrorCode("ERROR_EMAIL_001")
+                document.getElementById('cusEmail').focus()
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusPhone === formData.cusPhone)) {
+                setErrorCode("ERROR_PHONE_001")
+                document.getElementById('cusPhone').focus()
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusTaxCode === formData.cusTaxCode)) {
+                setErrorCode("ERROR_TAX_001")
+                document.getElementById('cusTaxCode').focus()
+                return
+            }
+            await dispatch(createCompany(formData))
+            setErrorCode("LOG_COMPANY_001")
+
         } else if (isUpdate) {
-            dispatch(updateCompany(formData, idItem))
+
+            if (formData.cusName === '' || formData.cusEmail === '' || formData.cusPhone === '' || formData.cusTaxCode === '') {
+
+                setErrorCode("ERROR_COMPANY_002")
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusName === formData.cusName && comp.id !== formData.id)) {
+                setErrorCode("ERROR_COMPANY_003")
+                document.getElementById('cusName').focus()
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusEmail === formData.cusEmail && comp.id !== formData.id)) {
+                setErrorCode("ERROR_EMAIL_001")
+                document.getElementById('cusEmail').focus()
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusPhone === formData.cusPhone && comp.id !== formData.id)) {
+
+                setErrorCode("ERROR_PHONE_001")
+                document.getElementById('cusPhone').focus()
+                return
+            }
+            if (companysFromReducer.find(comp => comp.cusTaxCode === formData.cusTaxCode && comp.id !== formData.id)) {
+
+                setErrorCode("ERROR_TAX_001")
+                document.getElementById('cusTaxCode').focus()
+                return
+            }
+
+
+            await dispatch(updateCompany(formData, idItem))
+
+            setErrorCode("LOG_COMPANY_002")
+
         } else {
             const data = { ...item, cusStatus: 1 }
-            dispatch(updateCompany(data, item.id))
+            await dispatch(updateCompany(data, item.id))
+            setErrorCode("LOG_COMPANY_003")
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();
@@ -215,7 +275,7 @@ const Company1 = () => {
                                     </span>
                                     <input
                                         style={{ marginLeft: '10px', borderRadius: '10px', flex: '3.5' }}
-                                        type="text"
+                                        type="number"
                                         id='cusPhone'
                                         name="cusPhone"
                                         value={formData.cusPhone}

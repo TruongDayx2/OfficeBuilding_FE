@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
@@ -15,6 +15,7 @@ import { getAllRooms } from "../redux/actions/rooms";
 import { createServiceContract, getAllServiceContract, getAllServiceContractsByStatus } from "../redux/actions/serviceContract";
 
 import { Icon } from '@iconify/react';
+import { NotifiContext } from "./notify/notify";
 
 const Service1 = () => {
   const companysRentalStatus = useSelector(state => state.rental.dataStatus)
@@ -22,7 +23,7 @@ const Service1 = () => {
   const roomsFromReducer = useSelector(state => state.room.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
   const serContractsFromReducer = useSelector(state => state.serviceContract.dataStatus)
-
+  const { setErrorCode } = useContext(NotifiContext)
 
   const location = useLocation()
   const dispatch = useDispatch();
@@ -107,7 +108,7 @@ const Service1 = () => {
     serviceName: '',
     servicePrice: 0,
     serviceDesc: '',
-    serviceStatus:0,
+    serviceStatus: 0,
   };
   const initialrentalData = {
     serviceId: 1,
@@ -149,38 +150,63 @@ const Service1 = () => {
     return true
   }
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-    setFormData(initialFormData);
+    // setFormData(initialFormData);
     if (!isUpdate && !isDelete && !isRental) {
-      // console.log(formData)
+      if (servicesFromReducer.find(item => item.serviceName === formData.serviceName)) {
+        setErrorCode("ERROR_SERVICE_001")
+        document.getElementById("serviceName").focus();
+        return;
+      }
+      if (formData.servicePrice <= 0) {
+        setErrorCode("ERROR_MONEY_001")
+        document.getElementById("servicePrice").focus();
+        return;
+      }
       await dispatch(createService(formData))
+      setErrorCode("LOG_SERVICE_001")
     } else if (isUpdate) {
-      console.log(formData)
+      if (formData.servicePrice <= 0) {
+
+        setErrorCode("ERROR_MONEY_001")
+        document.getElementById("servicePrice").focus();
+        return;
+      }
+      if (servicesFromReducer.find(item => item.serviceName === formData.serviceName && item.id !== formData.id)) {
+        setErrorCode("ERROR_SERVICE_001")
+        document.getElementById("serviceName").focus();
+        return;
+      }
       await dispatch(updateService(formData, idItem))
+      setErrorCode("LOG_SERVICE_002")
     } else if (isRental) {
       // console.log(formDataRental)
       await dispatch(createServiceContract(formDataRental))
     } else if (isDelete) {
       // console.log(item)
-      const data = {...item,serviceStatus:1}
+      const data = { ...item, serviceStatus: 1 }
       // console.log(data)
-      await dispatch(updateService(data,item.id))
+      await dispatch(updateService(data, item.id))
+      setErrorCode("LOG_SERVICE_003")
     }
     // Reset form sau khi gửi thành công (tuỳ ý)
     // window.location.reload();
-    setIsReload(!isReload)  
+    setIsReload(!isReload)
     cancelClick();
   };
   const handleChange = (e) => {
+    console.log("check data", formData);
     const { name, value } = e.target;
     let newValue
     if (name === 'servicePrice') {
       // Validate if the input is a valid number
-      newValue = value === '' ? '' : parseFloat(value) || 0;
-    } else {
-      newValue = value; // For other fields, use the entered value as is
+      newValue = value === '' ? '' : parseFloat(value) || 0   ;
+    } 
+
+    else {
+     newValue = value; // For other fields, use the entered value as is
     }
     setFormData({ ...formData, [name]: newValue });
   };
@@ -416,32 +442,32 @@ const Service1 = () => {
                         <td>{item1?.serviceName}</td>
                         <td>{priceVND(item1?.servicePrice)} </td>
                         <td>{item1?.serviceDesc} </td>
-                        <td style={{ display: "flex", justifyContent:"center"}}>
+                        <td style={{ display: "flex", justifyContent: "center" }}>
 
 
                           <div id="div_hover" >
-                                <button  onClick={() => popUpActive('edit', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+                            <button onClick={() => popUpActive('edit', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
 
-                                <Icon icon="jam:write-f" id="icon_hover" width="24" />
-                                    <span id="spann" >Cập nhật </span>
-                                </button>
-                            </div>
+                              <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                              <span id="spann" >Cập nhật </span>
+                            </button>
+                          </div>
 
-                            <div id="div_hover" >
-                                <button  onClick={() => popUpActive('rental', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
+                          <div id="div_hover" >
+                            <button onClick={() => popUpActive('rental', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
 
-                                <Icon icon="tdesign:money" id="icon_hover"  width="24" />
-                                    <span id="spann" >Thuê </span>
-                                </button>
-                            </div>
+                              <Icon icon="tdesign:money" id="icon_hover" width="24" />
+                              <span id="spann" >Thuê </span>
+                            </button>
+                          </div>
 
-                            <div id="div_hover" >
-                                <button  onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+                          <div id="div_hover" >
+                            <button onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
 
-                                    <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
-                                    <span id="spann" >Xóa </span>
-                                </button>
-                            </div>
+                              <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                              <span id="spann" >Xóa </span>
+                            </button>
+                          </div>
 
 
                         </td>

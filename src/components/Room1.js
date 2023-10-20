@@ -200,12 +200,13 @@ const Room1 = () => {
             }
             if(formData.roomPrice <=0){
                 setErrorCode("ERROR_MONEY_001")
+                document.getElementById("roomPrice").focus();
                 return;
             }
 
 
 
-            // await dispatch(updateRoom(formData, idItem))
+            await dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
 
             console.log("rentall", formDataRental);
@@ -231,7 +232,7 @@ const Room1 = () => {
                 setErrorCode("ERROR_DATE_002")
                 return;
             }
-            setErrorCode("LOG_CONTRACT_001")
+            setErrorCode("LOG_ROOM_001")
             await dispatch(createRental(formDataRental))
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
