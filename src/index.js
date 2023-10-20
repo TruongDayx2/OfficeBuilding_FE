@@ -5,14 +5,13 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import { Notifi } from './components/notify/notify';
+import { NotifiProvider } from './components/notify/notify';
 
 ReactDOM.render(
   <Provider store={store}>
-   <Notifi>
+    <NotifiProvider>
       <App />
-
-</Notifi>
+    </NotifiProvider>
   </Provider>,
   document.getElementById('root')
 );

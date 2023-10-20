@@ -110,7 +110,6 @@ const ServiceContract1 = () => {
       const year = currentDate.getFullYear();
       const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
       const day = currentDate.getDate().toString().padStart(2, '0');
-
       const formattedDate = `${year}-${month}-${day}`;
       // console.log(formattedDate)
       const newData = {
@@ -307,7 +306,7 @@ const ServiceContract1 = () => {
                     </td>
                     <td style={{ display: 'flex', justifyContent: 'center' }}>
                       <div id="div_hover" >
-                        <button onClick={() => popUpActive('detail', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
+                        <button onClick={() => popUpActive('detail', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid pink' }}>
 
                           <Icon icon="basil:info-rect-outline" id="icon_hover" width="24" />
                           <span id="spann" >chi tiết</span>
@@ -315,7 +314,7 @@ const ServiceContract1 = () => {
                       </div>
 
                       <div id="div_hover" >
-                        <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+                        <button onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
 
                           <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
                           <span id="spann" >Hoàn tất</span>

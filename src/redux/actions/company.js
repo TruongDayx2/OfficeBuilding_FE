@@ -38,7 +38,7 @@ export const createCompany = (data) => async dispatch => {
     try {
         const res = await axios({
             method: 'POST',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `company/create`,
             data: data,
             headers: {

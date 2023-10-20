@@ -115,8 +115,10 @@ const Rental1 = () => {
             const day = currentDate.getDate().toString().padStart(2, '0');
 
             const formattedDate = `${year}-${month}-${day}`;
+            console.log("item rental",item);
 
-            await dispatch(cancelRental(idItem, formattedDate))
+
+            // await dispatch(cancelRental(idItem, formattedDate))
 
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
@@ -325,7 +327,7 @@ const Rental1 = () => {
                                                     <div id="div_hover" >
                                                         <button onClick={() => popUpActive('delete', item1)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
 
-                                                            <Icon icon="material-symbols:delete-outline" id="icon_hover" width="24" />
+                                                            <Icon icon="typcn:tick" id="icon_hover" width="24" />
                                                             <span id="spann" >Hoàn tất</span>
                                                         </button>
                                                     </div>

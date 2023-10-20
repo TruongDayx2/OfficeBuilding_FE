@@ -63,7 +63,7 @@ const searchButtonStyles = {
 
 function Footer() {
     return (
-        <footer style={footerStyles}>
+        <footer style={footerStyles} id='footerr'>
             <div style={columnStyles}>
                 <ul >
                     <li>77 building</li>

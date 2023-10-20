@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Icon } from '@iconify/react';
 import { useDispatch, useSelector } from "react-redux";
 import { getAllFloors } from "../redux/actions/floor";
@@ -7,7 +7,7 @@ import { getAllCompanys } from "../redux/actions/company";
 import DatePicker from "react-datepicker";
 import { combineReducers } from 'redux';
 import { cancelRental, createRental, getAllRentals } from "../redux/actions/rental";
-import {NotifiContext} from './notify/notify';
+import { NotifiContext } from './notify/notify';
 function CheckRoom() {
     const [isRoomChecked, setIsRoomChecked] = useState(false);
     const roomsFromReducer = useSelector(state => state.room.data1)
@@ -19,7 +19,10 @@ function CheckRoom() {
     const [popupType, setPopupType] = useState(""); // "thue" or "cap-nhat"
     const [selectedRoom, setSelectedRoom] = useState(null);
     const dispatch = useDispatch();
-    const checknotifi= useContext(NotifiContext);
+    const checknotifi = useContext(NotifiContext);
+    const footerr = document.getElementById("footerr").getBoundingClientRect();
+    const headerr = document.getElementById("headerr").getBoundingClientRect();
+
     useEffect(() => {
         dispatch(getAllRooms())
         dispatch(getAllCompanys())
@@ -48,24 +51,25 @@ function CheckRoom() {
     const closePopup = () => {
         setIsPopupVisible(false);
         setTmpval("")
-        console.log("check log errr",checknotifi.errorCode);
-
+        // console.log("check log errr", checknotifi.errorCode);
+        console.log('Chiều cao của thẻ:', footerr.height);
     };
     const openPopup = (room, tmp) => {
         setRoomPopup(room)
         setTmpval(tmp)
         setIsPopupVisible(true);
         setRentalPopup(rentalsFromReducer.find((rental) => rental.roomId === room.id && rental.reStatus === 1))
-        checknotifi.setErrorCode(3)
+        // checknotifi.setErrorCode(checknotifi.errorCode + 1);
+        setAddRoom({ ...addRoom, roomId: room.id });
+
     };
-   
+
     const [numValue, setNumValue] = useState();
     const handleChangeInputAdd = (e) => {
 
         const { name, value } = e.target
         if ((name == "rePrice" && Number(value) < 0) || value == "-0") {
             setNumValue("")
-            console.log("pingggg");
         }
         else {
             setNumValue(value)
@@ -73,7 +77,7 @@ function CheckRoom() {
         setAddRoom({ ...addRoom, [name]: value })
     }
     const handelAddClick = async () => {
-        setAddRoom({ ...addRoom, roomId: roomPopup.id, });
+        console.log("object", addRoom);
         await dispatch(createRental(addRoom));
         await dispatch(getAllRooms());
         closePopup();
@@ -99,8 +103,10 @@ function CheckRoom() {
 
         closePopup();
     }
+
+    
     return (
-        <div style={{ marginTop: "100px" }}>
+        <div style={{ marginTop: `${headerr.height}px`, minHeight: `${window.innerHeight - footerr.height - headerr.height}px` }}>
             {
                 roomPopup && (
 

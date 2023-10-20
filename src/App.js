@@ -1,6 +1,6 @@
 import './App.css';
 import Header from './components/Header';
-import React from 'react'
+import React, { useContext } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
@@ -25,12 +25,17 @@ import DetailRevenueService from './components/DetailRevenueService';
 import CheckRoom from './components/roomcheck';
 import Footer from './components/footer';
 import Test from './components/test';
+import '../src/css/login.css';
+import { NotifiContext } from './components/notify/notify';
+import Admin from './components/admin';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
+    const {errorCode} = useContext(NotifiContext);
     return (
         <div className="App">
             <Router>
+
                 <Header />
                 <Switch>
                     <Route path="/login">
@@ -84,11 +89,17 @@ function App() {
                     <Route path="/test">
                         <Test />
                     </Route>
+
+                    <Route path="/admin">
+                        <Admin />
+                    </Route>
                     <Route path="/">
                         <Home1 />
                     </Route>
                 </Switch>
                 <Footer />
+            <div className="msg-log-all"></div>
+
             </Router>
         </div>
     );
