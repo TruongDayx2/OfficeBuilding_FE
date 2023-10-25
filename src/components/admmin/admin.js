@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import '../css/admin.css';
+import './admin.css';
+import UsersScreen from './userScreen';
+import SettingsScreen from './settingScreen';
+import DashboardScreen from './dashBoardScreen';
+
 function Admin() {
     const [activeScreen, setActiveScreen] = useState('dashboard');
     const messageLogin = useSelector(state => state.login.data);
@@ -24,13 +28,10 @@ function Admin() {
 
 
     return (
-        <div className="admin-container" style={{ marginTop: "100px", display: "flex", justifyContent: "flex-start" }}>
+        <div className="admin-container" style={{ marginTop: "100px", display: "flex", justifyContent: "flex-start" , height:"63vh"}}>
             <div className="menu-container" style={{ width: "30vw", background: "#161644", color: "#3A3D61", padding: "20px" }}>
                 <h1>Admin</h1>
                 <div className="menu-item" onClick={() => handleMenuClick('dashboard')} style={{ color: activeScreen === "dashboard" ? "#9197A8" : "#3A3D61" }} >
-                    <div>
-sfss
-                    </div>
                     <div>
                         Dashboard
                     </div>
@@ -49,31 +50,8 @@ sfss
     );
 }
 
-function DashboardScreen() {
-    return (
-        <div>
-            <h1>Dashboard Screen</h1>
-            <p>This is the dashboard screen.</p>
-        </div>
-    );
-}
 
-function UsersScreen() {
-    return (
-        <div>
-            <h1>Users Screen</h1>
-            <p>This is the users screen.</p>
-        </div>
-    );
-}
 
-function SettingsScreen() {
-    return (
-        <div>
-            <h1>Settings Screen</h1>
-            <p>This is the settings screen.</p>
-        </div>
-    );
-}
+
 
 export default Admin;

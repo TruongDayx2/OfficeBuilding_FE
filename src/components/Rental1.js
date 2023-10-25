@@ -116,9 +116,7 @@ const Rental1 = () => {
 
             const formattedDate = `${year}-${month}-${day}`;
             console.log("item rental",item);
-
-
-            // await dispatch(cancelRental(idItem, formattedDate))
+            await dispatch(cancelRental(idItem, formattedDate))
 
         }
         // Reset form sau khi gửi thành công (tuỳ ý)

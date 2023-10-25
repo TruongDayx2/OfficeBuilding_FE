@@ -5,6 +5,8 @@ import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
 import { Icon } from '@iconify/react';
+import { useContext } from "react";
+import { NotifiContext } from "./notify/notify";
 
 const Equip1 = () => {
     const equipsFromReducer = useSelector(state => state.equip.data1)
@@ -14,6 +16,7 @@ const Equip1 = () => {
     const location = useLocation()
     const dispatch = useDispatch();
 
+    const {setErrorCode}=  useContext(NotifiContext)
 
     useEffect(() => {
         dispatch(getAllEquips())
@@ -113,17 +116,37 @@ const Equip1 = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-        console.log(formData);
-        setFormData(initialFormData);
+        // setFormData(initialFormData);
+
         if (!isUpdate && !isDelete) {
+            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
+                && item.equipmentName=== formData.equipmentName))
+            {
+                setErrorCode('ERROR_EQUIPMENT_001')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
             await dispatch(createEquipment(formData))
+            setErrorCode('LOG_EQUIPMENT_001')
+
         } else if (isUpdate) {
-             await dispatch(updateEquipment(formData, idItem))
+
+            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
+                && item.id !== formData.id && item.equipmentName=== formData.equipmentName))
+            {
+                setErrorCode('ERROR_EQUIPMENT_001')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
+            await dispatch(updateEquipment(formData, idItem))
+            setErrorCode('LOG_EQUIPMENT_002')
         } else {
             await dispatch(deleteEquipment(idItem))
+            setErrorCode('LOG_EQUIPMENT_003')
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();
+        console.log("checkRun");
         setIsReload(!isReload)
         cancelClick();
     };

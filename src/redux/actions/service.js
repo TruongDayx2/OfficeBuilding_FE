@@ -38,7 +38,7 @@ export const createService = (data) => async dispatch => {
     try {
         const res = await axios({
             method: 'POST',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_ADMIN,
             url: `service/create`,
             data: data,
             headers: {

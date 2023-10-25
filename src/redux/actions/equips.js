@@ -68,7 +68,7 @@ export const createEquipment = (data) => async dispatch => {
     try {
         const res = await axios({
             method: 'POST',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_ADMIN,
             url: `equipment/create`,
             data: data,
             headers: {

@@ -27,7 +27,7 @@ import Footer from './components/footer';
 import Test from './components/test';
 import '../src/css/login.css';
 import { NotifiContext } from './components/notify/notify';
-import Admin from './components/admin';
+import Admin from './components/admmin/admin';
 
 function App() {
     // const isAdmin = useSelector(state => state.login.isAdmin);
