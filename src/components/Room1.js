@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { getAllRooms, updateRoom } from "../redux/actions/rooms";
+import { getAllRooms, updateRoom, createRoom } from "../redux/actions/rooms";
 import { getAllCompanys } from "../redux/actions/company";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -78,6 +78,7 @@ const Room1 = () => {
     const { errorCode, setErrorCode } = useContext(NotifiContext);
 
     const popUpActive = (mode, item) => {
+
         if (companysFromReducer.length === 0) {
             setErrorCode("ERROR_COMPANY_001")
             return;
@@ -104,8 +105,16 @@ const Room1 = () => {
             setItem(item)
             setIsDetail(true)
         }
+        else if (mode === 'add') {
+            document.querySelector('.dialog__title').textContent = "thêm phòng mới";
+            // setItem(item)
+            setFormData(initialFormData);
+            setFormData({ ...formData, floorId: 1, roomStatus: 1 })
+            setIsUpdate(true)  
+            setCheckAdd(true)  
+            }
     }
-
+const [checkAdd, setCheckAdd] = useState(false)
     const cancelClick = () => {
         setFormData(initialFormData);
         setIsShow(false);
@@ -113,6 +122,7 @@ const Room1 = () => {
         setIsDelete(false)
         setIsRental(false)
         setIsDetail(false)
+        setCheckAdd(false)
         setItem({})
         document.querySelector('.form-post').classList.remove('active');
     }
@@ -156,7 +166,6 @@ const Room1 = () => {
             setErrorCode("ERROR_ROOM_001")
             newValue = value;
         }
-   
         setFormData({ ...formData, [name]: newValue });
     };
     const [NumVal, setNumVal] = useState(0);
@@ -172,43 +181,67 @@ const Room1 = () => {
         // nếu nhập số âm thì giá trị của ô input thay đổi thành 0
         if (newValue <= 0) {
             setNumVal();
-        console.log("check number", NumVal);
+            console.log("check number", NumVal);
 
             setErrorCode("ERROR_MONEY_001")
         }
         else {
             setNumVal(newValue);
         }
+
         setFormDataRental({ ...formDataRental, [name]: newValue });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-        setFormData(initialFormData);
-        if (!isUpdate && !isDelete && !isRental) {
+        // setFormData(initialFormData);
+        if (!isUpdate && !isDelete && !isRental&& !checkAdd) {
             console.log(formData)
             // await dispatch(createEquipment(formData))
         } else if (isUpdate) {
             const room = roomsFromReducer.find(room => room.roomName === formData.roomName && room.floorId === formData.floorId && formData.id !== room.id);
             if (room) {
-                console.log("phòng có bị trùngggg",room);
+                console.log("phòng có bị trùngggg", room);
                 setErrorCode("ERROR_ROOM_001")
                 setIsReload(!isReload)
                 cancelClick();
                 return;
             }
-            if(formData.roomPrice <=0){
+            if (formData.roomPrice <= 0) {
                 setErrorCode("ERROR_MONEY_001")
                 document.getElementById("roomPrice").focus();
                 return;
             }
+            if(formData.roomName === '' || formData.roomPrice === ''  || formData.roomStatus === '' || formData.floorId === '') {
+                setErrorCode("ERROR_ROOM_002")
+                return;
+            }
+            if(checkAdd) {
 
-
-
-            await dispatch(updateRoom(formData, idItem))
-        } else if (isRental) {
-
+                const checkRoom = roomsFromReducer.find(room => room.roomName === formData.roomName && room.floorId === (formData.floorId? formData.floorId : 1));
+                if(checkRoom) {
+                    setErrorCode("ERROR_ROOM_001")
+                    return;
+                }
+                
+                setErrorCode("LOG_ROOM_003")
+                if (!formData.floorId){
+               let dataTmp = {...formData, floorId: 1}
+               if (!formData.roomStatus){
+                dataTmp = {...dataTmp, roomStatus: 0}
+                }
+                await dispatch(createRoom(dataTmp))
+                }
+                else await dispatch(createRoom(formData))
+            } else {
+                setErrorCode("LOG_ROOM_002")
+                console.log("check update", formData);
+                await dispatch(updateRoom(formData, idItem))
+            }
+        }
+       
+        else if (isRental) {
             console.log("rentall", formDataRental);
             //reDateBegin:"2023-10-24"
             //reDateEnd:"2023-10-25"
@@ -267,7 +300,7 @@ const Room1 = () => {
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
                 <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
                     <div className="form-post__title dialog__title">
-                        Thêm trang thiết bị
+                        Thêm Phòng
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
@@ -525,6 +558,12 @@ const Room1 = () => {
                             <option value={1}>Đang sử dụng</option>
                             <option value={2}>Đang bảo trì</option>
                         </select>
+
+                    </div>
+                    <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
+                        <button onClick={() => popUpActive('add')} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' }}>
+                            Thêm mới
+                        </button>
                     </div>
                 </div>
                 <div className="admin-post__body">

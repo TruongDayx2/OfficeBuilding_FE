@@ -1,17 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { createEquipment, deleteEquipment, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
+import { createEquipment, deleteEquipment,getAllEquips, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
+import { NotifiContext } from "./notify/notify";
 
 const Room = () => {
+    const equipsFromReducer = useSelector(state => state.equip.data1)
     const equipFromReducer = useSelector(state => state.equip.data)
     const floorsFromReducer = useSelector(state => state.floors.data)
     const [floorId, setFloorId] = useState(0);
     const location = useLocation()
     const dispatch = useDispatch();
     const [isReload, setIsReload] = useState(false)
+    const {setErrorCode}=  useContext(NotifiContext)
+
     useEffect(() => {
         setIsReload(!isReload)
     }, [])
@@ -21,6 +25,7 @@ const Room = () => {
         console.log(id)
         setFloorId(Number(id))
         await dispatch(getAllEquipsByFloorID(Number(id)))
+        await dispatch(getAllEquips())
         await dispatch(getAllFloors())
         console.log("eee");
         // return () => {
@@ -129,19 +134,36 @@ const Room = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-        console.log(formData);
-        setFormData(initialFormData);
-        if (!isUpdate && !isDelete ) {
+     
+        if (!isUpdate && !isDelete) {
+            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
+                && item.equipmentName=== formData.equipmentName))
+            {
+                setErrorCode('ERROR_EQUIPMENT_001')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
             await dispatch(createEquipment(formData))
-        } else if(isUpdate){
+            setErrorCode('LOG_EQUIPMENT_001')
+
+        } else if (isUpdate) {
+
+            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
+                && item.id !== formData.id && item.equipmentName=== formData.equipmentName))
+            {
+                setErrorCode('ERROR_EQUIPMENT_001')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
             await dispatch(updateEquipment(formData, idItem))
-            console.log("updattt");
-        }else{
-            console.log('first')
+            setErrorCode('LOG_EQUIPMENT_002')
+        } else {
             await dispatch(deleteEquipment(idItem))
+            setErrorCode('LOG_EQUIPMENT_003')
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();
+        console.log("checkRun");
         setIsReload(!isReload)
         cancelClick();
     };

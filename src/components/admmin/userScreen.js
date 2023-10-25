@@ -87,33 +87,18 @@ function UsersScreen() {
 
             {showPopup && (
                 <div className="popup_dashboard" >
-                    <div className="popup-content" style={{ display: "inline-list-item" }}>
+                    <div className="popup-content" style={{ display:"inline-list-item"}}>
                         <h2>Thêm user</h2>
-                        <div>
-
-                            <input type="text" placeholder="Tên user" />
-                        </div>
-                        <div>
-
-                            <input type="text" placeholder="userName" />
-                        </div>
-                        <div>
-
-                            <input type="text" placeholder="Email" />
-                        </div>
-                        <div>
-
-                            <input type="text" placeholder="Password" />
-                        </div>
-                        <div>
-
-                            <input type="text" placeholder="nhập lại Password" />
-                        </div>
+                        <input type="text" placeholder="Tên user" />
+                        <input type="text" placeholder="userName" />
+                        <input type="text" placeholder="Email" />
+                        <input type="text" placeholder="Password" />
+                        <input type="text" placeholder="nhập lại Password" />
                         <select>
                             <option value="admin">Admin</option>
                             <option value="user">User</option>
                         </select>
-                        <div className="btn-popup" style={{ justifyContent: "space-evenly", display: "flex" }}>
+                        <div className="btn-popup" style={{justifyContent:"space-evenly", display:"flex"}}>
                             <button className="btn btn-primary" onClick={() => addUser()}>Thêm</button>
                             <button className="btn btn-danger" onClick={closePopup}>Đóng</button>
                         </div>
