@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import '../css/order.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { getAllRoomsByFloorID, updateRoom } from "../redux/actions/rooms";
+import { getAllRoomsByFloorID, updateRoom,getAllRooms } from "../redux/actions/rooms";
 import { getAllCompanys } from "../redux/actions/company";
-import { getAllFloors } from "../redux/actions/floor";
+import { getAllFloors} from "../redux/actions/floor";
+
 import { createRental } from "../redux/actions/rental";
 import { Icon } from '@iconify/react';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { NotifiContext } from "./notify/notify";
 
 
 const Room = () => {
     const roomFromReducer = useSelector(state => state.room.data)
+    const roomsFromReducer = useSelector(state => state.room.data1)
+
     const floorsFromReducer = useSelector(state => state.floors.data)
     const companysFromReducer = useSelector(state => state.company.data1)
     const [isReload, setIsReload] = useState(false)
@@ -21,6 +24,8 @@ const Room = () => {
     const [floorId, setFloorId] = useState(0);
     const location = useLocation()
     const dispatch = useDispatch();
+
+    const { errorCode, setErrorCode } = useContext(NotifiContext);
 
 
     useEffect(() => {
@@ -31,6 +36,7 @@ const Room = () => {
         dispatch(getAllFloors())
         dispatch(getAllCompanys())
         dispatch(getAllRoomsByFloorID(Number(id)))
+        dispatch(getAllRooms())
         return () => {
             console.log(location.pathname);
         }
@@ -42,6 +48,7 @@ const Room = () => {
 
     const [selectedStatus, setSelectedStatus] = useState(0);
     const [sortedData, setSortedData] = useState(roomFromReducer);
+    const [NumVal, setNumVal] = useState(0);
 
     useEffect(() => {
         const dataCopy = [...sortedData];
@@ -82,7 +89,6 @@ const Room = () => {
     const [isDetail, setIsDetail] = useState(false)
 
     const popUpActive = (mode, item) => {
-        console.log("1231231");
         setIsShow(true);
         document.querySelector('.form-post').classList.add('active');
         if (mode === "edit") {
@@ -146,9 +152,22 @@ const Room = () => {
         } else {
             newValue = value;
         }
+        if (name === 'roomPrice' && newValue <= 0) {
+            setErrorCode("ERROR_MONEY_001")
+            newValue = 0;
+        }
+
+        const room = roomsFromReducer.find(room => room.roomName === newValue && room.floorId === item.floorId && item.id !== room.id);
+        if (name === 'roomName' && room) {
+            setErrorCode("ERROR_ROOM_001")
+            newValue = value;
+        }
+
         setFormData({ ...formData, [name]: newValue });
     };
+
     const handleChangeRental = (e) => {
+
         const { name, value } = e.target;
         let newValue
         if (name === 'rePrice') {
@@ -156,9 +175,19 @@ const Room = () => {
         } else {
             newValue = name === 'companyId' || name === 'roomId' ? parseInt(value) : value;
         }
+        // nếu nhập số âm thì giá trị của ô input thay đổi thành 0
+        if (newValue <= 0) {
+            setNumVal();
+        console.log("check number", NumVal);
+
+            setErrorCode("ERROR_MONEY_001")
+        }
+        else {
+            setNumVal(newValue);
+        }
+        
         setFormDataRental({ ...formDataRental, [name]: newValue });
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
@@ -167,11 +196,51 @@ const Room = () => {
             console.log(formData)
             // await dispatch(createEquipment(formData))
         } else if (isUpdate) {
+            const room = roomsFromReducer.find(room => room.roomName === formData.roomName && room.floorId === formData.floorId && formData.id !== room.id);
+            if (room) {
+                console.log("phòng có bị trùngggg", room);
+                setErrorCode("ERROR_ROOM_001")
+                setIsReload(!isReload)
+                cancelClick();
+                return;
+            }
+            if (formData.roomPrice <= 0) {
+                setErrorCode("ERROR_MONEY_001")
+                document.getElementById("roomPrice").focus();
+                return;
+            }
+
+
+
             await dispatch(updateRoom(formData, idItem))
         } else if (isRental) {
 
-            // if (companysFromReducer)
+            console.log("rentall", formDataRental);
+            //reDateBegin:"2023-10-24"
+            //reDateEnd:"2023-10-25"
+            //formDataRental có 2 trường dữ liệu sau. kiểm tra nếu ngày bắt đầu thuê lớn hơn ngày hết hạn thuê thì thông báo lỗi
+            if (formDataRental.reDateBegin > formDataRental.reDateEnd) {
+                setErrorCode("ERROR_DATE_001")
+                return;
+            }
+
+            if (NumVal <= 0) {
+                setErrorCode("ERROR_MONEY_001")
+                document.getElementById("rePrice").focus();
+                return;
+            }
+            // ngày kết thức thuê phải cách ngày bắt đầu thuê 6 tháng
+            let dateBegin = new Date(formDataRental.reDateBegin);
+            let dateEnd = new Date(formDataRental.reDateEnd);
+            let month = dateEnd.getMonth() - dateBegin.getMonth() + (12 * (dateEnd.getFullYear() - dateBegin.getFullYear()));
+            if (month < 6) {
+                console.log("lỗi 6 tháng");
+                setErrorCode("ERROR_DATE_002")
+                return;
+            }
+            setErrorCode("LOG_ROOM_001")
             await dispatch(createRental(formDataRental))
+
         }
         // Reset form sau khi gửi thành công (tuỳ ý)
         // window.location.reload();
@@ -499,8 +568,8 @@ const Room = () => {
                                                 </button>
                                             </div>
                                             {
-                                                item.roomStatus != 1 ?
-                                                    (<div id="div_hover" >
+                                                item.roomStatus != 1 ? (
+                                                    <div id="div_hover" >
                                                         <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange' }}>
 
                                                             <Icon icon="jam:write-f" id="icon_hover" width="24" />
@@ -508,17 +577,17 @@ const Room = () => {
                                                         </button>
                                                     </div>) : null
                                             }
+
                                             {
-                                                item.roomStatus === 0 ?
-                                                    (
-                                                        <div id="div_hover" >
-                                                            <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
-                                                                
-                                                                <Icon icon="tdesign:money" id="icon_hover" width="24" />
-                                                                <span id="spann" >Thuê</span>
-                                                            </button>
-                                                        </div>
-                                                    ) : null
+                                                item.roomStatus === 0 ? (
+                                                    <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('rental', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid teal' }}>
+
+                                                            <Icon icon="tdesign:money" id="icon_hover" width="24" />
+                                                            <span id="spann" >Thuê</span>
+                                                        </button>
+                                                    </div>
+                                                ) : null
                                             }
 
 

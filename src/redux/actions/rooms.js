@@ -95,3 +95,37 @@ export const updateRoom = (data,id) => async dispatch => {
         })
     }
 }
+
+// api thêm phòng
+export const createRoom = (data) => async dispatch => {
+    console.log("data create",data)
+    try {
+        const res = await axios({
+            method: 'POST',
+            baseURL: process.env.REACT_APP_URL_ADMIN,
+            url: `room/create`,
+            data: data,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch({
+                type: UPDATE_ROOM,
+                data: res.data
+            })
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}

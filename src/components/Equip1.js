@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { createEquipment, deleteEquipment, getAllEquips, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
 import { Icon } from '@iconify/react';
-import { useContext } from "react";
 import { NotifiContext } from "./notify/notify";
 
 const Equip1 = () => {

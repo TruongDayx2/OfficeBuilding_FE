@@ -72,6 +72,13 @@ export const NotifiProvider = ({ children }) => {
       "type": "error",
       "message": "Tên phòng đã tồn tại"
     },
+    // lỗi nhập thiếu thông tin phòng
+    {
+      "id": "ERROR_ROOM_002",
+      "type": "error",
+      "message": "Vui lòng nhập đầy đủ thông tin phòng"
+    },
+    
     // thông báo thuê thành công ( type = log)
     {
       "id": "LOG_ROOM_001",
@@ -83,6 +90,18 @@ export const NotifiProvider = ({ children }) => {
       "id": "LOG_RENTAL_001",
       "type": "log",
       "message": "Hoàn tất hợp đong thuê phòng thành công"
+    },
+// thông báo cập nhật phòng thành công
+    {
+      "id": "LOG_ROOM_002",
+      "type": "log",
+      "message": "Cập nhật phòng thành công"
+    },
+    // thông báo thêm mới phòng thành công
+    {
+      "id": "LOG_ROOM_003",
+      "type": "log",
+      "message": "Thêm mới phòng thành công"
     },
     //-----------------end room-----------------
 
