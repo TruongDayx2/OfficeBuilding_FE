@@ -16,6 +16,7 @@ import { createServiceContract, getAllServiceContract, getAllServiceContractsByS
 
 import { Icon } from '@iconify/react';
 import { NotifiContext } from "./notify/notify";
+import { combineReducers } from "redux";
 
 const Service1 = () => {
   const companysRentalStatus = useSelector(state => state.rental.dataStatus)
@@ -43,6 +44,7 @@ const Service1 = () => {
   }, [location.pathname, isReload])
 
   useEffect(() => {
+
     setSortedData(servicesFromReducer)
   }, [servicesFromReducer])
 
@@ -73,8 +75,7 @@ const Service1 = () => {
       setFormData(item)
       setIdItem(item.id)
     }
-
-
+    console.log("company", companysFromReducer);
   }, [isUpdate, isDelete, isRental])
 
   const popUpActive = (mode, item1) => {
@@ -202,11 +203,11 @@ const Service1 = () => {
     let newValue
     if (name === 'servicePrice') {
       // Validate if the input is a valid number
-      newValue = value === '' ? '' : parseFloat(value) || 0   ;
-    } 
+      newValue = value === '' ? '' : parseFloat(value) || 0;
+    }
 
     else {
-     newValue = value; // For other fields, use the entered value as is
+      newValue = value; // For other fields, use the entered value as is
     }
     setFormData({ ...formData, [name]: newValue });
   };
@@ -327,13 +328,21 @@ const Service1 = () => {
               <div style={{ marginTop: '20px', width: '100%' }}>
                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   Tên công ty:
-                  <select name="companyId" onClick={handleChangeRental} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                    {filterDuplicates(companysRentalStatus).map((company) => {
+                  {/* <select name="companyId" onClick={handleChangeRental} style={{ marginLeft: '10px', borderRadius: '10px' }}> */}
+                  {/* {filterDuplicates(companysFromReducer).map((company) => {
                       const otherCompany = companysFromReducer.find(item => item.id === company.companyId);
                       const companyName = otherCompany ? otherCompany.cusName : "Tên công ty không tồn tại";
                       return (
                         <option key={company.id} value={company.companyId} >
                           {companyName}
+                        </option>
+                      )
+                    })} */}
+                  <select name="companyId" value={formDataRental.companyId} onChange={handleChangeRental} style={{ marginLeft: '10px', borderRadius: '10px' }}>
+                    {companysFromReducer.map((company) => {
+                      return (
+                        <option key={company.id} value={company.id} >
+                          {company.cusName}
                         </option>
                       )
                     })}
