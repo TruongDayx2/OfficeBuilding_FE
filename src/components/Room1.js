@@ -250,7 +250,7 @@ const [checkAdd, setCheckAdd] = useState(false)
                 return;
             }
 
-            if (NumVal <= 0) {
+            if (formDataRental.rePrice <= 0) {
                 setErrorCode("ERROR_MONEY_001")
                 document.getElementById("rePrice").focus();
                 return;
