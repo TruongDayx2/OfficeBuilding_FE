@@ -24,6 +24,7 @@ const Service1 = () => {
   const roomsFromReducer = useSelector(state => state.room.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
   const serContractsFromReducer = useSelector(state => state.serviceContract.dataStatus)
+  
   const { setErrorCode } = useContext(NotifiContext)
 
   const location = useLocation()
@@ -31,13 +32,15 @@ const Service1 = () => {
 
   const [isReload, setIsReload] = useState(false)
 
-  useEffect(() => {
-    dispatch(getAllRooms())
-    dispatch(getAllCompanys())
-    dispatch(getAllServices())
-    dispatch(getAllRentalsByStatus(1))
-    dispatch(getAllServiceContractsByStatus(1))
 
+  useEffect(async() => {
+    await dispatch(getAllRooms())
+    await dispatch(getAllCompanys())
+    await dispatch(getAllServices())
+    await dispatch(getAllRentalsByStatus(1))
+    await dispatch(getAllServiceContractsByStatus(1))
+
+ 
     return () => {
       console.log(location.pathname);
     }
@@ -49,6 +52,8 @@ const Service1 = () => {
   }, [servicesFromReducer])
 
   const [sortedData, setSortedData] = useState(servicesFromReducer);
+
+  const [roomTmp, setRoomTmp] = useState()
 
 
 
@@ -75,10 +80,18 @@ const Service1 = () => {
       setFormData(item)
       setIdItem(item.id)
     }
+    console.log("check rental", companysRentalStatus);
+    console.log("check rental", companysRentalStatus[0].roomId);
+    setRoomTmp(roomsFromReducer.filter(room => room.id == companysRentalStatus[0].roomId))
+
+    const checkRentalCompany = roomsFromReducer.filter(room => room.id == companysRentalStatus.find(item => item.companyId == companysFromReducer[0].id).roomId)
+
+      setRoomTmp(checkRentalCompany)
     console.log("company", companysFromReducer);
   }, [isUpdate, isDelete, isRental])
 
   const popUpActive = (mode, item1) => {
+    console.log("check floor ", roomTmp);
     setIsShow(true);
     document.querySelector('.form-post').classList.add('active');
     if (mode === "edit") {
@@ -117,7 +130,8 @@ const Service1 = () => {
     scDateBegin: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
     scDateEnd: new Date().toISOString().split('T')[0], // Định dạng YYYY-MM-DD
     scStatus: 1,
-    scPrice: 0
+    scPrice: 0,
+    roomId: 1,
   }
   const cancelClick = () => {
     setFormData(initialFormData);
@@ -132,13 +146,34 @@ const Service1 = () => {
 
   const [formData, setFormData] = useState(initialFormData);
   const [formDataRental, setFormDataRental] = useState(initialrentalData);
+  const [roomPick, setRoomPick] = useState();
   const handleChangeRental = (e) => {
     const { name, value } = e.target;
     let newValue
     if (name === 'scPrice') {
       newValue = value === '' ? '' : parseFloat(value) || 0;
-    } else {
-      newValue = name === 'companyId' || name === 'serviceId' || name === 'scStatus' ? parseInt(value) : value;
+    } 
+    else if (name === 'companyId')
+    {
+      newValue = value;
+      //nếu công ty không có hopwpj đồng thì hiện l;ỗi
+      const checkRentalCompany = roomsFromReducer.filter(room => room.id == companysRentalStatus.find(item => item.companyId == value).roomId)
+      if (checkRentalCompany!==undefined && checkRentalCompany.length===0)
+      {
+        setErrorCode("ERROR_COMPANY_001")
+        return;
+      }
+
+      setRoomTmp(checkRentalCompany)
+      
+    }
+
+    else if (name === 'roomId') {
+      newValue = value;
+      setRoomPick(roomTmp.find(item => item.id == value))
+    }
+    else {
+      newValue = name === 'serviceId' || name === 'scStatus' ? parseInt(value) : value;
     }
 
     setFormDataRental({ ...formDataRental, [name]: newValue });
@@ -184,6 +219,37 @@ const Service1 = () => {
       setErrorCode("LOG_SERVICE_002")
     } else if (isRental) {
       // console.log(formDataRental)
+
+
+
+
+
+
+
+      if (formDataRental.scPrice <= 0) {
+        setErrorCode("ERROR_MONEY_001")
+        document.getElementById("scPrice").focus();
+        return;
+      }
+
+      if (formDataRental.scDateBegin > formDataRental.scDateEnd) {
+        setErrorCode("ERROR_DATE_001")
+        document.getElementById("scDateEnd").focus();
+        return;
+      }
+     // thời gian kết thúc thuê dịch vụ sau thời gian thuê phòng
+      if (formDataRental.scDateEnd > roomPick.roomDateEnd) {
+        setErrorCode("ERROR_DATE_003")
+        document.getElementById("scDateEnd").focus();
+        return;
+      }
+      // thời gian bắt đầu thuê dịch vụ trước thời gian thuê phòng
+      if (formDataRental.scDateBegin < roomPick.roomDateBegin) {
+        setErrorCode("ERROR_DATE_003")
+        document.getElementById("scDateBegin").focus();
+        return;
+      }
+    
       await dispatch(createServiceContract(formDataRental))
     } else if (isDelete) {
       // console.log(item)
@@ -280,6 +346,7 @@ const Service1 = () => {
                   />
                 </label>
               </div>
+
               <div style={{ marginTop: '20px', width: '100%' }}>
                 <label style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   Giá tiền (tháng):
@@ -321,7 +388,6 @@ const Service1 = () => {
                 </button>
               </div>
             </form>
-
           </div>
           <div className="form-post__content" style={{ height: '80%', display: isRental ? 'block' : 'none' }}>
             <form onSubmit={handleSubmit} style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: '50px', marginRight: '50px' }}>
@@ -343,6 +409,20 @@ const Service1 = () => {
                       return (
                         <option key={company.id} value={company.id} >
                           {company.cusName}
+                        </option>
+                      )
+                    })}
+                  </select>
+                </label>
+              </div>
+              <div style={{ marginTop: '20px' }}>
+                <label style={{marginLeft:"30px"}}>
+                  Phòng :
+                  <select name="roomId" value={formData.roomId} onChange={handleChangeRental} style={{ marginLeft: '10px', borderRadius: '10px' }}>
+                    {roomTmp?.map((rooom) => {
+                      return (
+                        <option key={rooom.id} value={rooom.id} >
+                          {rooom.roomName}
                         </option>
                       )
                     })}

@@ -252,6 +252,13 @@ export const NotifiProvider = ({ children }) => {
       "type": "error",
       "message": "Ngày thuê phải lớn hơn 6 tháng"
     },
+
+    // thời gia thuê dịch vụ phải trong thời gian của hợp đồng thuê phòng
+    {
+      "id": "ERROR_DATE_003",
+      "type": "error",
+      "message": "Thời gian thuê dịch vụ phải trong thời gian của hợp đồng thuê phòng"
+    },
     //---------------------end syntax-----------------
     {
       "id": 11,
