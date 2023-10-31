@@ -21,7 +21,6 @@ const Room1 = () => {
     const dispatch = useDispatch();
     const dataLogin = useSelector(state => state.login.data);
     console.log("dataa", dataLogin);
-
     useEffect(() => {
         dispatch(getAllRooms())
         dispatch(getAllCompanys())
@@ -227,7 +226,7 @@ const [checkAdd, setCheckAdd] = useState(false)
                 
                 setErrorCode("LOG_ROOM_003")
                 if (!formData.floorId){
-               let dataTmp = {...formData, floorId: 1}
+               let dataTmp = {...formData, floorId: companysFromReducer[0].id}
                if (!formData.roomStatus){
                 dataTmp = {...dataTmp, roomStatus: 0}
                 }
@@ -251,7 +250,7 @@ const [checkAdd, setCheckAdd] = useState(false)
                 return;
             }
 
-            if (NumVal <= 0) {
+            if (formDataRental.rePrice <= 0) {
                 setErrorCode("ERROR_MONEY_001")
                 document.getElementById("rePrice").focus();
                 return;
@@ -294,12 +293,13 @@ const [checkAdd, setCheckAdd] = useState(false)
     function priceVND(amount) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     }
+    const isAdmin = localStorage.getItem('isAdmin');
     return (
         <div style={{ maxWidth: "1100px", minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
                 <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
-                    <div className="form-post__title dialog__title">
+                    <div className="form-post__title dialog__title" style={{display: isAdmin ? 'block' : 'none'}}>
                         Thêm Phòng
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>

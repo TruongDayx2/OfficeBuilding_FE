@@ -78,7 +78,12 @@ export const NotifiProvider = ({ children }) => {
       "type": "error",
       "message": "Vui lòng nhập đầy đủ thông tin phòng"
     },
-    
+    // lỗi kết nối mạng
+    {
+      "id": "ERROR_NETWORK_001",
+      "type": "error",
+      "message": "Lỗi kết nối mạng"
+    },
     // thông báo thuê thành công ( type = log)
     {
       "id": "LOG_ROOM_001",
@@ -91,7 +96,7 @@ export const NotifiProvider = ({ children }) => {
       "type": "log",
       "message": "Hoàn tất hợp đong thuê phòng thành công"
     },
-// thông báo cập nhật phòng thành công
+    // thông báo cập nhật phòng thành công
     {
       "id": "LOG_ROOM_002",
       "type": "log",
@@ -103,7 +108,24 @@ export const NotifiProvider = ({ children }) => {
       "type": "log",
       "message": "Thêm mới phòng thành công"
     },
+    // waring cập nhật phòng thấy bại
+    {
+      "id": "WAR_ROOM_001",
+      "type": "warring",
+      "message": "Cập nhật phòng thất bại"
+    },
     //-----------------end room-----------------
+
+    //-----------------floor-----------------
+
+    // lỗi trùng tên tầng
+    {
+      "id": "ERROR_FLOOR_001",
+      "type": "error",
+      "message": "Tên tầng đã tồn tại"
+    },
+
+    //-----------------end floor-----------------
 
     //-----------------equipment-----------------
     // lỗi tên trang thiết bị trong tầng này đã có
@@ -230,6 +252,13 @@ export const NotifiProvider = ({ children }) => {
       "type": "error",
       "message": "Ngày thuê phải lớn hơn 6 tháng"
     },
+
+    // thời gia thuê dịch vụ phải trong thời gian của hợp đồng thuê phòng
+    {
+      "id": "ERROR_DATE_003",
+      "type": "error",
+      "message": "Thời gian thuê dịch vụ phải trong thời gian của hợp đồng thuê phòng"
+    },
     //---------------------end syntax-----------------
     {
       "id": 11,
@@ -274,5 +303,3 @@ export const NotifiProvider = ({ children }) => {
     </NotifiContext.Provider>
   );
 };
-
-

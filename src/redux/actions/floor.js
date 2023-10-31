@@ -156,3 +156,33 @@ export const deleteFloor = (id) => async dispatch => {
         })
     }
 }
+
+//tạo mới tầng
+export const addFloor = (data) => async dispatch => {
+    try {
+        const res = await axios({
+            method: 'POST',
+            baseURL: process.env.REACT_APP_URL_ADMIN,
+            url: 'floor/create',
+            data: data,
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token"),
+                "Content-Type": "application/json"
+            }
+        })
+        if (res.status === 200) {
+            dispatch(getAllFloors())
+        }
+        else {
+            dispatch({
+                type: ERROR,
+                data: null,
+            })
+        }
+    } catch (error) {
+        dispatch({
+            type: ERROR,
+            data: null,
+        })
+    }
+}
