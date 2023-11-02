@@ -68,8 +68,8 @@ export const updateFloor = (id, data) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
-            url: `floors/${id}`,
+            baseURL: process.env.REACT_APP_URL_ADMIN,
+            url: `floor/update/${id}`,
             data: data,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -81,6 +81,8 @@ export const updateFloor = (id, data) => async dispatch => {
                 type: UPDATE,
                 data: res.data
             })
+            dispatch(getAllFloors())
+
         }
         else {
             dispatch({

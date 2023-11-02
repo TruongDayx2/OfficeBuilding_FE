@@ -132,7 +132,7 @@ export const deleteEquipment = (id) => async dispatch => {
     try {
         const res = await axios({
             method: 'DELETE',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_ADMIN,
             url: `equipment/delete/${id}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),

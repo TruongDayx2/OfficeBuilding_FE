@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom/cjs/react-router-dom.min";
@@ -15,7 +15,7 @@ const Equip1 = () => {
     const location = useLocation()
     const dispatch = useDispatch();
 
-    const {setErrorCode}=  useContext(NotifiContext)
+    const { setErrorCode } = useContext(NotifiContext)
 
     useEffect(() => {
         dispatch(getAllEquips())
@@ -112,31 +112,43 @@ const Equip1 = () => {
 
     const [formData, setFormData] = useState(initialFormData);
 
-    const handleSubmit = async(e) => {
+    const checkData = () => {
+        const data = formData.equipmentName.replace(/\s+/g, ' ').trim();
+        console.log("trước" , formData.equipmentName);
+        setFormData({ ...formData, equipmentName: data })
+    }
+
+    const sentData = () => {
+        console.log("sau 2" , formData);
+    }
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         // setFormData(initialFormData);
+        await checkData()
+        sentData()
+        console.log("sau" , formData.equipmentName);
 
         if (!isUpdate && !isDelete) {
-            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
-                && item.equipmentName=== formData.equipmentName))
-            {
+            if (equipsFromReducer.find(item => item.floorId === formData.floorId
+                && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
                 document.getElementById('equipmentName').focus()
                 return;
             }
+
             await dispatch(createEquipment(formData))
             setErrorCode('LOG_EQUIPMENT_001')
 
         } else if (isUpdate) {
 
-            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
-                && item.id !== formData.id && item.equipmentName=== formData.equipmentName))
-            {
+            if (equipsFromReducer.find(item => item.floorId === formData.floorId
+                && item.id !== formData.id && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
                 document.getElementById('equipmentName').focus()
                 return;
             }
+  
             await dispatch(updateEquipment(formData, idItem))
             setErrorCode('LOG_EQUIPMENT_002')
         } else {
@@ -151,8 +163,11 @@ const Equip1 = () => {
     };
     const handleChange = (e) => {
         const { name, value } = e.target;
-        const newValue = name === 'equipmentStatus' || name === 'floorId' ? parseInt(value) : value;
-        setFormData({ ...formData, [name]: newValue });
+        let newValue = name === 'equipmentStatus' || name === 'floorId' ? parseInt(value) : value;
+
+        setFormData({ ...formData, [name]: newValue })
+
+
     };
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
@@ -283,16 +298,17 @@ const Equip1 = () => {
                                         <td>{index + 1}</td>
                                         <td>{item?.equipmentName}</td>
                                         <td>
-                                            {item.floorId}
+                                            {
+                                                floorsFromReducer.find(floor => floor.id === item.floorId)?.floorName.trim().toUpperCase()}
                                         </td>
                                         <td style={item.equipmentStatus === 0 ? { color: 'red' } : item.equipmentStatus === 1 ? { color: 'teal' } : { color: 'orange' }}>
                                             {item.equipmentStatus === 0 ? 'Ngừng hoạt động' : item.equipmentStatus === 1 ? 'Đang hoạt động' : 'Đang bảo trì'}
                                         </td>
-                                        <td style={{ display: "flex", justifyContent:"center"}}>
+                                        <td style={{ display: "flex", justifyContent: "center" }}>
                                             <div id="div_hover" >
                                                 <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid aqua' }}>
 
-                                          
+
                                                     <Icon icon="jam:write-f" id="icon_hover" width="24" />
                                                     <span id="spann" >cập nhật </span>
                                                 </button>

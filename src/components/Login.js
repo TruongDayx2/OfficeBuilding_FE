@@ -144,12 +144,12 @@ const Login = () => {
             return;
         }
         // password phải có ít nhất 1 ký tự hoa, 1 ký tự thường, 1 số và 1 ký tự đặc biệt
-        // if(!password.trim().match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/g))
-        // {
-        //     setErrorCode("ERROR_PASSWORD_003");
-        //     document.getElementById('password').focus();
-        //     return;
-        // }
+        if(!password.trim().match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/g))
+        {
+            setErrorCode("ERROR_PASSWORD_003");
+            document.getElementById('password').focus();
+            return;
+        }
 
      
     
