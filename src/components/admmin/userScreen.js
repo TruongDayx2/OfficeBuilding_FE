@@ -3,33 +3,57 @@ import './admin.css';
 
 function UsersScreen() {
     const [showPopup, setShowPopup] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [isCreate, setIsCreate] = useState(false);
     const handleAdduser = () => {
         console.log("Thêm user");
         console.log(showPopup);
+        setIsCreate(true);
         setShowPopup(showPopup => !showPopup);
     }
     const closePopup = () => {
         setShowPopup(false);
+        console.log("closePopup");
+        setIsCreate(false);
+        setIsUpdate(false);
+
     }
-    const handleEdituser = (id) => {
-        alert("Sửa user" + users.find(user => user.id === id).name);
+    const handleEdituser = (userName) => {
+        setIsUpdate(true);
+        setShowPopup(showPopup => !showPopup);
+        alert("Sửa user" + users.find(user => user.userName === userName).fullName);
+        //cập nhật value cho các ô input bằng dữ liệu của user cần sửa bằng documanet.getElementById
+        const user = users.find(user => user.userName === userName);
+        document.getElementById("userName").setAttribute('value' ,user.userName);
+        document.getElementById("fullName").setAttribute('value', user.fullName);
+        document.getElementById("email").setAttribute('value' ,user.email);
+        document.getElementById("role").setAttribute('value', user.role);
+        
+
+
+
+
     }
-    const handleDeleteuser = (id) => {
-        alert("Xóa user" + users.find(user => user.id === id).name);
+    const handleDeleteuser = (userName) => {
+        alert("Xóa user" + users.find(user => user.userName === userName).name);
     }
-    const addUser = () => {
-        alert("Thêm user");
+
+
+    const handleResetPass = (userName) => {
+        alert("ddooir maatj khaaur user" + users.find(user => user.userName === userName).name+"thanhf 1234567890");
     }
+
+
 
     const users = [
         {
-            id: 1,
-            name: "Nguyễn Văn A",
+            userName: 1,
+            fullName: "Nguyễn Văn A",
             email: "nguyenvana@gmail.com",
             role: "admin"
         },
         {
-            id: 2,
+            userName: 2,
             name: "Nguyễn Văn B",
             email: "nguyenvanb@gmail.com",
             role: "user"
@@ -37,10 +61,26 @@ function UsersScreen() {
     ]
 
 
+    const [user, setUser] = useState({
+        fullName: "",
+        userName: "",
+        email: "",
+        role: "Admin"
+    });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("checkkk", user);
+        closePopup();
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUser({ ...user, [name]: value })
+    }
+
 
     return (
         <div>
-
             <div>
                 <div style={{
                     display: "flex",
@@ -71,8 +111,9 @@ function UsersScreen() {
                                         <td>{user.email}</td>
                                         <td>{user.role}</td>
                                         <td>
-                                            <button className="btn btn-primary" onClick={() => handleEdituser(user.id)}>Sửa</button>
-                                            <button className="btn btn-danger" onClick={() => handleDeleteuser(user.id)}>Xóa</button>
+                                            <button className="btn btn-primary" onClick={() => handleEdituser(user.userName)}>Sửa</button>
+                                            <button className="btn btn-danger" onClick={() => handleDeleteuser(user.userName)}>Xóa</button>
+                                            <button className="btn btn-warning" onClick={() => handleResetPass(user.userName)}>Reset mật khẩu</button>
                                         </td>
                                     </tr>
                                 ))
@@ -84,26 +125,63 @@ function UsersScreen() {
 
 
             </div>
-
             {showPopup && (
                 <div className="popup_dashboard" >
-                    <div className="popup-content" style={{ display:"inline-list-item"}}>
-                        <h2>Thêm user</h2>
-                        <input type="text" placeholder="Tên user" />
-                        <input type="text" placeholder="userName" />
-                        <input type="text" placeholder="Email" />
-                        <input type="text" placeholder="Password" />
-                        <input type="text" placeholder="nhập lại Password" />
-                        <select>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                        </select>
-                        <div className="btn-popup" style={{justifyContent:"space-evenly", display:"flex"}}>
-                            <button className="btn btn-primary" onClick={() => addUser()}>Thêm</button>
-                            <button className="btn btn-danger" onClick={closePopup}>Đóng</button>
-                        </div>
+                    <form onSubmit={handleSubmit} >
+                        <div className="popup-content" style={{ display: "inline-list-item" }}>
+                            <h2>Thêm user</h2>
+                       
+                            <input type="text"
+                                name="userName"
+                                placeholder="userName"
+                                onChange={handleChange}
+                                required
+                                {...(isUpdate && { disabled: true })}
+                            />
+                            <input type="text"
+                                name="fullName"
+                                placeholder="Tên user"
+                                onChange={handleChange}
+                                required
+                            />
 
-                    </div>
+                         
+                            <input type="text"
+                                name="email"
+                                placeholder="Email"
+                                onChange={handleChange}
+                                required
+
+                            />
+                            {isCreate? (
+                               <>
+                                <input type="text"
+                                name="password"
+                                placeholder="Password"
+                                onChange={handleChange}
+                                required
+
+                            />
+                            <input type="text"
+                                name="rePassword"
+                                placeholder="nhập lại Password"
+                                onChange={handleChange}
+                                required
+
+                            />
+                            </>):null
+                        }
+                            <select>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                            </select>
+                            <div className="btn-popup" style={{ justifyContent: "space-evenly", display: "flex" }}>
+                                <button className="btn btn-primary" >Thêm</button>
+                                <button className="btn btn-danger" onClick={closePopup}>Đóng</button>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
             )}
         </div>

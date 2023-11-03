@@ -29,7 +29,7 @@ function Admin() {
 
     return (
         <div className="admin-container" style={{ marginTop: "100px", display: "flex", justifyContent: "flex-start" , height:"63vh"}}>
-            <div className="menu-container" style={{ width: "30vw", background: "#161644", color: "#3A3D61", padding: "20px" }}>
+            <div className="menu-container" style={{ width: "20vw", background: "#161644", color: "#3A3D61", padding: "20px" }}>
                 <h1>Admin</h1>
                 <div className="menu-item" onClick={() => handleMenuClick('dashboard')} style={{ color: activeScreen === "dashboard" ? "#9197A8" : "#3A3D61" }} >
                     <div>
@@ -43,7 +43,7 @@ function Admin() {
                     Settings
                 </div>
             </div>
-            <div className="active-screen-container" style={{ width: "70vw", padding: "20px" }}>
+            <div className="active-screen-container" style={{ width: "80vw", padding: "20px" }}>
                 {renderScreen()}
             </div>
         </div>
