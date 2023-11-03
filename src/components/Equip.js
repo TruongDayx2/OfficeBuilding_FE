@@ -1,10 +1,11 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import '../css/order.css';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { createEquipment, deleteEquipment,getAllEquips, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
+import { createEquipment, deleteEquipment, getAllEquips, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
 import { NotifiContext } from "./notify/notify";
+import { Icon } from "@iconify/react";
 
 const Room = () => {
     const equipsFromReducer = useSelector(state => state.equip.data1)
@@ -14,12 +15,12 @@ const Room = () => {
     const location = useLocation()
     const dispatch = useDispatch();
     const [isReload, setIsReload] = useState(false)
-    const {setErrorCode}=  useContext(NotifiContext)
+    const { setErrorCode } = useContext(NotifiContext)
 
     useEffect(() => {
         setIsReload(!isReload)
     }, [])
-    useEffect(async() => {
+    useEffect(async () => {
 
         const id = location.pathname.split('/')[2];
         console.log(id)
@@ -86,7 +87,7 @@ const Room = () => {
         }
 
 
-    }, [isUpdate,isDelete])
+    }, [isUpdate, isDelete])
 
 
     const popUpActive = (mode, item) => {
@@ -131,14 +132,24 @@ const Room = () => {
         const newValue = name === 'equipmentStatus' ? parseInt(value) : value;
         setFormData({ ...formData, [name]: newValue });
     };
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
-     
+
         if (!isUpdate && !isDelete) {
-            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
-                && item.equipmentName=== formData.equipmentName))
-            {
+            if (formData.equipmentName[0] == " " || formData.equipmentName[formData.equipmentName.length - 1] == " ") {
+                setErrorCode('ERROR_EQUIPMENT_002')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
+            console.log("check trim", formData.equipmentName.trim());
+            if (formData.equipmentName.trim()) {
+                setErrorCode('ERROR_EQUIPMENT_002')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
+            if (equipsFromReducer.find(item => item.floorId === formData.floorId
+                && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
                 document.getElementById('equipmentName').focus()
                 return;
@@ -147,10 +158,16 @@ const Room = () => {
             setErrorCode('LOG_EQUIPMENT_001')
 
         } else if (isUpdate) {
+            console.log("check trim", formData.equipmentName.trim());
+            if (formData.equipmentName[0] == " " || formData.equipmentName[formData.equipmentName.length - 1] == " ") {
+                setErrorCode('ERROR_EQUIPMENT_002')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
 
-            if(equipsFromReducer.find(item => item.floorId === formData.floorId 
-                && item.id !== formData.id && item.equipmentName=== formData.equipmentName))
-            {
+
+            if (equipsFromReducer.find(item => item.floorId === formData.floorId
+                && item.id !== formData.id && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
                 document.getElementById('equipmentName').focus()
                 return;
@@ -174,13 +191,13 @@ const Room = () => {
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
-                <div className="form-post" style={{height:isDelete ? '200px' : ''}}>
+                <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
                     <div className="form-post__title dialog__title">
                         Thêm trang thiết bị
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
-                        <div style={{display:'flex',justifyContent:'center',marginTop:'25px'}}>
-                            <button type="button" onClick={(e)=>handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
+                            <button type="button" onClick={(e) => handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
                             <button type="button" onClick={cancelClick} style={{ marginLeft: '10px', borderRadius: '10px', backgroundColor: 'orange' }}>
                                 Hủy
                             </button>
@@ -232,14 +249,13 @@ const Room = () => {
                                 <label>
                                     Tầng chứa trang thiết bị:
                                     <select name="floorId" value={formData.floorId} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                                        {floorsFromReducer.map((floor) => {
-                                            if (floor.id !== floorId) return null;
-                                            return (
-                                                <option key={floor.id} value={floor.id} >
+                                        {
+                                            floorsFromReducer.map((floor) => {
+                                                if (floor.id === floorId) return (<option key={floor.id} value={floor.id} >
                                                     {floor.floorName}
-                                                </option>
-                                            )
-                                        })}
+                                                </option>);
+                                            })
+                                        }
                                     </select>
                                 </label>
                             </div>
@@ -294,19 +310,37 @@ const Room = () => {
                                         <td>{index + 1}</td>
                                         <td>{item?.equipmentName}</td>
                                         <td>
-                                            {item.floorId}
+                                            {
+                                                floorsFromReducer.map((floor) => {
+                                                    if (floor.id === item.floorId) return floor.floorName;
+                                                    return null;
+                                                })
+                                            }
+
                                         </td>
                                         <td style={item.equipmentStatus === 0 ? { color: 'red' } : item.equipmentStatus === 1 ? { color: 'teal' } : { color: 'orange' }}>
                                             {item.equipmentStatus === 0 ? 'Ngừng hoạt động' : item.equipmentStatus === 1 ? 'Đang hoạt động' : 'Đang bảo trì'}
                                         </td>
-                                        <td>
-                                            <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
-                                                <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
-                                                Cập nhật
-                                            </button>
-                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
-                                                Xóa
-                                            </button>
+                                        <td style={{ display: 'flex', justifyContent: "space-around" }}> 
+                                         
+
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange' }}>
+
+                                                    <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                                    <span id="spann" >cập nhật</span>
+                                                </button>
+                                            </div>
+
+                
+
+                                            <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                                                            <Icon icon="bx:bx-trash" id="icon_hover" width="24" />
+                                                            <span id="spann" >cập nhật</span>
+                                                        </button>
+                                                    </div>
                                         </td>
                                     </tr>
                                 ))

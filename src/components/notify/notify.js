@@ -125,6 +125,19 @@ export const NotifiProvider = ({ children }) => {
       "message": "Tên tầng đã tồn tại"
     },
 
+    // thông báo thêm tầng thành công
+    {
+      "id": "LOG_FLOOR_001",
+      "type": "log",
+      "message": "Thêm tầng thành công"
+    },
+    // thông báo cập nhật tầng thành công
+    {
+      "id": "LOG_FLOOR_002",
+      "type": "log",
+      "message": "Cập nhật tầng thành công"
+    },
+    
     //-----------------end floor-----------------
 
     //-----------------equipment-----------------
@@ -133,6 +146,12 @@ export const NotifiProvider = ({ children }) => {
       "id": "ERROR_EQUIPMENT_001",
       "type": "error",
       "message": "Tên trang thiết bị đã tồn tại ở tầng này"
+    },
+    // lỗi không được có khoảng trắng ở đầu hoặc cuối
+    {
+      "id": "ERROR_EQUIPMENT_002",
+      "type": "error",
+      "message": "Tên trang thiết bị không được có khoảng trắng ở đầu hoặc cuối"
     },
     // thông báo thêm mới dịch vụ thành công ( type = log)
     {

@@ -293,13 +293,13 @@ const [checkAdd, setCheckAdd] = useState(false)
     function priceVND(amount) {
         return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
     }
-    const isAdmin = localStorage.getItem('isAdmin');
+    const isAdmin = localStorage.getItem("role") === "ROLE_ADMIN" ? true : false;
     return (
         <div style={{ maxWidth: "1100px", minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">
                 <div className="modal_overlay" style={{ height: '1000vh' }}></div>
                 <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
-                    <div className="form-post__title dialog__title" style={{display: isAdmin ? 'block' : 'none'}}>
+                    <div className="form-post__title dialog__title" >
                         Thêm Phòng
                     </div>
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
@@ -560,8 +560,8 @@ const [checkAdd, setCheckAdd] = useState(false)
                         </select>
 
                     </div>
-                    <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
-                        <button onClick={() => popUpActive('add')} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' }}>
+                    <div style={{ width: '150px', height: '30px', fontSize: '15px', marginLeft:"25px" }} >
+                        <button onClick={() => popUpActive('add')} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' ,display: isAdmin ? 'block' : 'none'}}>
                             Thêm mới
                         </button>
                     </div>

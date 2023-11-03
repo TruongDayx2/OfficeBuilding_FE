@@ -81,7 +81,7 @@ const Service1 = () => {
       setIdItem(item.id)
     }
     console.log("check rental", companysRentalStatus);
-    console.log("check rental", companysRentalStatus[0].roomId);
+    console.log("check rental", companysRentalStatus[0].roomId||"");
     setRoomTmp(roomsFromReducer.filter(room => room.id == companysRentalStatus[0].roomId))
 
     const checkRentalCompany = roomsFromReducer.filter(room => room.id == companysRentalStatus.find(item => item.companyId == companysFromReducer[0].id).roomId)

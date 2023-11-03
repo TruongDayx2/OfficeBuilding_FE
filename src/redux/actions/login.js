@@ -56,7 +56,7 @@ export const signUp = (data) => async dispatch => {
     try {
         const res = await axios({
             method: 'POST',
-            baseURL: 'http://localhost:8080',
+            baseURL: process.env.REACT_APP_URL_LOGIN ,
             url: "register",
             data: data
         });
