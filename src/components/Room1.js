@@ -560,7 +560,7 @@ const [checkAdd, setCheckAdd] = useState(false)
                         </select>
 
                     </div>
-                    <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
+                    <div style={{ width: '150px', height: '30px', fontSize: '15px', marginLeft:"25px" }} >
                         <button onClick={() => popUpActive('add')} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' ,display: isAdmin ? 'block' : 'none'}}>
                             Thêm mới
                         </button>

@@ -44,19 +44,23 @@ const Floor1 = () => {
             setErrorCode("ERROR_FLOOR_001")
             document.getElementById("floorName").focus();
             return
-        } else {
+        }
+
+        else {
             if (checkAddFloor === true) {
                 console.log("done add flood", floorName);
                 dispatch(addFloor({floorName}))
-                setErrorCode("SUCCESS_FLOOR_001")
+                setErrorCode("LOG_FLOOR_001")
                 setCheckAddFloor(false)
+                setFloorNametmp('')
             }
             if (checkUpdateFloor === true) {
 
                 console.log("done add flood", floorName);
                 dispatch(updateFloor(floorId,{floorName }))
-                setErrorCode("SUCCESS_FLOOR_002")
+                setErrorCode("LOG_FLOOR_002")
                 setCheckUpdateFloor(false)
+                setFloorNametmp('')
             }
         }
 

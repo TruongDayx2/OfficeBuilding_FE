@@ -330,9 +330,7 @@ const Room = () => {
                     <div className="form-post__title dialog__title" style={{ display: isAdmin ? 'block' : 'none' }}>
                         Thêm Phòng
                     </div>
-                    <div className="form-post__title dialog__title">
-                        Thêm trang thiết bị
-                    </div>
+                  
                     <div style={{ display: isDelete ? 'block' : 'none' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: '25px' }}>
                             <button type="button" onClick={(e) => handleSubmit(e)} style={{ borderRadius: '10px', backgroundColor: 'teal', color: 'white' }}>Xác nhận</button>
@@ -448,13 +446,13 @@ const Room = () => {
                                 <label>
                                     Tầng :
                                     <select name="floorId" value={formData.floorId} onChange={handleChange} style={{ marginLeft: '10px', borderRadius: '10px' }}>
-                                        {floorsFromReducer.map((floor) => {
-                                            return (
-                                                <option key={floor.id} value={floor.id} >
+                                        {
+                                            floorsFromReducer.map((floor) => {
+                                                if (floor.id === floorId) return (<option key={floor.id} value={floor.id} >
                                                     {floor.floorName}
-                                                </option>
-                                            )
-                                        })}
+                                                </option>);
+                                            })
+                                        }
                                     </select>
                                 </label>
                             </div>
@@ -589,7 +587,7 @@ const Room = () => {
                             <option value={2}>Đang bảo trì</option>
                         </select>
                     </div>
-                    <div style={{ width: '150px', height: '30px', fontSize: '15px' }} >
+                    <div style={{ width: '150px', height: '30px', fontSize: '15px', marginLeft:"25px" }} >
                         <button onClick={() => popUpActive('add')} style={{ backgroundColor: 'teal', color: 'white', borderRadius: '10px' }}>
                             Thêm mới
                         </button>

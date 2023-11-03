@@ -111,25 +111,21 @@ const Equip1 = () => {
     }
 
     const [formData, setFormData] = useState(initialFormData);
+  
 
-    const checkData = () => {
-        const data = formData.equipmentName.replace(/\s+/g, ' ').trim();
-        console.log("trước" , formData.equipmentName);
-        setFormData({ ...formData, equipmentName: data })
-    }
-
-    const sentData = () => {
-        console.log("sau 2" , formData);
-    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
         // setFormData(initialFormData);
-        await checkData()
-        sentData()
-        console.log("sau" , formData.equipmentName);
+
 
         if (!isUpdate && !isDelete) {
+
+            if (formData.equipmentName[0]==" " || formData.equipmentName[formData.equipmentName.length-1]==" ") {
+                setErrorCode('ERROR_EQUIPMENT_002')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
             if (equipsFromReducer.find(item => item.floorId === formData.floorId
                 && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
@@ -142,6 +138,11 @@ const Equip1 = () => {
 
         } else if (isUpdate) {
 
+            if (formData.equipmentName[0]==" " || formData.equipmentName[formData.equipmentName.length-1]==" ") {
+                setErrorCode('ERROR_EQUIPMENT_002')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
             if (equipsFromReducer.find(item => item.floorId === formData.floorId
                 && item.id !== formData.id && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
@@ -161,14 +162,19 @@ const Equip1 = () => {
         setIsReload(!isReload)
         cancelClick();
     };
+    const checkName = (name) => {
+        const data = name.replace(/\s+/g, ' ').trim();
+        setFormData({ ...formData, equipmentName: data });
+    }
     const handleChange = (e) => {
         const { name, value } = e.target;
         let newValue = name === 'equipmentStatus' || name === 'floorId' ? parseInt(value) : value;
-
         setFormData({ ...formData, [name]: newValue })
 
 
     };
+
+    const [equipName, setEquipName] = useState('')
     return (
         <div style={{ minHeight: "100vh" }} className="admin-post__container">
             <div style={{ display: isShow ? 'block' : 'none' }} className="modal">

@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { createEquipment, deleteEquipment, getAllEquips, getAllEquipsByFloorID, updateEquipment } from "../redux/actions/equips";
 import { getAllFloors } from "../redux/actions/floor";
 import { NotifiContext } from "./notify/notify";
+import { Icon } from "@iconify/react";
 
 const Room = () => {
     const equipsFromReducer = useSelector(state => state.equip.data1)
@@ -136,7 +137,12 @@ const Room = () => {
         // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
 
         if (!isUpdate && !isDelete) {
-            console.log("check trim",formData.equipmentName.trim());
+            if (formData.equipmentName[0] == " " || formData.equipmentName[formData.equipmentName.length - 1] == " ") {
+                setErrorCode('ERROR_EQUIPMENT_002')
+                document.getElementById('equipmentName').focus()
+                return;
+            }
+            console.log("check trim", formData.equipmentName.trim());
             if (formData.equipmentName.trim()) {
                 setErrorCode('ERROR_EQUIPMENT_002')
                 document.getElementById('equipmentName').focus()
@@ -152,13 +158,14 @@ const Room = () => {
             setErrorCode('LOG_EQUIPMENT_001')
 
         } else if (isUpdate) {
-            console.log("check trim",formData.equipmentName.trim());
-
-            if (formData.equipmentName.trim()) {
+            console.log("check trim", formData.equipmentName.trim());
+            if (formData.equipmentName[0] == " " || formData.equipmentName[formData.equipmentName.length - 1] == " ") {
                 setErrorCode('ERROR_EQUIPMENT_002')
                 document.getElementById('equipmentName').focus()
                 return;
             }
+
+
             if (equipsFromReducer.find(item => item.floorId === formData.floorId
                 && item.id !== formData.id && item.equipmentName === formData.equipmentName)) {
                 setErrorCode('ERROR_EQUIPMENT_001')
@@ -314,14 +321,26 @@ const Room = () => {
                                         <td style={item.equipmentStatus === 0 ? { color: 'red' } : item.equipmentStatus === 1 ? { color: 'teal' } : { color: 'orange' }}>
                                             {item.equipmentStatus === 0 ? 'Ngừng hoạt động' : item.equipmentStatus === 1 ? 'Đang hoạt động' : 'Đang bảo trì'}
                                         </td>
-                                        <td>
-                                            <button className="post-edit-item-btn" style={{ width: '150px' }} onClick={() => popUpActive('edit', item)}>
-                                                <i className='bx bxs-pencil' style={{ marginRight: '10px' }}></i>
-                                                Cập nhật
-                                            </button>
-                                            <button className="post-delete-btn " style={{ width: '70px', marginLeft: '10px' }} onClick={() => popUpActive('delete', item)}>
-                                                Xóa
-                                            </button>
+                                        <td style={{ display: 'flex', justifyContent: "space-around" }}> 
+                                         
+
+                                            <div id="div_hover" >
+                                                <button onClick={() => popUpActive('edit', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid orange' }}>
+
+                                                    <Icon icon="jam:write-f" id="icon_hover" width="24" />
+                                                    <span id="spann" >cập nhật</span>
+                                                </button>
+                                            </div>
+
+                
+
+                                            <div id="div_hover" >
+                                                        <button onClick={() => popUpActive('delete', item)} className="post-edit-item-btn" id="btn_hover" style={{ border: '2px solid red' }}>
+
+                                                            <Icon icon="bx:bx-trash" id="icon_hover" width="24" />
+                                                            <span id="spann" >cập nhật</span>
+                                                        </button>
+                                                    </div>
                                         </td>
                                     </tr>
                                 ))
