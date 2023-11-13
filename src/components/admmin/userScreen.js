@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './admin.css';
-import {createUser, getAllRoles} from '../../api/admin';
+import {createUser, getAllRoles, getAllUsers} from '../../api/admin';
 
 function UsersScreen() {
 
@@ -8,6 +8,16 @@ function UsersScreen() {
     const [isUpdate, setIsUpdate] = useState(false);
     const [isCreate, setIsCreate] = useState(false);
     const [allRole, setAllRole] = useState([]);
+const [users, setUsers] = useState([]);
+    useEffect(() => {
+        const fetchAllRole = async () => {
+           const res = await getAllUsers();
+              console.log("all user",res);
+                setUsers(res);
+        }
+        fetchAllRole();
+    },[])
+
     const handleAdduser = async() => {
         console.log("Thêm user");
         console.log(showPopup);
@@ -30,10 +40,7 @@ function UsersScreen() {
         alert("Sửa user" + users.find(user => user.userName === userName).fullName);
         //cập nhật value cho các ô input bằng dữ liệu của user cần sửa bằng documanet.getElementById
         const user = users.find(user => user.userName === userName);
-        document.getElementById("userName").setAttribute('value' ,user.userName);
-        document.getElementById("fullName").setAttribute('value', user.fullName);
-        document.getElementById("email").setAttribute('value' ,user.email);
-        document.getElementById("role").setAttribute('value', user.role);
+
     }
     const handleDeleteuser = (userName) => {
         alert("Xóa user" + users.find(user => user.userName === userName).name);
@@ -43,23 +50,7 @@ function UsersScreen() {
     const handleResetPass = (userName) => {
         alert("ddooir maatj khaaur user" + users.find(user => user.userName === userName).name+"thanhf 1234567890");
     }
-
-
-
-    const users = [
-        {
-            userName: 1,
-            fullName: "Nguyễn Văn A",
-            email: "nguyenvana@gmail.com",
-            role: "admin"
-        },
-        {
-            userName: 2,
-            name: "Nguyễn Văn B",
-            email: "nguyenvanb@gmail.com",
-            role: "user"
-        }
-    ]
+   
 
 
     const [user, setUser] = useState({
@@ -113,22 +104,22 @@ function UsersScreen() {
                                 <th>STT</th>
                                 <th>Tên</th>
                                 <th>Email</th>
-                                <th>Quyền</th>
+                                {/* <th>Quyền</th> */}
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             {
                                 users.map((user, index) => (
-                                    <tr key={index}>
+                                    <tr key={user.username}>
                                         <td>{index + 1}</td>
-                                        <td>{user.name}</td>
+                                        <td>{user.fullname}</td>
                                         <td>{user.email}</td>
-                                        <td>{user.role}</td>
+                                        {/* <td>{user.role}</td> */}
                                         <td>
-                                            <button className="btn btn-primary" onClick={() => handleEdituser(user.userName)}>Sửa</button>
-                                            <button className="btn btn-danger" onClick={() => handleDeleteuser(user.userName)}>Xóa</button>
-                                            <button className="btn btn-warning" onClick={() => handleResetPass(user.userName)}>Reset mật khẩu</button>
+                                            <button className="btn btn-primary" onClick={() => handleEdituser(user.username)}>Sửa</button>
+                                            <button className="btn btn-danger" onClick={() => handleDeleteuser(user.username)}>{user.status ==0?"khóa":"mở khóa"}</button>
+                                            <button className="btn btn-warning" onClick={() => handleResetPass(user.username)}>Reset mật khẩu</button>
                                         </td>
                                     </tr>
                                 ))
