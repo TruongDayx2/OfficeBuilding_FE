@@ -153,23 +153,23 @@ export const NotifiProvider = ({ children }) => {
       "type": "error",
       "message": "Tên trang thiết bị không được có khoảng trắng ở đầu hoặc cuối"
     },
-    // thông báo thêm mới dịch vụ thành công ( type = log)
+    // thông báo thêm mới trang thiết bị thành công ( type = log)
     {
       "id": "LOG_EQUIPMENT_001",
       "type": "log",
-      "message": "Thêm mới dịch vụ thành công"
+      "message": "Thêm mới trang thiết bị thành công"
     },
-    // thông báo cập nhật dich vụ thành công ( type = log)
+    // thông báo cập nhật trang thiết bị thành công ( type = log)
     {
       "id": "LOG_EQUIPMENT_002",
       "type": "log",
-      "message": "Cập nhật dịch vụ thành công"
+      "message": "Cập nhật trang thiết bị thành công"
     },
-    // thioong báo xóa dịch vụ thành công ( type = log)
+    // thioong báo xóa trang thiết bị thành công ( type = log)
     {
       "id": "LOG_EQUIPMENT_003",
       "type": "log",
-      "message": "Xóa dịch vụ thành công"
+      "message": "Xóa trang thiết bị thành công"
     },
     // thông báo 
     //-----------------end equipment-----------------
@@ -311,7 +311,7 @@ export const NotifiProvider = ({ children }) => {
       msglogAll.classList.add('active');
       setTimeout(() => {
         msglogAll.classList.remove('active');
-      }, 1200);
+      }, 5200);
       setErrorCode(0);
     }
   }, [errorCode]);

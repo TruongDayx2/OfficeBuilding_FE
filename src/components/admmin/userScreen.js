@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './admin.css';
+import {createUser, getAllRoles} from '../../api/admin';
 
 function UsersScreen() {
+
     const [showPopup, setShowPopup] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [isCreate, setIsCreate] = useState(false);
-    const handleAdduser = () => {
+    const [allRole, setAllRole] = useState([]);
+    const handleAdduser = async() => {
         console.log("Thêm user");
         console.log(showPopup);
         setIsCreate(true);
         setShowPopup(showPopup => !showPopup);
+        const response = await getAllRoles();
+        console.log("all role user",response);
+        setAllRole(response);
     }
     const closePopup = () => {
         setShowPopup(false);
@@ -28,11 +34,6 @@ function UsersScreen() {
         document.getElementById("fullName").setAttribute('value', user.fullName);
         document.getElementById("email").setAttribute('value' ,user.email);
         document.getElementById("role").setAttribute('value', user.role);
-        
-
-
-
-
     }
     const handleDeleteuser = (userName) => {
         alert("Xóa user" + users.find(user => user.userName === userName).name);
@@ -62,23 +63,37 @@ function UsersScreen() {
 
 
     const [user, setUser] = useState({
-        fullName: "",
-        userName: "",
+        fullname: "",
+        username: "",
         email: "",
-        role: "Admin"
     });
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("checkkk", user);
+        const response = await createUser(user,pickrole);
+        console.log("response create user",response);
+
         closePopup();
     }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if(name === "setrole"){
+           setPickrole(value);
+           return;
+        }
+        if(name === "rePassword"){
+            return;
+        }
         setUser({ ...user, [name]: value })
     }
 
+    const handleselectRole = (e) => {
 
+        setPickrole(e.target.value)
+     
+    }
+
+    const [pickrole, setPickrole] = useState(1);
     return (
         <div>
             <div>
@@ -133,13 +148,13 @@ function UsersScreen() {
                        
                             <input type="text"
                                 name="userName"
-                                placeholder="userName"
+                                placeholder="username"
                                 onChange={handleChange}
                                 required
                                 {...(isUpdate && { disabled: true })}
                             />
                             <input type="text"
-                                name="fullName"
+                                name="fullname"
                                 placeholder="Tên user"
                                 onChange={handleChange}
                                 required
@@ -171,9 +186,15 @@ function UsersScreen() {
                             />
                             </>):null
                         }
-                            <select>
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
+                            <select  onChange={handleselectRole}>
+                              {
+                                  allRole.map((role,index) => (
+                                    <option value={role.id} key={role.id}>{role.name}</option>
+                                ))
+                              }
+                                {/* <option value="Admin">Admin</option>
+                                <option value="User">User</option> */}
+
                             </select>
                             <div className="btn-popup" style={{ justifyContent: "space-evenly", display: "flex" }}>
                                 <button className="btn btn-primary" >Thêm</button>

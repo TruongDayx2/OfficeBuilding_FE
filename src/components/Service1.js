@@ -24,7 +24,7 @@ const Service1 = () => {
   const roomsFromReducer = useSelector(state => state.room.data1)
   const companysFromReducer = useSelector(state => state.company.data1)
   const serContractsFromReducer = useSelector(state => state.serviceContract.dataStatus)
-  
+
   const { setErrorCode } = useContext(NotifiContext)
 
   const location = useLocation()
@@ -33,14 +33,14 @@ const Service1 = () => {
   const [isReload, setIsReload] = useState(false)
 
 
-  useEffect(async() => {
+  useEffect(async () => {
     await dispatch(getAllRooms())
     await dispatch(getAllCompanys())
     await dispatch(getAllServices())
     await dispatch(getAllRentalsByStatus(1))
     await dispatch(getAllServiceContractsByStatus(1))
 
- 
+
     return () => {
       console.log(location.pathname);
     }
@@ -80,17 +80,18 @@ const Service1 = () => {
       setFormData(item)
       setIdItem(item.id)
     }
-    console.log("check rental", companysRentalStatus);
-    console.log("check rental", companysRentalStatus[0].roomId||"");
-    setRoomTmp(roomsFromReducer.filter(room => room.id == companysRentalStatus[0].roomId))
+    // rooom cos howpj ddoongf thuee phongf
+    setRoomTmp(roomsFromReducer.filter(room => room.id == companysRentalStatus[0]?.roomId))
 
     const checkRentalCompany = roomsFromReducer.filter(room => room.id == companysRentalStatus.find(item => item.companyId == companysFromReducer[0].id).roomId)
 
-      setRoomTmp(checkRentalCompany)
+    setRoomTmp(checkRentalCompany)
+    setRoomPick(checkRentalCompany[0])
     console.log("company", companysFromReducer);
   }, [isUpdate, isDelete, isRental])
 
   const popUpActive = (mode, item1) => {
+
     console.log("check floor ", roomTmp);
     setIsShow(true);
     document.querySelector('.form-post').classList.add('active');
@@ -152,22 +153,19 @@ const Service1 = () => {
     let newValue
     if (name === 'scPrice') {
       newValue = value === '' ? '' : parseFloat(value) || 0;
-    } 
-    else if (name === 'companyId')
-    {
+    }
+    else if (name === 'companyId') {
       newValue = value;
       //nếu công ty không có hopwpj đồng thì hiện l;ỗi
       const checkRentalCompany = roomsFromReducer.filter(room => room.id == companysRentalStatus.find(item => item.companyId == value).roomId)
-      if (checkRentalCompany!==undefined && checkRentalCompany.length===0)
-      {
+      if (checkRentalCompany !== undefined && checkRentalCompany.length === 0) {
         setErrorCode("ERROR_COMPANY_001")
         return;
       }
-
       setRoomTmp(checkRentalCompany)
-      
-    }
+      setRoomPick(checkRentalCompany[0])
 
+    }
     else if (name === 'roomId') {
       newValue = value;
       setRoomPick(roomTmp.find(item => item.id == value))
@@ -178,6 +176,14 @@ const Service1 = () => {
 
     setFormDataRental({ ...formDataRental, [name]: newValue });
   };
+  useEffect(() => {
+    console.log("check rooom pick", roomPick);
+  }, [roomPick])
+
+  useEffect(() => {
+    console.log("check rooom roomTmp", roomTmp);
+  }, [roomTmp])
+
 
   function checkDelete(id) {
     const data = serContractsFromReducer.filter(comp => comp.serviceId === id)
@@ -219,25 +225,18 @@ const Service1 = () => {
       setErrorCode("LOG_SERVICE_002")
     } else if (isRental) {
       // console.log(formDataRental)
-
-
-
-
-
-
-
+      console.log("rooom pickkkk", roomPick);
       if (formDataRental.scPrice <= 0) {
         setErrorCode("ERROR_MONEY_001")
         document.getElementById("scPrice").focus();
         return;
       }
-
       if (formDataRental.scDateBegin > formDataRental.scDateEnd) {
         setErrorCode("ERROR_DATE_001")
         document.getElementById("scDateEnd").focus();
         return;
       }
-     // thời gian kết thúc thuê dịch vụ sau thời gian thuê phòng
+      // thời gian kết thúc thuê dịch vụ sau thời gian thuê phòng
       if (formDataRental.scDateEnd > roomPick.roomDateEnd) {
         setErrorCode("ERROR_DATE_003")
         document.getElementById("scDateEnd").focus();
@@ -249,7 +248,7 @@ const Service1 = () => {
         document.getElementById("scDateBegin").focus();
         return;
       }
-    
+
       await dispatch(createServiceContract(formDataRental))
     } else if (isDelete) {
       // console.log(item)
@@ -416,7 +415,7 @@ const Service1 = () => {
                 </label>
               </div>
               <div style={{ marginTop: '20px' }}>
-                <label style={{marginLeft:"30px"}}>
+                <label style={{ marginLeft: "30px" }}>
                   Phòng :
                   <select name="roomId" value={formData.roomId} onChange={handleChangeRental} style={{ marginLeft: '10px', borderRadius: '10px' }}>
                     {roomTmp?.map((rooom) => {

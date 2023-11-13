@@ -38,7 +38,7 @@ export const createRental = (data) => async dispatch => {
         console.log(data)
         const res = await axios({
             method: 'POST',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `rental/create`,
             data: data,
             headers: {
@@ -70,7 +70,7 @@ export const updateRental = (data,id) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `rental/update/${id}`,
             data: data,
             headers: {
@@ -102,7 +102,7 @@ export const deleteRental = (id) => async dispatch => {
     try {
         const res = await axios({
             method: 'DELETE',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `rental/delete/${id}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -133,7 +133,7 @@ export const cancelRental = (id,dateEnd) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `rental/cancel/${id}?dateEnd=${dateEnd}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),

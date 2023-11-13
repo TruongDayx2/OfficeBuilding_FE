@@ -70,7 +70,7 @@ export const updateService = (data,id) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `service/update/${id}`,
             data: data,
             headers: {
@@ -102,7 +102,7 @@ export const deleteService = (id) => async dispatch => {
     try {
         const res = await axios({
             method: 'DELETE',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_ADMIN,
             url: `service/delete/${id}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),

@@ -38,7 +38,7 @@ export const createServiceContract = (data) => async dispatch => {
     try {
         const res = await axios({
             method: 'POST',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `serviceContract/create`,
             data: data,
             headers: {
@@ -70,7 +70,7 @@ export const updateServiceContract = (data,id) => async dispatch => {
     try {
         const res = await axios({
             method: 'PUT',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `serviceContract/update/${id}`,
             data: data,
             headers: {
@@ -102,7 +102,7 @@ export const deleteServiceContract = (id) => async dispatch => {
     try {
         const res = await axios({
             method: 'DELETE',
-            baseURL: process.env.REACT_APP_URL_API,
+            baseURL: process.env.REACT_APP_URL_USER,
             url: `serviceContract/delete/${id}`,
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token"),
