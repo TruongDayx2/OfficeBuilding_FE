@@ -94,6 +94,7 @@ const Company1 = () => {
         setIsShow(true);
         document.querySelector('.form-post').classList.add('active');
         if (mode === "edit") {
+            console.log("iteam", item);
             setIsUpdate(true)
             setItem(item)
             document.querySelector('.dialog__title').textContent = "Cập nhật công ty";
@@ -180,8 +181,7 @@ const Company1 = () => {
                 document.getElementById('cusEmail').focus()
                 return
             }
-            if (companysFromReducer.find(comp => comp.cusPhone === formData.cusPhone && comp.id !== formData.id)) {
-
+            if (companysFromReducer.find(comp => comp.cusPhone === item.cusPhone && comp.id !== item.id)) {
                 setErrorCode("ERROR_PHONE_001")
                 document.getElementById('cusPhone').focus()
                 return
