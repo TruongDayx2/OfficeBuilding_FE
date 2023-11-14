@@ -33,6 +33,21 @@ const Service1 = () => {
   const [isReload, setIsReload] = useState(false)
 
 
+
+  useEffect(async () => {
+    await dispatch(getAllRooms())
+    await dispatch(getAllCompanys())
+    await dispatch(getAllServices())
+    await dispatch(getAllRentalsByStatus(1))
+    await dispatch(getAllServiceContractsByStatus(1))
+
+    return () => {
+      console.log(location.pathname);
+      // console.log(r);
+    }
+  }, [])
+
+
   useEffect(async () => {
     await dispatch(getAllRooms())
     await dispatch(getAllCompanys())
@@ -80,15 +95,20 @@ const Service1 = () => {
       setFormData(item)
       setIdItem(item.id)
     }
-    // rooom cos howpj ddoongf thuee phongf
-    setRoomTmp(roomsFromReducer.filter(room => room.id == companysRentalStatus[0]?.roomId))
 
-    const checkRentalCompany = roomsFromReducer.filter(room => room.id == companysRentalStatus.find(item => item.companyId == companysFromReducer[0].id).roomId)
+    console.log("room from redux", companysRentalStatus);
+    if (companysRentalStatus.length !== 0) {
+      // rooom cos howpj ddoongf thuee phongf
 
-    setRoomTmp(checkRentalCompany)
-    setRoomPick(checkRentalCompany[0])
-    console.log("company", companysFromReducer);
-  }, [isUpdate, isDelete, isRental])
+        setRoomTmp(roomsFromReducer?.filter(room => room.id == companysRentalStatus[0].roomId))
+
+        const checkRentalCompany = roomsFromReducer?.filter(room => room.id == companysRentalStatus?.find(item => item.companyId == companysFromReducer[0].id).roomId)
+
+        setRoomTmp(checkRentalCompany)
+        setRoomPick(checkRentalCompany[0])
+        console.log("company", companysFromReducer);
+      }
+    }, [isUpdate, isDelete, isRental])
 
   const popUpActive = (mode, item1) => {
 
@@ -98,7 +118,7 @@ const Service1 = () => {
     if (mode === "edit") {
       setIsUpdate(true)
       setItem(item1)
-      document.querySelector('.dialog__title').textContent = "Cập nhật công ty";
+      document.querySelector('.dialog__title').textContent = "CẬP NHẬT DỊCH VỤ";
     } else if (mode === 'delete') {
       setIsDelete(true)
       setItem(item1)
@@ -197,7 +217,7 @@ const Service1 = () => {
     // Thực hiện các xử lý dữ liệu ở đây, ví dụ: gửi dữ liệu lên server
     // setFormData(initialFormData);
     if (!isUpdate && !isDelete && !isRental) {
-      if (servicesFromReducer.find(item => item.serviceName === formData.serviceName)) {
+      if (servicesFromReducer.find(item => (item.serviceName === formData.serviceName && item.serviceStatus === 0))) {
         setErrorCode("ERROR_SERVICE_001")
         document.getElementById("serviceName").focus();
         return;
@@ -207,8 +227,8 @@ const Service1 = () => {
         document.getElementById("servicePrice").focus();
         return;
       }
-      await dispatch(createService(formData))
       setErrorCode("LOG_SERVICE_001")
+      await dispatch(createService(formData))
     } else if (isUpdate) {
       if (formData.servicePrice <= 0) {
 
@@ -248,7 +268,18 @@ const Service1 = () => {
         document.getElementById("scDateBegin").focus();
         return;
       }
+      // thời gian thuê dịch vụ từ ngày bắt đầu đến ngày kết thúc ít nhất là 30 ngày
+      const dateBegin = new Date(formDataRental.scDateBegin)
+      const dateEnd = new Date(formDataRental.scDateEnd)
+      const diffTime = Math.abs(dateEnd - dateBegin);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays < 30) {
+        setErrorCode("ERROR_DATE_004")
+        document.getElementById("scDateBegin").focus();
+        return;
+      }
 
+      setErrorCode("LOG_SERVICE_004")
       await dispatch(createServiceContract(formDataRental))
     } else if (isDelete) {
       // console.log(item)
@@ -302,6 +333,8 @@ const Service1 = () => {
 
     return filteredArray
   }
+
+
   function priceVND(amount) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
   }
@@ -312,7 +345,7 @@ const Service1 = () => {
         <div className="modal_overlay" style={{ height: '1000vh' }}></div>
         <div className="form-post" style={{ height: isDelete ? '200px' : '' }}>
           <div className="form-post__title dialog__title">
-            Thêm công ty
+            Thêm dịch vụ
           </div>
           <div style={{ display: isDelete ? 'block' : 'none' }}>
             <div style={{ display: !isCheckDelete ? 'block flex' : 'none', justifyContent: 'center', marginTop: '25px' }}>
@@ -461,6 +494,8 @@ const Service1 = () => {
                     Ngày bắt đầu thuê:
                   </span>
                   <DatePicker
+                    name="scDateBegin"
+                    id="scDateBegin"
                     selected={new Date(formDataRental.scDateBegin)}
                     onChange={(date) => setFormDataRental({ ...formDataRental, scDateBegin: date.toISOString().split('T')[0] })}
                     dateFormat="yyyy-MM-dd"
@@ -475,6 +510,8 @@ const Service1 = () => {
                     Ngày hết hạn thuê:
                   </span>
                   <DatePicker
+                    name="scDateEnd"
+                    id="scDateEnd"
                     selected={new Date(formDataRental.scDateEnd)}
                     onChange={(date) => setFormDataRental({ ...formDataRental, scDateEnd: date.toISOString().split('T')[0] })}
                     dateFormat="yyyy-MM-dd"

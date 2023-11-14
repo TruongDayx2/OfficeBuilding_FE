@@ -128,11 +128,11 @@ const Header = () => {
                                                         map
                                                     </Link>
                                                 </li>
-                                                <li className="dropdown__item">
+                                                {/* <li className="dropdown__item">
                                                     <Link className="nav__link link__item" to='/test' onClick={() => linkAction('about', true)}>
                                                         test
                                                     </Link>
-                                                </li>
+                                                </li> */}
                                                 <li className="dropdown__item">
                                                     <Link className="nav__link link__item" to='/admin' onClick={() => linkAction('about', true)}>
                                                         admin

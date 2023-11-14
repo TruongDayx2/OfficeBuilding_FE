@@ -231,7 +231,7 @@ const RevenueService = () => {
                 placeholder='Tìm kiếm công ty' type="search" name="search" pattern=".*\S.*"
                 required onChange={(e) => searchRoom(e.target.value)} />
             </form>
-            <select style={{ width: '120px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
+            <select style={{display:"none", width: '120px', height: '30px', fontSize: '15px' }} onChange={(e) => onFilterChange(e)}>
               <option defaultChecked value={0}>Theo tháng</option>
               <option value={1}>Tùy chỉnh</option>
             </select>

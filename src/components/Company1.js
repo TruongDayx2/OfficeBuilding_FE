@@ -192,6 +192,11 @@ const Company1 = () => {
                 document.getElementById('cusTaxCode').focus()
                 return
             }
+            //bắt email sai định dạng (email phải có @, phai có ., không có khoảng trắng, không có kí tự đặc biệt, không có dấu)
+            if (!formData.cusEmail.includes('@') || !formData.cusEmail.includes('.') || formData.cusEmail.includes(' ') || formData.cusEmail.includes(',') || formData.cusEmail.includes('?') || formData.cusEmail.includes('!')) {
+                setErrorCode("ERROR_EMAIL_002")
+                return
+            }
 
 
             await dispatch(updateCompany(formData, idItem))

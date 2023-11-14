@@ -33,32 +33,36 @@ const getAllUsers = async () => {
 };
 
 
-const lockUser = async (id,userName, email, fullName) => {
+const lockUser = async (id, userName, email, fullName) => {
 
-    const body= {
-            userName: userName,
-            email: email,
-            fullName: fullName,
-        }
+    const body = {
+        userName: userName,
+        email: email,
+        fullName: fullName,
+    }
 
     const response = await axios.put(`http://localhost:8080/api/admin/u/lock/${userName}`, {
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
             "Content-Type": "application/json"
-        },body
-    
+        }, body
+
     });
 
     return response.data;
 }
-const createUser = async (user, id) => {
+const createUser = async (data, role) => {
+    console.log("user   bodyy", data);
     try {
-        const response = await axios.post(`http://localhost:8080/admin/register/${id}`, user, {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token"),
-                "Content-Type": "application/json"
+        const response = await axios.post(`http://localhost:8080/admin/register/${role}`,
+            data,
+            {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                }
             }
-        });
+        );
         console.log("response create user api", response);
         return response.data;
     }
