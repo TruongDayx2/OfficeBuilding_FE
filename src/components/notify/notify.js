@@ -116,6 +116,13 @@ export const NotifiProvider = ({ children }) => {
     },
     //-----------------end room-----------------
 
+    //user//
+    // lỗi pass không trùng nhau
+    {
+      "id": "ERROR_PASSWORD_005",
+      "type": "error",
+      "message": "Nhập lại mật khẩu không trùng khớp"
+    },
     //-----------------floor-----------------
 
     // lỗi trùng tên tầng
@@ -199,6 +206,18 @@ export const NotifiProvider = ({ children }) => {
       "type": "log",
       "message": "Xóa dịch vụ thành công"
     },
+    // log thuê dịch vụ thành công
+    {
+      "id": "LOG_SERVICE_004",
+      "type": "log",
+      "message": "Thuê dịch vụ thành công"
+    },
+    // log hủy dịch vụ thành công
+    {
+      "id": "LOG_SERVICE_005",
+      "type": "log",
+      "message": "Hủy dịch vụ thành công"
+    },
     //-----------------end service-----------------
 
     //-----------------company-----------------
@@ -241,6 +260,13 @@ export const NotifiProvider = ({ children }) => {
       "type": "error",
       "message": "Email đã tồn tại"
     },
+
+    // lỗi email không đúng định dạng
+    {
+      "id": "ERROR_EMAIL_002",
+      "type": "error",
+      "message": "Email không đúng định dạng"
+    },
     // Số điện thoại công ty đã tồn tại
     {
       "id": "ERROR_PHONE_001",
@@ -277,6 +303,12 @@ export const NotifiProvider = ({ children }) => {
       "id": "ERROR_DATE_003",
       "type": "error",
       "message": "Thời gian thuê dịch vụ phải trong thời gian của hợp đồng thuê phòng"
+    },
+    // thời gian thuê dịch vụ ít nmhaats phải là 1 tháng
+    {
+      "id": "ERROR_DATE_004",
+      "type": "error",
+      "message": "Thời gian thuê dịch vụ ít nhất là 1 tháng"
     },
     //---------------------end syntax-----------------
     {

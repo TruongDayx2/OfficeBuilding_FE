@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './admin.css';
-import {createUser, getAllRoles, getAllUsers} from '../../api/admin';
+import { createUser, getAllRoles, getAllUsers } from '../../api/admin';
+import { useContext } from 'react';
+import { NotifiContext } from '../notify/notify';
 
 function UsersScreen() {
 
@@ -8,24 +10,34 @@ function UsersScreen() {
     const [isUpdate, setIsUpdate] = useState(false);
     const [isCreate, setIsCreate] = useState(false);
     const [allRole, setAllRole] = useState([]);
-const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([]);
+    const { setErrorCode } = useContext(NotifiContext)
+
     useEffect(() => {
         const fetchAllRole = async () => {
-           const res = await getAllUsers();
-              console.log("all user",res);
-                setUsers(res);
+            const res = await getAllUsers();
+            console.log("all user", res);
+            setUsers(res);
         }
         fetchAllRole();
-    },[])
+    }, [])
 
-    const handleAdduser = async() => {
+    const [inputUser, setInputUser] = useState("");
+    const [inputFullname, setInputFullname] = useState("");
+    const [inputEmail, setInputEmail] = useState("");
+    const [inputRole, setInputRole] = useState("1");
+    const [inputPassword, setInputPassword] = useState("");
+    const [inputRePassword, setInputRePassword] = useState("");
+    const handleAdduser = async () => {
         console.log("Thêm user");
         console.log(showPopup);
         setIsCreate(true);
         setShowPopup(showPopup => !showPopup);
         const response = await getAllRoles();
-        console.log("all role user",response);
+        console.log("all role user", response);
         setAllRole(response);
+
+
     }
     const closePopup = () => {
         setShowPopup(false);
@@ -33,26 +45,24 @@ const [users, setUsers] = useState([]);
         setIsCreate(false);
         setIsUpdate(false);
 
+        setInputUser("");
+        setInputFullname("");
+        setInputEmail("");
+        setInputRole("1");
+        setInputPassword("");
+        setInputRePassword("");
+
+
     }
-    const handleEdituser = (userName) => {
+    const handleEdituser = (username) => {
         setIsUpdate(true);
         setShowPopup(showPopup => !showPopup);
-        alert("Sửa user" + users.find(user => user.userName === userName).fullName);
+        alert("Sửa user" + users.find(user => user.username === username).fullname);
         //cập nhật value cho các ô input bằng dữ liệu của user cần sửa bằng documanet.getElementById
-        const user = users.find(user => user.userName === userName);
+        const user = users.find(user => user.username === username);
 
-    }
-    const handleDeleteuser = (userName) => {
-        alert("Xóa user" + users.find(user => user.userName === userName).name);
-    }
-
-
-    const handleResetPass = (userName) => {
-        alert("ddooir maatj khaaur user" + users.find(user => user.userName === userName).name+"thanhf 1234567890");
     }
    
-
-
     const [user, setUser] = useState({
         fullname: "",
         username: "",
@@ -60,31 +70,23 @@ const [users, setUsers] = useState([]);
     });
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await createUser(user,pickrole);
-        console.log("response create user",response);
+        
+        if (inputPassword !== inputRePassword) {
+            setErrorCode("ERROR_PASSWORD_001");
+            return;
+        }
+        const userBody = {
+            username: inputUser,
+            email:  inputEmail,
+            password: inputPassword,
+            fullname: inputFullname,
+        }
+        const response1 = await createUser(userBody, inputRole);
+        console.log("bodyyy",userBody);
 
         closePopup();
     }
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if(name === "setrole"){
-           setPickrole(value);
-           return;
-        }
-        if(name === "rePassword"){
-            return;
-        }
-        setUser({ ...user, [name]: value })
-    }
-
-    const handleselectRole = (e) => {
-
-        setPickrole(e.target.value)
-     
-    }
-
-    const [pickrole, setPickrole] = useState(1);
     return (
         <div>
             <div>
@@ -115,11 +117,10 @@ const [users, setUsers] = useState([]);
                                         <td>{index + 1}</td>
                                         <td>{user.fullname}</td>
                                         <td>{user.email}</td>
-                                        {/* <td>{user.role}</td> */}
+                                        <td>{user.role}</td>
                                         <td>
                                             <button className="btn btn-primary" onClick={() => handleEdituser(user.username)}>Sửa</button>
-                                            <button className="btn btn-danger" onClick={() => handleDeleteuser(user.username)}>{user.status ==0?"khóa":"mở khóa"}</button>
-                                            <button className="btn btn-warning" onClick={() => handleResetPass(user.username)}>Reset mật khẩu</button>
+                                         
                                         </td>
                                     </tr>
                                 ))
@@ -136,57 +137,57 @@ const [users, setUsers] = useState([]);
                     <form onSubmit={handleSubmit} >
                         <div className="popup-content" style={{ display: "inline-list-item" }}>
                             <h2>Thêm user</h2>
-                       
+
                             <input type="text"
                                 name="userName"
                                 placeholder="username"
-                                onChange={handleChange}
+                                value={inputUser}
+                                onChange={(e) => { setInputUser(e.target.value) }}
+
                                 required
                                 {...(isUpdate && { disabled: true })}
                             />
                             <input type="text"
                                 name="fullname"
                                 placeholder="Tên user"
-                                onChange={handleChange}
+                                onChange={(e) => { setInputFullname(e.target.value) }}
+                                value={inputFullname}
                                 required
                             />
 
-                         
+
                             <input type="text"
                                 name="email"
                                 placeholder="Email"
-                                onChange={handleChange}
+                                onChange={(e) => { setInputEmail(e.target.value) }}
                                 required
-
+                                value={inputEmail}
                             />
-                            {isCreate? (
-                               <>
-                                <input type="text"
-                                name="password"
-                                placeholder="Password"
-                                onChange={handleChange}
-                                required
+                            {isCreate ? (
+                                <>
+                                    <input type="text"
+                                        name="password"
+                                        placeholder="Password"
+                                        onChange={(e) => { setInputPassword(e.target.value) }}
+                                        value={inputPassword}
 
-                            />
-                            <input type="text"
-                                name="rePassword"
-                                placeholder="nhập lại Password"
-                                onChange={handleChange}
-                                required
+                                    />
+                                    <input type="text"
+                                        name="rePassword"
+                                        placeholder="nhập lại Password"
+                                        onChange ={ (e)=>{setInputRePassword(e.target.value)}}
+                                        required
+                                        value={inputRePassword}
+                                    />
+                                    <select onChange={(e)=>{setInputRole(e.target.value)}} >
+                                        <option value="1">Admin</option>
+                                        <option value="2">Nhân viên</option>
+                                        <option value="3">Khách hàng</option>
+                                    </select>
 
-                            />
-                            </>):null
-                        }
-                            <select  onChange={handleselectRole}>
-                              {
-                                  allRole.map((role,index) => (
-                                    <option value={role.id} key={role.id}>{role.name}</option>
-                                ))
-                              }
-                                {/* <option value="Admin">Admin</option>
-                                <option value="User">User</option> */}
-
-                            </select>
+                                </>) : null
+                            }
+                    
                             <div className="btn-popup" style={{ justifyContent: "space-evenly", display: "flex" }}>
                                 <button className="btn btn-primary" >Thêm</button>
                                 <button className="btn btn-danger" onClick={closePopup}>Đóng</button>
